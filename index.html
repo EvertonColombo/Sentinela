@@ -1,0 +1,2070 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sentinela do Tempo</title>
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b141c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Sentinela">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Instrument+Serif:ital@1&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans+Condensed:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: painel de instrumento — faixa de alerta, 4 riscos com cena 3D e régua, hora a hora 3D em degraus, comparação de dias, modelos, glossário. */
+:root{
+  --bg:#eef1f3; --panel:#fbfcfc; --ink:#14212b; --muted:#5b6b76; --line:#d3dbe0;
+  --accent:#2f5d50; --cold:#3f7fd0; --warm:#e0702a; --water:#2f86c9;
+  --lv0:#6f9f88; --lv1:#d9a514; --lv2:#e2711d; --lv3:#c62f2f;
+  --lv0-bg:#e2f1ea; --lv1-bg:#fbf1cf; --lv2-bg:#fde3cf; --lv3-bg:#f8d9d9;
+  --scene:#dfe6ea; --scene-ground:#cbd6dc; --sky-top:#9fb6c6; --sky-mid:#cfdbe3;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f171c; --panel:#16222a; --ink:#e3eaee; --muted:#93a4ae; --line:#2a3a44;
+  --accent:#7cc0a8; --cold:#6aa6f0; --warm:#f39147; --water:#4aa3e6;
+  --lv0:#4f8f74; --lv1:#f0c43a; --lv2:#f39147; --lv3:#ef5d5d;
+  --lv0-bg:#173328; --lv1-bg:#3a3214; --lv2-bg:#3d2715; --lv3-bg:#41191b;
+  --scene:#0c1418; --scene-ground:#16262f; --sky-top:#03070b; --sky-mid:#0a141b;
+  color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0f171c; --panel:#16222a; --ink:#e3eaee; --muted:#93a4ae; --line:#2a3a44;
+  --accent:#7cc0a8; --cold:#6aa6f0; --warm:#f39147; --water:#4aa3e6;
+  --lv0:#4f8f74; --lv1:#f0c43a; --lv2:#f39147; --lv3:#ef5d5d;
+  --lv0-bg:#173328; --lv1-bg:#3a3214; --lv2-bg:#3d2715; --lv3-bg:#41191b;
+  --scene:#0c1418; --scene-ground:#16262f; --sky-top:#03070b; --sky-mid:#0a141b;
+  color-scheme:dark;}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:16px;padding-block:18px 40px;display:grid;gap:18px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+h1:not(.logo){font-size:clamp(1.6rem,4vw,2.3rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.2rem;font-weight:600}
+.num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+a{color:var(--accent)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.status{font-size:.85rem;color:var(--muted);margin:0}
+.src{font-size:.78rem;color:var(--muted);margin:0}
+.src b{color:var(--ink);font-weight:500}
+
+/* cabeçalho e lugares */
+header{display:grid;gap:12px}
+.top{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:end;justify-content:space-between}
+.brand p{margin:0;color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.controls select,.controls input{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-width:0;max-width:100%}
+.btn{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600}
+.search{position:relative}
+#q{width:13rem}
+.results{position:absolute;z-index:5;top:calc(100% + 4px);left:0;right:0;min-width:16rem;background:var(--panel);border:1px solid var(--line);border-radius:6px;box-shadow:0 8px 24px rgb(0 0 0 / .15);overflow:hidden}
+.results button{display:block;width:100%;text-align:left;padding:8px 10px;border:0;background:none;cursor:pointer}
+.results button:hover,.results button:focus-visible{background:var(--bg)}
+.coords{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.coords input{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;min-width:0}
+#cin{flex:1 1 300px;font-family:var(--f-mono);font-size:.85rem}
+#cname{flex:0 1 180px}
+.coords .msg{font-size:.82rem;color:var(--muted);flex-basis:100%}
+.coords .msg.err{color:var(--lv3)}
+
+/* botão ? e balão */
+.term{display:inline-grid;place-items:center;width:1.15rem;height:1.15rem;border-radius:50%;border:1px solid var(--muted);background:none;color:var(--muted);font:600 .7rem/1 var(--f-body);cursor:pointer;vertical-align:.1em;margin-left:3px;padding:0}
+.term:hover,.term[aria-expanded="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+#pop{position:absolute;z-index:20;max-width:min(340px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--accent);border-radius:8px;padding:12px 14px;box-shadow:0 10px 30px rgb(0 0 0 / .25);font-size:.9rem}
+#pop h4{margin:0 0 4px;font-family:var(--f-display);font-size:1rem}
+#pop p{margin:0 0 6px} #pop p:last-child{margin:0}
+
+/* faixa */
+/* faixa de status: painel escuro de instrumento, igual aos gráficos */
+.band{--bc:var(--lv0);position:relative;border-radius:12px;padding:16px 18px 14px 22px;display:grid;gap:12px;color:#e6eef4;overflow:hidden;border:1px solid #16222c;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--bc) 16%,transparent),transparent 45%),repeating-linear-gradient(90deg,transparent 0 19px,rgb(120 170 200 / .05) 19px 20px),#070c12}
+.band::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--bc);box-shadow:0 0 18px var(--bc)}
+.band::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgb(255 255 255 / .018) 0 1px,transparent 1px 3px)}
+.band[data-lv="1"]{--bc:var(--lv1)} .band[data-lv="2"]{--bc:var(--lv2)} .band[data-lv="3"]{--bc:var(--lv3)}
+.b-row1{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 20px}
+.b-place{display:flex;align-items:center;gap:8px;font:500 .72rem var(--f-mono);color:#7f97aa;letter-spacing:.06em;text-transform:uppercase}
+.b-live{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:live 2.4s infinite}
+@keyframes live{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 70%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.b-live{animation:none}}
+.band .now{display:flex;gap:18px;flex-wrap:wrap}
+.band .now div{display:flex;align-items:baseline;gap:6px;font:500 .64rem var(--f-mono);color:#7f97aa;text-transform:uppercase;letter-spacing:.08em}
+.band .now b{font:600 1.05rem var(--f-mono);color:#fff;letter-spacing:0;text-transform:none}
+.band .now small{font:500 .7rem var(--f-mono);color:#8ea4b6;text-transform:none;letter-spacing:0}
+.b-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.b-lv{font:700 .72rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;border-radius:3px;background:var(--bc);color:#081016;box-shadow:0 0 14px color-mix(in srgb,var(--bc) 60%,transparent)}
+.band[data-lv="0"]{--bc:#3fcf8e}
+.band[data-lv="0"] .b-lv{background:transparent;color:#3fcf8e;box-shadow:inset 0 0 0 1px #3fcf8e}
+.band strong#band-title{font:600 clamp(1.1rem,2.2vw,1.45rem)/1.2 var(--f-display);color:#fff;text-wrap:balance}
+.b-detail{font-size:.88rem;color:#9fb3c4} .b-detail:empty{display:none}
+.b-facts{display:flex;flex-wrap:wrap;gap:8px}
+.b-fact{display:grid;gap:2px;padding:7px 12px;border:1px solid #1d2b37;border-radius:6px;background:rgb(255 255 255 / .02);min-width:0}
+.b-fact .k{font:600 .6rem var(--f-mono);letter-spacing:.12em;color:#6f8899;text-transform:uppercase}
+.b-fact .v{font:600 .95rem var(--f-mono);color:#fff;white-space:nowrap}
+.b-fact .v i{font-style:normal;color:var(--c,#fff)}
+.b-cats{display:flex;gap:4px;flex-wrap:wrap}
+.b-cat{font:600 .68rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:3px;border:1px solid var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);display:inline-flex;align-items:center;gap:6px}
+.b-cat::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 6px var(--c)}
+.b-cat small{font:500 .6rem var(--f-mono);letter-spacing:.04em;text-transform:none;color:#c9d6e0;opacity:.85}
+.lv-key{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font:500 .62rem var(--f-mono);color:#8ea4b6;letter-spacing:.04em}
+.lv-key i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.lv-key .k{font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#6f8899}
+.b-cat[data-lv="0"]{--c:#3fcf8e} .b-cat[data-lv="1"]{--c:var(--lv1)} .b-cat[data-lv="2"]{--c:var(--lv2)} .b-cat[data-lv="3"]{--c:var(--lv3)}
+/* matriz de concordância: só o risco acende */
+.mx-tabs{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.mx-tabs .k{font:600 .6rem var(--f-mono);letter-spacing:.12em;color:#6f8899;text-transform:uppercase;margin-right:6px}
+.mx-tabs button{font:600 .66rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:99px;border:1px solid #23323e;background:transparent;color:#9fb3c4;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.mx-tabs button i{width:7px;height:7px;border-radius:50%;background:#3fcf8e;box-shadow:0 0 5px rgb(63 207 142 / .6)}
+.mx-tabs button i[data-lv="1"]{background:var(--lv1);box-shadow:0 0 6px var(--lv1)} .mx-tabs button i[data-lv="2"]{background:var(--lv2);box-shadow:0 0 6px var(--lv2)} .mx-tabs button i[data-lv="3"]{background:var(--lv3);box-shadow:0 0 6px var(--lv3)}
+.mx-tabs button[aria-pressed="true"]{border-color:var(--accent);color:#fff;background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.mx{display:grid;grid-template-columns:52px minmax(0,1fr) 26px;gap:0 10px;margin-top:10px;font-family:var(--f-mono)}
+.mx-lab,.mx-end{display:grid;grid-auto-rows:12px;gap:5px;align-items:center;font:600 .6rem var(--f-mono);letter-spacing:.05em;color:#7f97aa}
+.mx-lab span{text-align:right} .mx-lab span.hot{color:#fff}
+.mx-lab .cons,.mx-end .cons{color:#fff;height:18px;display:flex;align-items:center;justify-content:flex-end}
+.mx-end span{color:#3c5060;font-size:.75rem} .mx-end span.on{color:var(--c);text-shadow:0 0 8px var(--c)}
+.mx-end .cons{justify-content:flex-start}
+.mx-cells{position:relative;display:grid;grid-auto-rows:12px;gap:5px}
+.mx-row{position:relative;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:1px;border-radius:6px;background:rgb(120 170 200 / .045)}
+.mx-row i{border-radius:2px;background:transparent}
+.mx-row i[data-lv="1"]{background:var(--lv1);box-shadow:0 0 6px color-mix(in srgb,var(--lv1) 60%,transparent)}
+.mx-row i[data-lv="2"]{background:var(--lv2);box-shadow:0 0 8px var(--lv2)} .mx-row i[data-lv="3"]{background:var(--lv3);box-shadow:0 0 10px var(--lv3)}
+.mx-row.cons{height:18px;margin-top:6px;background:rgb(120 170 200 / .08);border:1px solid #23323e;gap:0;overflow:hidden}
+.mx-row.cons i{border-radius:0}
+.mx-row.cons i[data-lv="0"]{background:linear-gradient(180deg,rgb(63 207 142 / .32),rgb(63 207 142 / .14))}
+.mx-row:not(.cons) i[data-lv="0"]{background:rgb(63 207 142 / .07)}
+.mx-win{position:absolute;top:-6px;bottom:-6px;border:1px solid #fff;border-radius:6px;box-shadow:0 0 16px rgb(255 255 255 / .35),inset 0 0 12px rgb(255 255 255 / .08);pointer-events:none}
+.mx-win span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font:600 .6rem var(--f-mono);letter-spacing:.06em;color:#081016;background:#fff;padding:1px 6px;border-radius:99px;white-space:nowrap}
+.mx-now{position:absolute;top:-6px;bottom:-6px;left:0;width:2px;background:var(--accent);box-shadow:0 0 10px var(--accent);border-radius:2px}
+.mx-axis{position:relative;height:16px;grid-column:2;font:500 .6rem var(--f-mono);color:#6f8899;margin-top:6px}
+.mx-axis span{position:absolute;top:0;padding-left:4px;border-left:1px solid #2a3a46;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
+.mx-cells .day{position:absolute;top:-6px;bottom:-6px;width:1px;background:rgb(160 190 210 / .18)}
+.mx-iso{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;font:500 .62rem var(--f-mono);color:#6f8899;text-transform:uppercase;letter-spacing:.06em}
+.mx-iso .tag{display:inline-flex;gap:6px;align-items:center;padding:3px 8px;border-radius:99px;border:1px dashed var(--c);color:#d6e2ea;text-transform:none;letter-spacing:0}
+.mx-iso .tag i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+.mx-legend{display:flex;flex-wrap:wrap;gap:12px;font:500 .62rem var(--f-mono);color:#6f8899;text-transform:uppercase;letter-spacing:.06em;margin-top:8px}
+.mx-legend i{display:inline-block;width:10px;height:10px;border-radius:1px;margin-right:5px;vertical-align:-1px}
+
+/* chips dos modelos */
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:.76rem;padding:2px 8px 2px 6px;border-radius:99px;background:var(--bg);border:1px solid var(--line);white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--lv0);flex:none}
+.chip[data-lv="1"] i{background:var(--lv1)} .chip[data-lv="2"] i{background:var(--lv2)} .chip[data-lv="3"] i{background:var(--lv3)}
+.chip.yes{border-color:var(--ink);font-weight:600}
+.chip.no{opacity:.65}
+.chip .v{font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
+.agree-txt{font-size:.85rem;margin:0}
+
+/* riscos */
+.gauges{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px}
+.gauge{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;border-top:4px solid var(--line);min-width:0}
+.gauge[data-lv="0"]{border-top-color:var(--lv0)} .gauge[data-lv="1"]{border-top-color:var(--lv1)}
+.gauge[data-lv="2"]{border-top-color:var(--lv2)} .gauge[data-lv="3"]{border-top-color:var(--lv3)}
+.gauge .viz{position:relative;background:#070c12}
+.hz{--c:var(--lv0);padding:16px 18px 14px;display:grid;gap:6px;color:#e6eef4;
+  background:radial-gradient(120% 100% at 0% 0%,color-mix(in srgb,var(--c) 16%,transparent),transparent 60%),repeating-linear-gradient(90deg,transparent 0 19px,rgb(120 170 200 / .06) 19px 20px),#070c12}
+.hz.dual{gap:12px}
+.hz-lab{font:600 .64rem var(--f-body);text-transform:uppercase;letter-spacing:.12em;color:#7f97aa}
+.hz-num{font:600 2.6rem/1 var(--f-mono);letter-spacing:-.02em;color:#fff;text-shadow:0 0 18px color-mix(in srgb,var(--c) 70%,transparent)}
+.hz-num small{font-size:.38em;color:#8ea4b6;margin-left:6px;letter-spacing:0;text-shadow:none}
+.hz-num.sm{font-size:1.25rem}
+.hz-mean{font:600 .9rem var(--f-body);color:var(--c);margin-top:-2px}
+.hz-row{display:grid;gap:6px}
+.hz-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.hz-track{position:relative;height:14px;border-radius:7px;background:#121b24;margin-top:8px;overflow:visible}
+.hz-zone{position:absolute;top:0;bottom:0;font:600 .55rem/14px var(--f-body);text-transform:uppercase;letter-spacing:.08em;text-align:center;color:rgb(255 255 255 / .55);white-space:nowrap;overflow:hidden}
+.hz-zone[data-lv="0"]{background:rgb(255 255 255 / .03);border-radius:7px 0 0 7px}
+.hz-zone[data-lv="1"]{background:color-mix(in srgb,var(--lv1) 18%,transparent)}
+.hz-zone[data-lv="2"]{background:color-mix(in srgb,var(--lv2) 20%,transparent)}
+.hz-zone[data-lv="3"]{background:color-mix(in srgb,var(--lv3) 22%,transparent);border-radius:0 7px 7px 0}
+.hz-fill{position:absolute;left:0;top:3px;bottom:3px;border-radius:5px;background:linear-gradient(90deg,var(--lv0),var(--c));box-shadow:0 0 12px var(--c),0 0 2px #fff inset;transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.hz-mark{position:absolute;top:-5px;bottom:-5px;width:3px;margin-left:-1.5px;border-radius:2px;background:#fff;box-shadow:0 0 10px var(--c),0 0 3px #fff}
+.hz-ticks{position:relative;height:14px}
+.hz-dots{position:relative;height:12px;margin:6px 0 -6px}
+.hz-range{position:absolute;top:4px;height:4px;border-radius:2px;background:rgb(200 225 240 / .22)}
+.hz-dot{position:absolute;top:2px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#cfe0ec;box-shadow:0 0 0 1.5px #070c12;opacity:.85}
+.hz-dot.out{background:transparent;box-shadow:inset 0 0 0 2px #ff7ad9,0 0 8px #ff7ad9;opacity:1}
+.hz-out{font:500 .72rem/1.35 var(--f-body);color:#ffb8ea;border-left:2px solid #ff7ad9;padding-left:8px}
+.hz-out b{color:#fff}
+.hz-tick{position:absolute;transform:translateX(-50%);font:600 .66rem var(--f-mono);color:var(--c)}
+.hz-tick::before{content:"";position:absolute;left:50%;top:-6px;width:1px;height:5px;background:currentColor}
+[data-lv="1"].hz-tick,.hz-fill[data-lv="1"],.hz-mark[data-lv="1"],.hz-num[data-lv="1"],.hz-mean[data-lv="1"]{--c:var(--lv1)}
+[data-lv="2"].hz-tick,.hz-fill[data-lv="2"],.hz-mark[data-lv="2"],.hz-num[data-lv="2"],.hz-mean[data-lv="2"]{--c:var(--lv2)}
+[data-lv="3"].hz-tick,.hz-fill[data-lv="3"],.hz-mark[data-lv="3"],.hz-num[data-lv="3"],.hz-mean[data-lv="3"]{--c:var(--lv3)}
+.hz-mean[data-lv="0"]{color:#8fd0b0}
+.hz-verdict{justify-self:start;font:600 .78rem var(--f-body);padding:4px 10px;border-radius:99px;border:1px solid var(--c);color:var(--c);--c:#8fd0b0}
+.hz-verdict[data-lv="3"]{--c:var(--lv3)} .hz-verdict[data-lv="1"]{--c:var(--lv1)}
+@media (prefers-reduced-motion:reduce){.hz-fill{transition:none}}
+.viz .lbl.gtick{font:500 .7rem var(--f-body);color:#9fb3c4;letter-spacing:.01em}
+.viz .lbl.gtick b{font:600 .72rem var(--f-mono);color:var(--c);margin-right:3px}
+.viz .lbl.gcall{display:grid;justify-items:end;line-height:1.05;text-align:right}
+.viz .lbl.gcall b{font:600 1.5rem var(--f-mono);color:#fff;text-shadow:0 0 14px var(--c)}
+.viz .lbl.gcall small{font:500 .66rem var(--f-mono);color:#9fb3c4}
+.viz .lbl.gcall em{font:600 .74rem var(--f-body);font-style:normal;color:var(--c);margin-top:3px;white-space:nowrap}
+.viz .lbl.gcall.sm{justify-items:center;text-align:center}
+.viz .lbl.gcall.sm b{font-size:1.05rem}
+.viz .lbl.gverdict{font:600 .72rem var(--f-body);color:var(--c);background:rgb(0 0 0 / .45);border:1px solid var(--c);padding:3px 8px;border-radius:99px}
+.viz .lbl.gtick.here{color:#fff;font-weight:600;background:rgb(255 255 255 / .08);border:1px solid rgb(255 255 255 / .25);padding:1px 6px;border-radius:4px;backdrop-filter:blur(2px)}
+.viz .lbl.gval{font:600 1.15rem var(--f-mono);color:#fff;text-shadow:0 0 12px rgb(255 255 255 / .35)}
+.viz .lbl.gval small{font-size:.62rem;color:#9fb3c4;margin-left:3px}
+.viz .lbl.gval.sm{font-size:.82rem}
+.viz .lbl.gsub{font:600 .6rem var(--f-body);color:#9fb3c4;text-align:center;line-height:1.25;text-transform:uppercase;letter-spacing:.06em}
+.viz .lbl.gsub b{font:600 .72rem var(--f-mono);color:#fff;text-transform:none;letter-spacing:0}
+.gauge .viz canvas{display:block;width:100%;height:100%}
+.gauge .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:9px;flex:1}
+.gauge .topline{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.gauge h3{font:600 .78rem/1.3 var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.gauge .headline{font-family:var(--f-display);font-size:1.2rem;font-weight:600;line-height:1.25}
+.gauge p{margin:0;font-size:.92rem}
+.equiv{font-size:.88rem;background:var(--bg);border-radius:6px;padding:8px 10px;display:grid;gap:5px}
+.buckets{display:flex;flex-wrap:wrap;gap:3px;align-items:end}
+.bucket{width:13px;height:15px;border:2px solid var(--water);border-top-width:1px;border-radius:0 0 4px 4px;position:relative;overflow:hidden}
+.bucket b{position:absolute;left:0;right:0;bottom:0;background:var(--water)}
+.pill{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;border-radius:99px;padding:3px 9px;white-space:nowrap}
+.pill[data-lv="0"]{background:var(--lv0-bg);color:var(--ink);box-shadow:inset 0 0 0 1px var(--lv0)}
+.pill[data-lv="1"]{background:var(--lv1-bg);color:var(--ink);box-shadow:inset 0 0 0 1px var(--lv1)}
+.pill[data-lv="2"]{background:var(--lv2-bg);color:var(--ink);box-shadow:inset 0 0 0 1px var(--lv2)}
+.pill[data-lv="3"]{background:var(--lv3);color:#fff}
+/* régua de referência */
+.ruler{display:grid;gap:6px}
+.rbar{position:relative;height:12px;border-radius:6px;display:flex}
+.rbar span{height:100%}
+.rbar span:first-child{border-radius:6px 0 0 6px} .rbar span:nth-child(4){border-radius:0 6px 6px 0}
+.rmark{position:absolute;top:-5px;width:3px;height:22px;background:var(--ink);border-radius:2px;transform:translateX(-50%);box-shadow:0 0 0 2px var(--panel)}
+.rmark::after{content:attr(data-v);position:absolute;top:-19px;left:50%;transform:translateX(-50%);font:600 .72rem var(--f-mono);white-space:nowrap;color:var(--ink)}
+.rbar-wrap{padding-top:16px;padding-inline:8px}
+.rlist{list-style:none;margin:0;padding:0;display:grid;gap:1px;font-size:.8rem}
+.rlist li{display:grid;grid-template-columns:3.4rem 1fr;gap:8px;padding:2px 6px;border-radius:4px;color:var(--muted)}
+.rlist li .num{text-align:right}
+.rlist li.here{background:var(--bg);color:var(--ink);font-weight:600;box-shadow:inset 3px 0 var(--ink)}
+.runit{font-size:.72rem;color:var(--muted)}
+
+/* cenas grandes */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:grid;gap:12px;min-width:0}
+.card-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 12px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;flex-wrap:wrap;justify-self:start}
+.seg button{border:0;background:none;padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg);font-weight:600}
+.stage{position:relative;border-radius:8px;overflow:hidden;background:var(--scene);cursor:grab;touch-action:pan-y}
+.stage:active{cursor:grabbing}
+.stage canvas{display:block;width:100%;height:100%}
+.lbl{position:absolute;left:0;top:0;pointer-events:none;white-space:nowrap;font-size:.72rem;color:var(--muted);will-change:transform}
+.lbl.lane{font:600 .78rem var(--f-body);color:var(--ink);text-transform:uppercase;letter-spacing:.08em;background:var(--panel);padding:2px 7px;border-radius:4px;border:1px solid var(--line)}
+.lbl.lane small{font:500 .7rem var(--f-body);text-transform:none;letter-spacing:0;color:var(--muted);margin-left:6px}
+.lbl.day{font:600 .8rem var(--f-body);color:var(--ink);padding:2px 7px;border-radius:4px;background:var(--panel);border:1px solid var(--line)}
+.lbl.hour{font-family:var(--f-mono);font-size:.68rem}
+.lbl.tick{font:600 .68rem var(--f-mono);background:var(--panel);padding:0 4px;border-radius:3px}
+.lbl.now{font:600 .72rem var(--f-body);color:var(--bg);background:var(--accent);padding:2px 6px;border-radius:4px}
+.lbl.val{font:600 .8rem var(--f-mono);color:var(--ink);background:var(--panel);padding:1px 6px;border-radius:4px;border:1px solid var(--line)}
+.lbl.big{font:700 .9rem var(--f-display);color:var(--ink)}
+.lbl.mdl{font:600 .76rem var(--f-body);color:var(--ink);background:var(--panel);padding:2px 7px;border-radius:4px;border:1px solid var(--line)}
+.lbl.dayname{font:600 .78rem var(--f-body);color:var(--ink);background:var(--panel);padding:3px 8px;border-radius:5px;border:2px solid var(--line);display:inline-flex;align-items:center;gap:6px}
+.lbl.dayname small.dv{font:600 .72rem var(--f-mono);color:var(--muted);padding-left:6px;border-left:1px solid var(--line)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;flex:none}
+.dlegend{display:flex;flex-wrap:wrap;gap:6px}
+.dlegend button{display:inline-flex;align-items:center;gap:7px;border:2px solid var(--dc);background:var(--panel);border-radius:99px;padding:4px 12px 4px 9px;cursor:pointer;font-size:.85rem}
+.dlegend button[aria-pressed="false"]{opacity:.45;border-style:dashed}
+.dlegend button .sw{background:var(--dc)}
+.dlegend button .dv{font:600 .74rem var(--f-mono);color:var(--muted);padding-left:7px;border-left:1px solid var(--line)}
+.obs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}
+.ocard{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--bg);display:grid;gap:8px}
+.ocard .big{font:600 1.5rem var(--f-mono)}
+.dumb{position:relative;height:26px;margin-top:4px}
+.dumb .track{position:absolute;left:0;right:0;top:12px;height:3px;background:var(--line);border-radius:2px}
+.dumb .seg2{position:absolute;top:11px;height:5px;background:var(--muted);opacity:.5;border-radius:3px}
+.dumb .pt{position:absolute;top:6px;width:15px;height:15px;border-radius:50%;transform:translateX(-50%);border:2px solid var(--panel)}
+.dumb .pt.m{background:var(--accent)} .dumb .pt.p{background:var(--warm)}
+.obs-legend{display:flex;gap:14px;font-size:.82rem;color:var(--muted);flex-wrap:wrap}
+.obs-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.combo-legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem;color:var(--muted)}
+.combo-legend i{display:inline-block;width:14px;height:8px;border-radius:2px;margin-right:5px;vertical-align:0}
+.combo-legend i.none{border:1px solid var(--line)}
+.story{margin:0;font-size:.92rem;background:var(--bg);border-radius:6px;padding:10px 12px;border-left:4px solid var(--line)}
+.story[data-k="both"]{border-left-color:var(--lv3)} .story[data-k="shear"]{border-left-color:var(--cold)} .story[data-k="cape"]{border-left-color:var(--lv1)}
+.wmap-wrap{position:relative;height:500px;border-radius:8px;overflow:hidden;background:var(--scene)}
+@media (max-width:600px){.wmap-wrap{height:420px}}
+#wmap{position:absolute;inset:0;background:var(--scene)}
+#wcanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:450}
+.wtime{position:absolute;right:10px;top:10px;z-index:500;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;font:600 .85rem var(--f-body)}
+.wscale{position:absolute;left:10px;bottom:22px;z-index:500;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:.72rem;display:grid;gap:3px}
+.wscale .bar{height:8px;width:180px;border-radius:4px}
+.wscale .ticks{display:flex;justify-content:space-between;font-family:var(--f-mono);color:var(--muted)}
+.wctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.wctl input{flex:1 1 220px;accent-color:var(--accent)}
+.pmark{font:800 1.1rem var(--f-display);width:46px;text-align:center;line-height:1.05;text-shadow:0 0 4px #000,0 0 8px #000}
+.pmark small{display:block;font:600 .62rem var(--f-mono)}
+.pmark.low{color:#ff6b6b} .pmark.high{color:#6bb8ff}
+.youmark{width:14px;height:14px;border-radius:50%;background:var(--lv3);border:2px solid #fff;box-shadow:0 0 0 3px rgb(0 0 0 / .35)}
+.leaflet-container{font-family:var(--f-body)}
+.wtiles{filter:saturate(.75) brightness(.95)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wtiles{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.6)}}
+:root[data-theme="dark"] .wtiles{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.6)}
+.myplaces{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.myplaces .label{margin-right:4px}
+.pchip{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:99px;background:var(--panel);overflow:hidden;font-size:.85rem}
+.pchip button{border:0;background:none;padding:4px 10px;cursor:pointer}
+.pchip button.x{padding:4px 9px 4px 4px;color:var(--muted)}
+.pchip button.x:hover{color:var(--lv3)}
+.pchip[aria-current="true"]{border-color:var(--accent)}
+.thstrip{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:2px}
+.thstrip span{height:30px;border-radius:3px;background:var(--bg);display:grid;place-items:center;font-size:.8rem}
+.thstrip span[data-n="1"]{background:var(--lv1-bg)} .thstrip span[data-n="2"]{background:var(--lv2)} .thstrip span[data-n="3"]{background:var(--lv3);color:#fff}
+.thlabels{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));font:.68rem var(--f-mono);color:var(--muted)}
+.thlabels span{white-space:nowrap;overflow:visible}
+.gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:10px;align-items:start}
+.gcard{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px 12px;display:grid;gap:6px;transition:border-color .2s,transform .2s}
+.gcard:hover{border-color:var(--accent)}
+.gcard.open{border-color:var(--accent);background:var(--panel);box-shadow:0 6px 20px rgb(0 0 0 / .18)}
+.ghead{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:0;background:none;padding:0;text-align:left;cursor:pointer}
+.gic{font-size:1.5rem;width:2.2rem;height:2.2rem;display:grid;place-items:center;border-radius:8px;background:var(--panel)}
+.gcard.open .gic{background:var(--bg)}
+.ghead b{display:block;font-family:var(--f-display);font-size:1rem;line-height:1.2}
+.gth{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.gchev{color:var(--accent);font-weight:700;transition:transform .2s}
+.gcard.open .gchev{transform:rotate(45deg)}
+.glead{margin:0;font-size:.9rem}
+.gmore{display:grid;gap:6px;font-size:.88rem}
+[hidden]{display:none!important}
+.gmore p{margin:0}
+.gref{background:var(--bg);border-left:3px solid var(--accent);padding:6px 9px;border-radius:4px;color:var(--ink)}
+.ggo{font-size:.85rem;font-weight:600;text-decoration:none}
+@media (prefers-reduced-motion:reduce){.gcard,.gchev{transition:none}}
+.lgroups{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.lgroup{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg);display:grid;gap:8px;align-content:start}
+.lgroup h3{font-size:.95rem;display:flex;gap:8px;align-items:center}
+.lgroup h3 span{font-size:1.2rem}
+.lgroup > p{margin:0;font-size:.82rem;color:var(--muted)}
+.ltile{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;padding:8px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--line);text-decoration:none;color:var(--ink);transition:border-color .2s}
+.ltile:hover,.ltile:focus-visible{border-color:var(--accent)}
+.ltile b{font-size:.92rem}
+.ltile .dom{font:.68rem var(--f-mono);color:var(--muted);order:3}
+.ltile .ds{font-size:.82rem;color:var(--muted)}
+.ltile .here{font-size:.7rem;color:var(--accent);font-weight:600}
+.lsms{font-size:.85rem;padding:8px 10px;border-radius:8px;border:1px dashed var(--accent);background:var(--panel)}
+/* título: céu de tempestade em 3D (sempre noturno, nos dois temas) */
+.hero{position:relative;height:clamp(190px,26vw,260px);border-radius:12px;overflow:hidden;background:radial-gradient(120% 140% at 70% 0%,#1d2b3a 0%,#0a1018 55%,#04070b 100%);isolation:isolate}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
+.hero-text{position:absolute;left:clamp(16px,4vw,40px);bottom:clamp(16px,3vw,30px);right:16px;z-index:2;pointer-events:none;color:#e9f1f7}
+.logo{margin:0;line-height:.86;display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .28em;text-wrap:initial}
+.logo .l1{font:900 clamp(2.9rem,9.5vw,6.2rem)/.86 "Big Shoulders Display","Bricolage Grotesque",Impact,sans-serif;text-transform:uppercase;letter-spacing:.01em;
+  background:linear-gradient(180deg,#ffffff 0%,#d6e6f2 45%,#7f9db5 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 0 rgb(0 0 0 / .45)) drop-shadow(0 0 0 rgb(170 205 255 / 0));transition:filter .08s}
+.logo .l2{font:italic 400 clamp(1.7rem,4.6vw,3rem)/1 "Instrument Serif",Georgia,serif;color:#f2c14e;letter-spacing:.005em}
+.hero.flash .logo .l1{filter:drop-shadow(0 2px 0 rgb(0 0 0 / .45)) drop-shadow(0 0 22px rgb(190 220 255 / .9))}
+.hero.flash{box-shadow:inset 0 0 120px rgb(180 210 255 / .18)}
+.tag{margin:.7rem 0 0;font-size:clamp(.88rem,1.6vw,1rem);color:#c7d5e0;max-width:46ch;line-height:1.4}
+.tag span{color:#8fa6b8}
+@media (prefers-reduced-motion:reduce){.logo .l1{transition:none}}
+.bkw{display:grid;gap:3px;margin-top:2px}
+.bk-row{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:3px}
+.bk{position:relative;height:20px;border:1.5px solid var(--c);border-top-width:1px;border-radius:2px 2px 5px 5px;overflow:hidden;--c:#3f5b6a;opacity:.9}
+.bk[data-z="1"]{--c:var(--lv1)} .bk[data-z="2"]{--c:var(--lv2)} .bk[data-z="3"]{--c:var(--lv3)}
+.bk b{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,#6cc2ff,var(--water));box-shadow:0 0 8px rgb(80 170 255 / .5)}
+.bk-ax{position:relative;height:12px}
+.bk-m{position:absolute;transform:translateX(-50%);font:600 .6rem var(--f-mono);color:var(--c)}
+.bk-m[data-lv="1"]{--c:var(--lv1)} .bk-m[data-lv="2"]{--c:var(--lv2)} .bk-m[data-lv="3"]{--c:var(--lv3)}
+.bk-cap{font:500 .7rem var(--f-mono);color:var(--muted)} .bk-cap b{color:var(--ink)}
+.tip3d{position:absolute;z-index:3;pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:.82rem;box-shadow:0 6px 18px rgb(0 0 0 / .2);max-width:280px;white-space:normal}
+.hint{position:absolute;right:10px;top:8px;max-width:calc(100% - 20px);text-align:right;font-size:.72rem;color:var(--muted);pointer-events:none;z-index:2}
+.hourly{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px}
+@media (max-width:920px){.hourly{grid-template-columns:minmax(0,1fr)}}
+.hchart{position:relative;height:500px;border-radius:10px;overflow:hidden;cursor:crosshair;touch-action:pan-y;
+  background:repeating-linear-gradient(90deg,transparent 0 19px,rgb(120 170 200 / .05) 19px 20px),#070c12;border:1px solid #16222c}
+.hchart:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hchart canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+@media (max-width:600px){.hchart{height:440px}}
+#hstage{height:500px}
+.htools{display:grid;gap:8px;margin-top:8px}
+.mini{position:relative;height:58px;border-radius:6px;background:var(--bg);border:1px solid var(--line);cursor:pointer;touch-action:none;overflow:hidden}
+.mini-rows{position:absolute;inset:4px 4px 16px;display:grid;grid-template-rows:repeat(3,1fr);gap:2px}
+.mini-row{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:1px}
+.mini-row i{background:var(--lv0);opacity:.35;border-radius:1px}
+.mini-row i[data-lv="1"]{background:var(--lv1);opacity:1} .mini-row i[data-lv="2"]{background:var(--lv2);opacity:1} .mini-row i[data-lv="3"]{background:var(--lv3);opacity:1}
+.mini-win{position:absolute;top:1px;bottom:13px;border:2px solid var(--ink);border-radius:4px;background:rgb(255 255 255 / .08);pointer-events:none;transition:left .15s,width .15s}
+.mini-win::after{content:"";position:absolute;top:-1px;bottom:-1px;width:2px;background:var(--accent);left:var(--sel,50%);transform:translateX(-50%)}
+.mini-days{position:absolute;left:4px;right:4px;bottom:0;height:14px;font-size:.66rem;color:var(--muted)}
+.mini-days span{position:absolute;white-space:nowrap;border-left:1px solid var(--muted);padding-left:3px;line-height:14px}
+.jump{display:flex;flex-wrap:wrap;gap:6px}
+.jump .btn{padding:5px 10px;font-size:.85rem}
+.dpin{min-height:0}
+.dpin:empty{display:none}
+.dpin .pinbox{border:1px solid var(--accent);border-radius:8px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline;background:var(--bg)}
+.dpin .pinbox b{font-family:var(--f-display)}
+details.flat summary{cursor:pointer;color:var(--accent);font-size:.9rem}
+details.flat .chart-box{margin-top:8px}
+@media (max-width:600px){#hstage{height:440px}}
+.hourly .jump{margin-top:8px}
+.hour-detail{display:grid;gap:8px;align-content:start;min-width:0}
+.hour-detail .when{font-family:var(--f-display);font-size:1.2rem;font-weight:600;line-height:1.25}
+.hrow{display:grid;gap:4px;padding:9px 12px;border-radius:6px;background:var(--bg);border-left:4px solid var(--lv0)}
+.hrow[data-lv="1"]{border-left-color:var(--lv1)} .hrow[data-lv="2"]{border-left-color:var(--lv2)} .hrow[data-lv="3"]{border-left-color:var(--lv3)}
+.hrow .k{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.hrow p{margin:0;font-size:.9rem}
+.hrow .eff{color:var(--muted);font-size:.85rem}
+.hrow .chip-key{font-size:.78rem;margin-top:-2px}
+.nav{display:flex;gap:8px}
+.nav .btn{flex:1;padding:6px 8px;font-size:.85rem}
+.fallback{display:grid;gap:3px}
+.frow{display:grid;grid-template-columns:90px minmax(0,1fr);gap:8px;align-items:center}
+.fcells{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px}
+.fcells button{height:26px;border:0;border-radius:2px;background:var(--lv0);opacity:.45;padding:0;cursor:pointer}
+.fcells button[data-lv="1"]{background:var(--lv1);opacity:1} .fcells button[data-lv="2"]{background:var(--lv2);opacity:1} .fcells button[data-lv="3"]{background:var(--lv3);opacity:1}
+.fcells button[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:1px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.82rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+
+/* comparar dias */
+#dstage{height:460px}
+@media (max-width:600px){#dstage{height:360px}}
+.days-nav{display:flex;flex-wrap:wrap;gap:6px}
+.days-nav button{border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:5px 12px;cursor:pointer;font-size:.85rem}
+.days-nav button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.trio{grid-template-columns:minmax(0,1fr)}}
+.dcard{border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:8px;background:var(--bg);min-width:0;align-content:start}
+.dcard.mid{border:2px solid var(--accent);background:var(--panel)}
+.dcard .dname{font-family:var(--f-display);font-weight:600;font-size:1.05rem}
+.drow{display:grid;grid-template-columns:5.8rem 1fr;gap:8px;align-items:baseline;font-size:.9rem}
+.drow .num{font-size:1rem}
+.delta{font-size:.8rem;font-weight:600;margin-left:6px;white-space:nowrap}
+.delta.up{color:var(--warm)} .delta.down{color:var(--cold)} .delta.eq{color:var(--muted)}
+.tchart{display:grid;gap:8px}
+.chart-box{position:relative;height:250px}
+
+/* modelos */
+#mstage{height:380px}
+@media (max-width:600px){#mstage{height:320px}}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:10px}
+.mcard{border:1px solid var(--line);border-radius:8px;padding:12px;display:grid;gap:6px;background:var(--bg);align-content:start;border-top:4px solid var(--mc)}
+.mcard h3{font-size:1.05rem}
+.mcard .org{font-size:.85rem}
+.mcard dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0;font-size:.82rem}
+.mcard dt{color:var(--muted)} .mcard dd{margin:0;font-size:.82rem;min-width:0;overflow-wrap:anywhere}
+.mcard p{margin:0;font-size:.84rem}
+.mcard .bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.mcard .bar b{display:block;height:100%;background:var(--mc)}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:12px}
+table.models{border-collapse:collapse;width:100%;font-size:.9rem}
+.models th,.models td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.models th:first-child,.models td:first-child{text-align:left}
+.models th{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;white-space:normal;vertical-align:bottom}
+.models .tv{display:inline-flex;align-items:center;gap:7px}
+.models .tv::before{content:"";width:8px;height:8px;border-radius:50%;background:transparent}
+.models .tv[data-lv="1"]::before{background:var(--lv1);box-shadow:none} .models .tv[data-lv="2"]::before{background:var(--lv2);box-shadow:none} .models .tv[data-lv="3"]::before{background:var(--lv3);box-shadow:none}
+.models .tv[data-lv="1"]{color:var(--lv1)} .models .tv[data-lv="2"]{color:var(--lv2)} .models .tv[data-lv="3"]{color:var(--lv3);font-weight:700}
+.models .ti.hi::after{content:" ▲";font-size:.7em;color:var(--muted)}
+.models td.lvtxt{font-size:.85rem;white-space:normal;min-width:9em}
+.models td.lvtxt .tv[data-lv="0"]{color:var(--muted)}
+.models td.lvtxt small{display:block;color:var(--muted);font-size:.78rem}
+.models th.ing{color:color-mix(in srgb,var(--muted) 75%,transparent)}
+.tkey{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;color:var(--muted);margin:.6rem 0 0}
+.rule2{margin:.7rem 0 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:.88rem;display:grid;gap:4px}
+.rule2 span{color:var(--muted)}
+.tkey i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.table-wrap{overflow-x:auto}
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px 24px;margin:0}
+.gloss div{min-width:0}
+.gloss dt{font-weight:600;font-family:var(--f-display)}
+.gloss dd{margin:2px 0 0;font-size:.92rem}
+.gloss dd .muted{font-size:.88rem}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.links ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.links li{display:grid;gap:1px}
+.links li a{font-weight:600;text-decoration:none}
+.links li span{font-size:.85rem;color:var(--muted)}
+.err{color:var(--lv3)}
+footer{font-size:.82rem;color:var(--muted);display:grid;gap:6px}
+footer p{margin:0;max-width:80ch}
+.loading .gauges,.loading .card{opacity:.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="hero" id="hero">
+    <div class="hero-text">
+      <h1 class="logo"><span class="l1">Sentinela</span><span class="l2">do Tempo</span></h1>
+      <p class="tag">Vento, chuva, raios, tempestades e ciclones em qualquer ponto do Brasil.<br><span>Cinco modelos de previsão, lado a lado.</span></p>
+    </div>
+  </div>
+  <div class="top">
+    <div class="controls">
+      <label class="label" for="city">Lugar</label>
+      <select id="city"></select>
+      <div class="search">
+        <input id="q" type="search" placeholder="Buscar cidade…" autocomplete="off" aria-label="Buscar cidade">
+        <div id="results" class="results" hidden></div>
+      </div>
+      <button class="btn" id="geo" type="button" title="Usar a localização do aparelho">📍 Onde estou</button>
+      <button class="btn primary" id="refresh" type="button">Atualizar</button>
+    </div>
+  </div>
+  <form class="coords" id="cform" autocomplete="off">
+    <label class="label" for="cin">Coordenadas exatas</label>
+    <input id="cin" placeholder="latitude, longitude (ex.: -15.7939, -47.8828) ou cole um link do Google Maps">
+    <input id="cname" placeholder="Nome (opcional)" aria-label="Nome do lugar">
+    <button class="btn" type="submit">Usar este ponto</button>
+    <span class="msg" id="cmsg">Cole latitude e longitude. O ponto fica salvo só neste navegador, na lista “Meus lugares”.</span>
+  </form>
+  <div class="myplaces" id="myplaces"></div>
+</header>
+
+<section class="band" id="band" data-lv="">
+  <div class="b-row1">
+    <div class="b-place"><i class="b-live" aria-hidden="true"></i><span id="band-place">Carregando…</span></div>
+    <div class="now" id="now"></div>
+  </div>
+  <div class="b-head"><span class="b-lv" id="band-lv">—</span><strong id="band-title">Buscando previsões</strong></div>
+  <div id="band-detail" class="b-detail"></div>
+  <div class="b-facts" id="band-facts"></div>
+  <div class="b-mx" id="band-src"></div>
+</section>
+
+<section class="card" id="raios">
+  <div class="card-head">
+    <h2>⚡ Raios e trovoadas</h2>
+    <button class="btn" type="button" id="notif">🔔 Avisar neste aparelho</button>
+  </div>
+  <div id="thunder"><p class="status">Calculando…</p></div>
+  <p class="status" id="notif-msg"></p>
+  <p class="src" id="tsrc"></p>
+</section>
+
+<section class="gauges" id="gauges" aria-label="Riscos nas próximas 72 horas"></section>
+
+<section class="card" id="hora-a-hora">
+  <div class="card-head">
+    <h2>Hora a hora</h2>
+    <div class="legend">
+      <span><i style="background:var(--lv0)"></i>sem risco</span><span><i style="background:var(--lv1)"></i>atenção</span>
+      <span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span>
+    </div>
+    <div class="seg" role="group" aria-label="Período">
+      <button type="button" id="m24" aria-pressed="false">Próximas 24 horas</button>
+      <button type="button" id="m72" aria-pressed="true">Próximas 72 horas</button>
+    </div>
+  </div>
+  <div class="hourly">
+    <div>
+      <div class="hchart" id="hstage" tabindex="0" role="slider" aria-label="Gráfico hora a hora. Toque ou arraste para escolher a hora; setas do teclado também funcionam." aria-valuemin="0">
+        <canvas id="hcanvas"></canvas>
+        <div class="tip3d" id="htip" hidden></div>
+      </div>
+      <div class="jump">
+        <button class="btn" type="button" data-jump="now">Agora</button>
+        <button class="btn" type="button" data-jump="-1" aria-label="Hora anterior">←</button>
+        <button class="btn" type="button" data-jump="+1" aria-label="Próxima hora">→</button>
+        <button class="btn" type="button" data-jump="worst">Pior hora</button>
+      </div>
+      <p class="status" style="margin-top:10px">Quatro curvas no mesmo eixo de tempo: rajada, chuva acumulada em 24 horas, energia para tempestades e queda de pressão (valor que pelo menos 2 modelos atingem na mesma hora). A curva muda de cor ao cruzar atenção, alerta e severo; limites acima da escala aparecem com ↑ no canto. Toque ou arraste sobre o gráfico para ver os detalhes da hora.</p>
+      <p class="src" id="hsrc" style="margin-top:6px"></p>
+    </div>
+    <aside class="hour-detail" id="hour-detail" aria-live="polite"></aside>
+  </div>
+</section>
+
+<section class="card" id="dias">
+  <div class="card-head">
+    <h2>Comparar dias</h2>
+    <div class="days-nav" id="days-nav" role="group" aria-label="Escolha o dia"></div>
+  </div>
+  <div class="card-head">
+    <div class="seg" role="group" aria-label="O que comparar">
+      <button type="button" data-var="temp" aria-pressed="true">🌡 Temperatura</button>
+      <button type="button" data-var="gust" aria-pressed="false">💨 Rajadas</button>
+      <button type="button" data-var="rain" aria-pressed="false">🌧 Chuva</button>
+    </div>
+    <span class="status">Passe o dedo ou o mouse pelas horas · toque para fixar · arraste para girar</span>
+  </div>
+  <div class="dlegend" id="dlegend" role="group" aria-label="Mostrar ou esconder dias"></div>
+  <div class="stage" id="dstage">
+    <div class="tip3d" id="dtip" hidden></div>
+  </div>
+  <div class="dpin" id="dpin"></div>
+  <div class="trio" id="trio"></div>
+  <details class="flat"><summary>Ver como gráfico plano</summary><div class="chart-box"><canvas id="c-days"></canvas></div></details>
+  <p class="src" id="dsrc"></p>
+</section>
+
+<section class="card" id="modelos">
+  <div class="card-head">
+    <h2>De onde vêm os dados <button class="term" data-term="modelo" aria-label="O que é um modelo?">?</button></h2>
+    <span class="label">tamanho do quadrado que cada modelo enxerga</span>
+  </div>
+  <div class="stage" id="mstage"><span class="hint">Arraste para girar</span></div>
+  <p class="status">Cada modelo divide o planeta em quadrados e calcula um único valor para cada um. O pino vermelho é o seu lugar; o ponto colorido no meio de cada quadrado é o centro que o modelo realmente usou. Tudo que acontece dentro do quadrado, incluindo vales, morros e o litoral, vira uma média: por isso nenhum modelo enxerga uma tempestade isolada, e um endereço exato e o centro da cidade costumam cair no mesmo quadrado.</p>
+  <div class="mgrid" id="mgrid"></div>
+  <h3>O que cada modelo prevê para as próximas 72 horas</h3>
+  <div class="table-wrap"><table class="models" id="models-table"></table></div>
+  <div class="tkey"><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span><span>cor só onde o valor já é risco por si</span><span>▲ ingrediente acima do mínimo para tempestade: só vira risco quando energia e vento em altura aparecem juntos (coluna Tempestade)</span></div>
+  <div class="rule2"><b>Como o painel lê os 5 modelos, em toda a página:</b> <span><b>riscos</b> (vento, chuva, tempestade, queda de pressão) = o maior valor que <b>pelo menos 2 modelos</b> atingem na mesma hora; um modelo sozinho não muda o número.</span> <span><b>condições gerais</b> (temperatura, pressão, Comparar dias) = <b>mediana</b> dos modelos, tirando o que destoar muito dos outros.</span></div>
+  <p class="status" id="ens-status"></p>
+</section>
+
+<section class="charts">
+  <div class="card"><div class="card-head"><h2>Rajadas de vento <button class="term" data-term="rajada" aria-label="O que é rajada?">?</button></h2><span class="label">km/h · cada linha é um modelo</span></div><div class="chart-box"><canvas id="c-gust"></canvas></div><p class="src" data-src></p></div>
+  <div class="card"><div class="card-head"><h2>Chuva <button class="term" data-term="acumulado" aria-label="O que é acumulado?">?</button></h2><span class="label">milímetros por hora e acumulado</span></div><div class="chart-box"><canvas id="c-rain"></canvas></div><p class="src" data-src></p></div>
+  <div class="card"><div class="card-head"><h2>Pressão do ar <button class="term" data-term="pressao" aria-label="O que é pressão?">?</button></h2><span class="label">hPa · queda rápida indica ciclone</span></div><div class="chart-box"><canvas id="c-pres"></canvas></div><p class="src" data-src></p></div>
+  <div class="card"><div class="card-head"><h2>Ingredientes de tempestade <button class="term" data-term="cape" aria-label="O que é CAPE?">?</button></h2><span class="label">energia (CAPE) e cisalhamento</span></div>
+    <div class="combo-legend"><span><i style="background:var(--lv3)"></i>os dois juntos: tempestade severa possível</span><span><i style="background:var(--cold)"></i>só cisalhamento: falta energia</span><span><i style="background:var(--lv1)"></i>só energia: pancadas curtas</span><span><i class="none"></i>nenhum</span></div>
+    <div class="chart-box"><canvas id="c-storm"></canvas></div><p class="story" id="storm-story"></p><p class="src" data-src></p></div>
+</section>
+
+<section class="card" id="termos">
+  <div class="card-head">
+    <h2>Entenda os termos</h2>
+    <div class="seg" role="group" aria-label="Filtrar termos" id="gfilter"></div>
+  </div>
+  <div class="gcards" id="gloss"></div>
+</section>
+
+<section class="card">
+  <h2>Outras fontes que valem a pena</h2>
+  <p class="status">Os links marcados abrem direto no lugar escolhido aqui no painel.</p>
+  <div class="links" id="links"></div>
+</section>
+
+<footer>
+  <p><strong>Isto não substitui a Defesa Civil.</strong> Para receber alertas oficiais por SMS, envie seu CEP para <span class="mono">40199</span>. Em emergência ligue <span class="mono">199</span> (Defesa Civil) ou <span class="mono">193</span> (Bombeiros).</p>
+  <p>Como os dados chegam: o navegador consulta direto a API pública do <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (código aberto, dados CC BY 4.0), uma vez para cada modelo. Os modelos rodam a cada 6 ou 12 horas; entre uma rodada e outra a previsão não muda. Os valores de “agora” e de dias passados são simulações dos modelos, não medições de estação.</p>
+  <p class="status" id="updated"></p>
+</footer>
+</div>
+<div id="pop" role="dialog" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+<script type="module">
+/* three.js + pós-processamento. Se a internet falhar, o painel funciona sem 3D. */
+let THREE = null, FX = null;
+try {
+  THREE = await import("three");
+  const [ec, rp, bp, op, re] = await Promise.all([
+    import("three/addons/postprocessing/EffectComposer.js"), import("three/addons/postprocessing/RenderPass.js"),
+    import("three/addons/postprocessing/UnrealBloomPass.js"), import("three/addons/postprocessing/OutputPass.js"),
+    import("three/addons/environments/RoomEnvironment.js") ]);
+  FX = { EffectComposer:ec.EffectComposer, RenderPass:rp.RenderPass, UnrealBloomPass:bp.UnrealBloomPass, OutputPass:op.OutputPass, RoomEnvironment:re.RoomEnvironment };
+} catch (e) { console.warn("3D indisponível:", e); }
+/* ====================== CONFIGURAÇÃO ====================== */
+const CFG = {
+  horizon: 72, refreshMin: 30,
+  // limites [atenção, alerta, severo]
+  thr: { gust:[60,80,100], rain1:[20,30,50], rain24:[50,80,120], pfall:[8,12,18], cape:[1000,1500,2500], shear:[15,20,25] },
+  ensProb: { gust:80, rain24:50 },
+};
+// Fontes: cada modelo é buscado separadamente; se um identificador falhar, tenta o próximo.
+const MODELS = [
+  { key:"ecmwf", name:"ECMWF", ids:["ecmwf_ifs","ecmwf_ifs025"], meta:["ecmwf_ifs","ecmwf_ifs025"], color:"#2f9e7d",
+    full:"IFS HRES", org:"Centro Europeu de Previsões Meteorológicas a Médio Prazo", where:"Europa (sede em Reading, Reino Unido)",
+    res:9, resTxt:"9 km", every:6, days:15, url:"https://www.ecmwf.int/",
+    note:"Referência mundial para previsões de 3 a 10 dias, como a trajetória de frentes frias e ciclones. A versão de 9 km passou a ser aberta em 2025." },
+  { key:"gfs", name:"GFS", ids:["gfs_seamless","ncep_gfs_seamless"], meta:["ncep_gfs013","ncep_gfs025"], color:"#4c7fd1",
+    full:"Global Forecast System", org:"NOAA / NCEP, serviço meteorológico dos Estados Unidos", where:"Estados Unidos",
+    res:13, resTxt:"13 km (25 km nas camadas altas)", every:6, days:16, url:"https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast",
+    note:"Gratuito há décadas e o mais usado em sites e aplicativos. Tende a mostrar mais energia para tempestades (CAPE) que os outros." },
+  { key:"icon", name:"ICON", ids:["icon_seamless","dwd_icon_seamless"], meta:["dwd_icon"], color:"#b25bc4",
+    full:"ICON Global", org:"DWD, Serviço Meteorológico Alemão", where:"Alemanha",
+    res:11, resTxt:"11 km", every:6, days:7.5, url:"https://www.dwd.de/",
+    note:"Usa uma grade de triângulos que cobre o planeta de forma uniforme. A previsão vai até 7 dias e meio." },
+  { key:"gem", name:"GEM", ids:["gem_seamless","cmc_gem_seamless"], meta:["cmc_gem_gdps"], color:"#c98a2b",
+    full:"GEM Global", org:"Environment and Climate Change Canada", where:"Canadá",
+    res:15, resTxt:"15 km", every:12, days:10, url:"https://weather.gc.ca/",
+    note:"Roda só 2 vezes por dia e entrega dados a cada 3 horas, que são interpolados para hora a hora. Serve como segunda opinião." },
+  { key:"ukmo", name:"UKMO", ids:["ukmo_seamless"], meta:["ukmo_global_deterministic_10km"], color:"#3aa6a6",
+    full:"Unified Model Global", org:"Met Office, serviço meteorológico do Reino Unido", where:"Reino Unido",
+    res:10, resTxt:"10 km", every:6, days:7, url:"https://www.metoffice.gov.uk/",
+    note:"Dados hora a hora até 54 horas, depois a cada 3 horas. Algumas variáveis de tempestade, como CAPE, podem faltar." },
+];
+const DEFAULT_PLACE = { name:"Brasília", lat:-15.7939, lon:-47.8828, admin:"DF" };   // só até você escolher o seu lugar
+const CITIES = [   // capitais, de norte a sul
+  ["Rio Branco","AC",-9.9747,-67.8243],["Manaus","AM",-3.119,-60.0217],["Boa Vista","RR",2.8235,-60.6758],["Porto Velho","RO",-8.7612,-63.9004],
+  ["Macapá","AP",0.0349,-51.0694],["Belém","PA",-1.4558,-48.4902],["Palmas","TO",-10.1844,-48.3336],
+  ["São Luís","MA",-2.5307,-44.3068],["Teresina","PI",-5.0892,-42.8019],["Fortaleza","CE",-3.7319,-38.5267],["Natal","RN",-5.7945,-35.211],
+  ["João Pessoa","PB",-7.1195,-34.845],["Recife","PE",-8.0476,-34.877],["Maceió","AL",-9.6658,-35.735],["Aracaju","SE",-10.9472,-37.0731],["Salvador","BA",-12.9777,-38.5016],
+  ["Brasília","DF",-15.7939,-47.8828],["Goiânia","GO",-16.6869,-49.2648],["Cuiabá","MT",-15.601,-56.0974],["Campo Grande","MS",-20.4697,-54.6201],
+  ["Belo Horizonte","MG",-19.9167,-43.9345],["Vitória","ES",-20.3155,-40.3128],["Rio de Janeiro","RJ",-22.9068,-43.1729],["São Paulo","SP",-23.5505,-46.6333],
+  ["Curitiba","PR",-25.4284,-49.2733],["Florianópolis","SC",-27.5949,-48.5482],["Porto Alegre","RS",-30.0346,-51.2177],
+].map(([name,admin,lat,lon]) => ({name, lat, lon, admin}));
+
+const LEVEL_NAMES = ["Sem risco","Atenção","Alerta","Severo"];
+const TZ = "America/Sao_Paulo";
+const HOURLY = ["precipitation","wind_speed_10m","wind_direction_10m","wind_gusts_10m","pressure_msl",
+  "cape","wind_speed_500hPa","wind_direction_500hPa","temperature_2m","weather_code"];
+const THUNDER = [95, 96, 99];   // códigos de trovoada (com ou sem granizo)
+
+/* ====================== referências visuais ====================== */
+const EFFECT = {
+  gust:  ["Vento sem estragos esperados.","Galhos quebrados e objetos soltos voando.","Destelhamentos, queda de árvores e falta de luz.","Danos fortes em telhados, árvores e rede elétrica. Fique em local seguro."],
+  rain:  ["Chuva sem impacto relevante.","Alagamentos em pontos baixos e ruas com bueiros entupidos.","Alagamentos e risco de deslizamentos em encostas.","Deslizamentos e enchentes. Evite encostas, estradas de serra e beiras de rio."],
+  storm: ["Sem ambiente para tempestades severas.","Tempestades fortes possíveis, com raios e rajadas.","Se uma tempestade se formar, pode virar supercélula: granizo, ventania e tornado são possíveis.","Ambiente muito favorável a supercélulas e tornados. Acompanhe o radar e os avisos."],
+  cyclone:["Pressão estável.","Sistema de baixa pressão se aproximando.","Ciclone se aprofundando perto da região.","Ciclone forte passando perto: vento intenso por várias horas."],
+};
+const REF = {
+  gust: { unit:"rajada em km/h", max:130, rows:[[0,"calmo"],[20,"folhas se mexem"],[40,"galhos balançam"],[60,"galhos quebram"],[80,"telhas voam"],[100,"árvores caem"],[119,"força de furacão"]] },
+  rain: { unit:"milímetros em 24 horas", max:160, rows:[[0,"sem chuva"],[5,"chuva fraca"],[20,"chuva moderada"],[50,"alagamentos"],[80,"deslizamentos"],[120,"enchentes"]] },
+  storm:{ unit:"energia em J/kg", max:3500, rows:[[0,"estável"],[500,"pancadas"],[1000,"tempestades fortes"],[1500,"granizo"],[2500,"muito fortes"]] },
+  cyclone:{ unit:"hPa de queda em 24 horas", max:24, rows:[[0,"estável"],[4,"frente fria"],[8,"baixa se aprofunda"],[12,"ciclone se intensifica"],[18,"ciclone forte"]] },
+};
+const carCompare = v => v < 25 ? "como o vento de andar de bicicleta" : v < 45 ? "como pôr a mão para fora de um carro numa rua de bairro" : v < 70 ? "como pôr a mão para fora de um carro numa avenida" : v < 115 ? "como pôr a mão para fora de um carro na rodovia" : "mais rápido que um carro na rodovia";
+
+/* ====================== glossário ====================== */
+const GLOSS = {
+  rajada: ["Rajada","Pico de vento que dura poucos segundos e é bem mais forte que o vento médio. É a rajada que destelha casas e derruba árvores.","Referência: 60 km/h quebra galhos · 80 km/h destelha · 100 km/h derruba árvores grandes."],
+  acumulado: ["Chuva acumulada em 24 horas","Soma de toda a chuva que cai em 24 horas seguidas, contadas a partir de qualquer hora. 1 milímetro de chuva é 1 litro de água em cada metro quadrado.","Em encostas, solo encharcado mais chuva forte é a receita de deslizamento. 50 mm já pede atenção; acima de 100 mm o risco é alto."],
+  cape: ["CAPE (energia para tempestades)","Mede quanto “combustível” a atmosfera tem para levantar o ar quente e formar nuvens de tempestade. A unidade é J/kg.","Abaixo de 1.000: pouca energia · 1.000 a 2.500: moderada · acima de 2.500: muita. Sozinho não basta: precisa do cisalhamento junto."],
+  shear: ["Cisalhamento do vento","Diferença de velocidade e direção do vento entre o chão e cerca de 5 quilômetros de altura (em inglês, shear).","Com pouco cisalhamento, a tempestade nasce e morre rápido. Acima de 20 m/s (cerca de 72 km/h) ela pode girar e durar horas, virando uma supercélula."],
+  supercelula: ["Supercélula","Tempestade que gira por dentro e dura horas. É responsável pela maior parte do granizo grande, das ventanias mais fortes e dos tornados.","Ela precisa de energia (CAPE) e cisalhamento ao mesmo tempo, mais algo que dispare a nuvem, como uma frente fria."],
+  pressao: ["Pressão do ar (hPa)","Peso do ar acima de nós, ajustado ao nível do mar para comparar lugares em altitudes diferentes. O normal fica perto de 1.013 hPa.","Quando a pressão cai rápido, um sistema de baixa pressão (frente fria ou ciclone) está chegando ou se fortalecendo."],
+  ciclone: ["Ciclone extratropical","Centro de baixa pressão comum no Sul do Brasil. No Hemisfério Sul os ventos giram no sentido horário em volta dele. Traz ventania e chuva numa área grande.","No centro do ciclone, uma queda de cerca de 13 hPa em 24 horas nesta latitude já caracteriza um “ciclone bomba”."],
+  modelo: ["Modelo de previsão","Programa de computador que simula a atmosfera para prever o tempo. Cada centro meteorológico tem o seu.","ECMWF (Europa) · GFS (Estados Unidos) · ICON (Alemanha) · GEM (Canadá) · UKMO (Reino Unido). Quando eles concordam, a previsão é mais confiável."],
+  consenso: ["Consenso entre modelos","O painel só mostra um nível de risco quando pelo menos 2 dos 5 modelos chegam nele. Isso evita alarme por causa de um único modelo exagerado.","Os nomes com ✓ são os modelos que concordam. O “pior caso” mostra o modelo mais pessimista."],
+  ensemble: ["Cenários (ensemble)","O mesmo modelo (GFS) rodado 31 vezes com pequenas variações no ponto de partida. A porcentagem diz em quantos desses cenários o evento acontece.","35% quer dizer que em cerca de 1 a cada 3 cenários o evento ocorre: vale ficar de olho."],
+  rodada: ["Rodada do modelo","Cada vez que o supercomputador calcula uma nova previsão. A hora da rodada é o momento dos dados de partida.","Entre uma rodada e a próxima, atualizar a página traz os mesmos números."],
+  niveis: ["Níveis de risco","Atenção: pode causar transtornos, fique informado. Alerta: danos prováveis, prepare-se. Severo: perigo para a vida e o patrimônio, siga a Defesa Civil.","Os limites de cada nível estão no início do código da página e podem ser ajustados."],
+};
+
+/* ====================== utilidades ====================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const store = { get(k){ try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+                set(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
+const nf = (v, d = 0) => v == null || !isFinite(v) ? "—" : v.toLocaleString("pt-BR", { minimumFractionDigits:d, maximumFractionDigits:d });
+function median(a){ const b = a.filter(x => x != null && isFinite(x)).sort((x,y)=>x-y); if(!b.length) return null;
+  const m = b.length >> 1; return b.length % 2 ? b[m] : (b[m-1]+b[m])/2; }
+function kth(a, k){ const b = a.filter(x => x != null && isFinite(x)).sort((x,y)=>y-x); if (!b.length) return null; return b[Math.min(k, b.length) - 1]; }
+const cons = a => kth(a, 2);
+// valor típico robusto: se um modelo se afasta muito dos outros, ele sai da conta e fica marcado.
+// "muito" = mais que o dobro da distância entre os outros modelos e acima de um mínimo da grandeza (FLOOR).
+const FLOOR = { gust:15, wind:10, rain24:10, rain1:5, mm:3, cape:500, shear:5, pfall:3, pres:4, temp:3 };
+function robust(a, floor = 0){
+  const pts = a.map((v, i) => ({ v, i })).filter(p => p.v != null && isFinite(p.v));
+  if (!pts.length) return { v:null, lo:null, hi:null, out:[], n:0 };
+  let keep = pts, out = [];
+  if (pts.length >= 4){
+    let best = null;
+    for (const p of pts){ const o = pts.filter(q => q !== p).map(q => q.v), mo = median(o), rg = Math.max(...o) - Math.min(...o), d = Math.abs(p.v - mo);
+      if (d > Math.max(floor, 2 * rg) && (!best || d > best.d)) best = { p, d, mo }; }
+    if (best){ out = [{ i:best.p.i, v:best.p.v, dir:best.p.v > best.mo ? 1 : -1, ref:best.mo }]; keep = pts.filter(q => q !== best.p); }
+  }
+  const vs = keep.map(p => p.v);
+  return { v:median(vs), lo:Math.min(...vs), hi:Math.max(...vs), out, n:pts.length };
+}
+const mid = (a, f) => robust(a, f).v;
+function score(v, t){ if (v == null || !isFinite(v)) return 0;
+  if (v < t[0]) return Math.max(0, v / t[0]); if (v < t[1]) return 1 + (v-t[0])/(t[1]-t[0]);
+  if (v < t[2]) return 2 + (v-t[1])/(t[2]-t[1]); return 3 + (v-t[2])/(t[2]-t[1]); }
+const lvOfScore = s => Math.max(0, Math.min(3, Math.floor(s)));
+const lvOf = (v, t) => lvOfScore(score(v, t));
+const stormScore = (cape, shear) => cape == null || shear == null ? 0 : Math.min(score(cape, CFG.thr.cape), score(shear, CFG.thr.shear));
+const joinPt = a => a.length <= 1 ? (a[0] || "") : a.slice(0,-1).join(", ") + " e " + a[a.length-1];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+function nowKey(){ return new Date().toLocaleString("sv-SE",{timeZone:TZ}).slice(0,13).replace(" ","T"); }
+const tDate = t => new Date(t.length === 10 ? t + "T12:00:00-03:00" : t + ":00-03:00");
+const dayKey = d => d.toLocaleDateString("sv-SE",{timeZone:TZ});
+const weekday = t => tDate(t).toLocaleDateString("pt-BR",{timeZone:TZ, weekday:"long"});
+const dayLong = t => tDate(t).toLocaleDateString("pt-BR",{timeZone:TZ, weekday:"long", day:"numeric", month:"long"});
+const hourOf = t => t.slice(11,16);
+function rel(t){ const today = dayKey(new Date()), y = dayKey(new Date(Date.now()-864e5)), tom = dayKey(new Date(Date.now()+864e5)), d = t.slice(0,10);
+  return d === today ? "hoje" : d === tom ? "amanhã" : d === y ? "ontem" : null; }
+function whenLong(t){ if (!t) return "—"; const r = rel(t); return r ? `${r} (${weekday(t)}) às ${hourOf(t)}` : `${dayLong(t)}, às ${hourOf(t)}`; }
+const cap1 = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+function whenTitle(t){ const r = rel(t); return cap1(r ? `${r}, ${dayLong(t)}` : dayLong(t)) + `, às ${hourOf(t)}`; }
+function dayTitle(d){ const r = rel(d + "T12:00"); return cap1(r ? `${r}, ${dayLong(d)}` : dayLong(d)); }
+function runTxt(unix){ if (!unix) return null; const k = new Date(unix * 1000).toLocaleString("sv-SE",{timeZone:TZ}).slice(0,16).replace(" ","T"); return whenLong(k); }
+
+function shearMs(s10, d10, s500, d500){
+  if ([s10,d10,s500,d500].some(v => v == null)) return null;
+  const r = Math.PI/180;
+  const u1 = -s10*Math.sin(d10*r), v1 = -s10*Math.cos(d10*r), u2 = -s500*Math.sin(d500*r), v2 = -s500*Math.cos(d500*r);
+  return Math.hypot(u2-u1, v2-v1) / 3.6;
+}
+function distKm(a, b){ const r = Math.PI/180, dLat = (b.lat - a.lat) * r, dLon = (b.lon - a.lon) * r;
+  const q = Math.sin(dLat/2)**2 + Math.cos(a.lat*r) * Math.cos(b.lat*r) * Math.sin(dLon/2)**2; return 6371 * 2 * Math.asin(Math.sqrt(q)); }
+function fillGaps(arr, max = 6){ const a = arr.slice(); let last = -1;
+  for (let i = 0; i < a.length; i++){ if (a[i] == null) continue;
+    if (last >= 0 && i - last > 1 && i - last <= max) for (let k = last + 1; k < i; k++) a[k] = a[last] + (a[i] - a[last]) * (k - last) / (i - last);
+    last = i; } return a; }
+function rolling(arr, i, w){ let s = 0, n = 0; for (let k = Math.max(0,i-w+1); k <= i; k++) if (arr[k] != null){ s += arr[k]; n++; } return n ? s : null; }
+const capeWord = c => c == null ? "—" : c < 1000 ? "pouca" : c < 2500 ? "moderada" : "muita";
+const shearWord = s => s == null ? "—" : s < 15 ? "fraco" : s < 20 ? "moderado" : "forte";
+function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+/* ====================== busca de dados ====================== */
+async function fetchModel(p, m){
+  for (const id of m.ids){
+    const u = new URL("https://api.open-meteo.com/v1/forecast");
+    u.search = new URLSearchParams({ latitude:p.lat, longitude:p.lon, hourly:HOURLY.join(","), models:id,
+      timezone:TZ, past_days:2, forecast_days:7, wind_speed_unit:"kmh" });
+    try { const r = await fetch(u); if (r.ok){ const j = await r.json(); if (j.hourly) return { ...j, usedId:id }; } } catch {}
+  }
+  return null;
+}
+async function fetchMeta(m){
+  for (const p of m.meta){
+    try { const r = await fetch(`https://api.open-meteo.com/data/${p}/static/meta.json`); if (r.ok){ const j = await r.json(); if (j.last_run_initialisation_time) return j; } } catch {}
+  }
+  return null;
+}
+async function fetchEnsemble(p){
+  const u = new URL("https://ensemble-api.open-meteo.com/v1/ensemble");
+  u.search = new URLSearchParams({ latitude:p.lat, longitude:p.lon, hourly:"wind_gusts_10m,precipitation", models:"gfs025", timezone:TZ, past_days:2, forecast_days:4 });
+  const r = await fetch(u); if (!r.ok) throw new Error("ensemble " + r.status); return r.json();
+}
+
+/* ====================== análise ====================== */
+function analyze(results){
+  const base = results.find(r => r.json)?.json; if (!base) throw new Error("nenhum modelo respondeu");
+  const times = base.hourly.time; const pos = new Map(times.map((t,i) => [t,i]));
+  const nk = nowKey();
+  let i0 = times.findIndex(t => t.slice(0,13) >= nk); if (i0 < 0) i0 = 0;
+  const i1 = Math.min(times.length, i0 + CFG.horizon);
+  const idx = []; for (let i = i0; i < i1; i++) idx.push(i);
+
+  const models = results.map(({ m, json, meta }) => {
+    if (!json) return { ...m, ok:false, meta };
+    const s = {};
+    for (const v of HOURLY){ const src = json.hourly[v]; const arr = new Array(times.length).fill(null);
+      if (src) json.hourly.time.forEach((t,k) => { const i = pos.get(t); if (i != null) arr[i] = src[k]; }); s[v] = arr; }
+    if (!s.precipitation.some(x => x != null) && !s.wind_gusts_10m.some(x => x != null)) return { ...m, ok:false, meta };
+    s.cape = fillGaps(s.cape);
+    const shear = fillGaps(times.map((_,i) => shearMs(s.wind_speed_10m[i], s.wind_direction_10m[i], s.wind_speed_500hPa[i], s.wind_direction_500hPa[i])));
+    const r24 = times.map((_,i) => rolling(s.precipitation, i, 24));
+    const pfall = times.map((_,i) => i >= 24 && s.pressure_msl[i-24] != null && s.pressure_msl[i] != null ? s.pressure_msl[i-24] - s.pressure_msl[i] : null);
+    const maxOf = arr => { let v = null, t = null; for (const i of idx) if (arr[i] != null && (v == null || arr[i] > v)) { v = arr[i]; t = times[i]; } return {v, t}; };
+    const minOf = arr => { let v = null, t = null; for (const i of idx) if (arr[i] != null && (v == null || arr[i] < v)) { v = arr[i]; t = times[i]; } return {v, t}; };
+    const sc = { gust: idx.map(i => score(s.wind_gusts_10m[i], CFG.thr.gust)),
+      rain: idx.map(i => Math.max(score(s.precipitation[i], CFG.thr.rain1), score(r24[i], CFG.thr.rain24))),
+      storm: idx.map(i => stormScore(s.cape[i], shear[i])),
+      cyclone: idx.map(i => score(pfall[i], CFG.thr.pfall)) };
+    let sb = { s:-1, cape:null, shear:null, t:null };
+    idx.forEach((i,j) => { if (sc.storm[j] > sb.s) sb = { s:sc.storm[j], cape:s.cape[i], shear:shear[i], t:times[i] }; });
+    const gust = maxOf(s.wind_gusts_10m), rain1 = maxOf(s.precipitation), rain24 = maxOf(r24);
+    const pf = maxOf(pfall), pmin = minOf(s.pressure_msl), cape = maxOf(s.cape);
+    const daily = {};
+    times.forEach((t,i) => { const d = t.slice(0,10); const o = daily[d] ||= { temps:[], gusts:[], rain:0, rainH:0, n:0 };
+      if (s.temperature_2m[i] != null) o.temps.push(s.temperature_2m[i]); if (s.wind_gusts_10m[i] != null) o.gusts.push(s.wind_gusts_10m[i]);
+      if (s.precipitation[i] != null){ o.rain += s.precipitation[i]; o.n++; if (s.precipitation[i] >= 0.2) o.rainH++; } });
+    for (const d in daily){ const o = daily[d]; o.tmin = o.temps.length ? Math.min(...o.temps) : null; o.tmax = o.temps.length ? Math.max(...o.temps) : null;
+      o.gmax = o.gusts.length ? Math.max(...o.gusts) : null; if (!o.n) o.rain = null; }
+    const grid = { lat:json.latitude, lon:json.longitude, elev:json.elevation, km: distKm(place, { lat:json.latitude, lon:json.longitude }) };
+    return { ...m, ok:true, usedId:json.usedId, meta, grid, s, shear, r24, pfall, sc, gust, rain1, rain24, pf, pmin, cape, stormBest:sb, daily,
+      lv: { gust: lvOf(gust.v, CFG.thr.gust), rain: Math.max(lvOf(rain1.v, CFG.thr.rain1), lvOf(rain24.v, CFG.thr.rain24)),
+            storm: lvOfScore(Math.max(0, sb.s)), cyclone: lvOf(pf.v, CFG.thr.pfall) } };
+  });
+  const ok = models.filter(m => m.ok);
+
+
+  const stormPair = (i, j) => { const rk = ok.map(m => ({ s:m.sc.storm[j], cape:m.s.cape[i], shear:m.shear[i] })).filter(x => x.cape != null || x.shear != null).sort((a, b) => b.s - a.s || (b.cape ?? 0) - (a.cape ?? 0));
+    return rk[Math.min(1, rk.length - 1)] || {}; };
+  const timeline = idx.map((i, j) => { const sp2 = stormPair(i, j);
+    const s = { gust: cons(ok.map(m => m.sc.gust[j])) ?? 0, rain: cons(ok.map(m => m.sc.rain[j])) ?? 0, storm: cons(ok.map(m => m.sc.storm[j])) ?? 0, cyclone: cons(ok.map(m => m.sc.cyclone[j])) ?? 0 };
+    const lv = { gust: lvOfScore(s.gust), rain: lvOfScore(s.rain), storm: lvOfScore(s.storm), cyclone: lvOfScore(s.cyclone) };
+    const per = ok.map(m => ({ name:m.name, gust:m.s.wind_gusts_10m[i], rain1:m.s.precipitation[i], r24:m.r24[i], cape:m.s.cape[i], shear:m.shear[i],
+      lv:{ gust:lvOfScore(m.sc.gust[j]), rain:lvOfScore(m.sc.rain[j]), storm:lvOfScore(m.sc.storm[j]), cyclone:lvOfScore(m.sc.cyclone[j]) }, pfall:m.pfall[i] }));
+    return { t: times[i], i, j, s, lv, per, l: Math.max(lv.gust, lv.rain, lv.storm),
+      v: { gust: cons(ok.map(m => m.s.wind_gusts_10m[i])), rain1: cons(ok.map(m => m.s.precipitation[i])), rain24: cons(ok.map(m => m.r24[i])),
+           cape: sp2.cape ?? null, shear: sp2.shear ?? null, pres: mid(ok.map(m => m.s.pressure_msl[i]), FLOOR.pres),
+           pfall: cons(ok.map(m => m.pfall[i])), temp: mid(ok.map(m => m.s.temperature_2m[i]), FLOOR.temp) } };
+  });
+  const days = [...new Set(times.map(t => t.slice(0,10)))].filter(d => ok.some(m => m.daily[d]?.n >= 20));
+  const dayStats = Object.fromEntries(days.map(d => [d, {
+    tmin: mid(ok.map(m => m.daily[d]?.tmin), FLOOR.temp), tmax: mid(ok.map(m => m.daily[d]?.tmax), FLOOR.temp),
+    gmax: mid(ok.map(m => m.daily[d]?.gmax), FLOOR.gust), rain: mid(ok.map(m => m.daily[d]?.rain), FLOOR.rain24), rainH: mid(ok.map(m => m.daily[d]?.rainH), 4) }]));
+  // pico do consenso: o maior valor que pelo menos 2 modelos atingem na mesma hora (é o que decide o nível)
+  const peakOf = k => { let v = null, t = null; for (const h of timeline) if (h.v[k] != null && (v == null || h.v[k] > v)) { v = h.v[k]; t = h.t; } return { v, t }; };
+  const peak = { gust:peakOf("gust"), rain24:peakOf("rain24"), rain1:peakOf("rain1"), pfall:peakOf("pfall") };
+  // tempestade: hora de pior consenso; mostra energia e vento em altura do 2º modelo mais forte nessa hora (o que sustenta o consenso)
+  { let jb = 0; timeline.forEach((h, j) => { const b = timeline[jb]; if (h.s.storm > b.s.storm || (h.s.storm === b.s.storm && (h.v.cape ?? 0) > (b.v.cape ?? 0))) jb = j; });
+    const h = timeline[jb]; peak.storm = { t:h.t, cape:h.v.cape, shear:h.v.shear }; }
+  // espalhamento entre modelos (pico de cada um) e quem destoa
+  const spread = { gust:robust(ok.map(m => m.gust.v), FLOOR.gust), rain24:robust(ok.map(m => m.rain24.v), FLOOR.rain24),
+    cape:robust(ok.map(m => m.stormBest.cape), FLOOR.cape), shear:robust(ok.map(m => m.stormBest.shear), FLOOR.shear),
+    pfall:robust(ok.map(m => m.pf.v), FLOOR.pfall), pmin:robust(ok.map(m => m.pmin.v), FLOOR.pres) };
+  // trovoada: quantos modelos preveem em cada uma das próximas 24 horas
+  const thunder = idx.slice(0, 24).map(i => ({ t:times[i], n: ok.filter(m => THUNDER.includes(m.s.weather_code?.[i])).length, who: ok.filter(m => THUNDER.includes(m.s.weather_code?.[i])).map(m => m.name) }));
+  const cur = { temp: mid(ok.map(m => m.s.temperature_2m[i0]), FLOOR.temp), gust: mid(ok.map(m => m.s.wind_gusts_10m[i0]), FLOOR.gust),
+    wind: mid(ok.map(m => m.s.wind_speed_10m[i0]), FLOOR.wind), pres: mid(ok.map(m => m.s.pressure_msl[i0]), FLOOR.pres) };
+  return { times, idx, i0, models, ok, timeline, cur, days, dayStats, thunder, peak, spread,
+    // nível de cada risco = pior hora em que pelo menos 2 modelos concordam (na mesma hora)
+    levels: Object.fromEntries(["gust","rain","storm","cyclone"].map(k => [k, Math.max(0, ...timeline.map(h => h.lv[k]))])) };
+}
+function analyzeEnsemble(ens, A){
+  const h = ens.hourly; if (!h) return null; const times = h.time;
+  const start = times.indexOf(A.times[A.i0]); if (start < 0) return null;
+  const end = Math.min(times.length, start + CFG.horizon);
+  const gk = Object.keys(h).filter(k => k.startsWith("wind_gusts_10m")), pk = Object.keys(h).filter(k => k.startsWith("precipitation"));
+  const hit = (keys, test) => keys.length ? keys.filter(k => { for (let i = start; i < end; i++) if (test(h[k], i)) return true; return false; }).length / keys.length : null;
+  return { pctGust: hit(gk, (a,i) => (a[i] ?? 0) >= CFG.ensProb.gust), pctRain: hit(pk, (a,i) => (rolling(a, i, 24) ?? 0) >= CFG.ensProb.rain24), n: Math.max(gk.length, pk.length) };
+}
+
+/* ====================== fontes e concordância ====================== */
+const termBtn = k => `<button class="term" type="button" data-term="${k}" aria-label="${esc("O que é " + GLOSS[k][0] + "?")}">?</button>`;
+function agreeHTML(items, L, fmt, compact){
+  const yes = L ? items.filter(x => x.lv >= L) : [], no = L ? items.filter(x => x.lv < L) : items;
+  const chips = items.map(x => `<span class="chip ${L ? (x.lv >= L ? "yes" : "no") : ""}" data-lv="${x.lv}" title="${esc(x.name + ": " + LEVEL_NAMES[x.lv])}"><i></i>${L && x.lv >= L ? "✓ " : ""}${esc(x.name)}${fmt ? ` <span class="v">${fmt(x.v)}</span>` : ""}</span>`).join("");
+  let txt;
+  if (!items.length) txt = "Nenhum modelo disponível.";
+  else if (!L) txt = `${items.length === 1 ? "O modelo" : `Os ${items.length} modelos`} (${joinPt(items.map(x => x.name))}) ficam abaixo de atenção.`;
+  else txt = `<b>Concordam:</b> ${joinPt(yes.map(x => x.name))}. ` + (no.length ? `<b>Preveem menos:</b> ${joinPt(no.map(x => `${x.name} (${LEVEL_NAMES[x.lv].toLowerCase()})`))}.` : "Todos concordam.");
+  if (compact) return `<div class="chips">${chips}</div>`;
+  return `<div class="chips">${chips}</div><p class="agree-txt">${txt} ${termBtn("consenso")}</p>`;
+}
+function srcLine(A, extra){
+  const used = A.ok.map(m => m.name), miss = A.models.filter(m => !m.ok).map(m => m.name);
+  return `Fontes: <b>${joinPt(used)}</b>, via Open-Meteo${miss.length ? ` · sem dados agora: ${joinPt(miss)}` : ""}${extra ? " · " + extra : ""}.`;
+}
+
+/* ====================== balão de termos ====================== */
+let popFor = null;
+function showPop(btn){
+  const g = GLOSS[btn.dataset.term]; if (!g) return; const pop = $("#pop");
+  if (popFor === btn){ hidePop(); return; } hidePop();
+  pop.innerHTML = `<h4>${esc(g[0])}</h4><p>${esc(g[1])}</p><p class="muted">${esc(g[2])}</p>`;
+  pop.hidden = false; popFor = btn; btn.setAttribute("aria-expanded","true");
+  const r = btn.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+  let x = r.left + scrollX - pw/2 + r.width/2; x = clamp(x, scrollX + 16, scrollX + innerWidth - pw - 16);
+  let y = r.bottom + scrollY + 8; if (r.bottom + ph + 16 > innerHeight && r.top > ph + 16) y = r.top + scrollY - ph - 8;
+  pop.style.left = x + "px"; pop.style.top = y + "px";
+}
+function hidePop(){ $("#pop").hidden = true; if (popFor) popFor.setAttribute("aria-expanded","false"); popFor = null; }
+document.addEventListener("click", e => {
+  const b = e.target.closest(".term"); if (b){ e.preventDefault(); e.stopPropagation(); showPop(b); return; }
+  if (!e.target.closest("#pop")) hidePop();
+  if (!e.target.closest(".search")) $("#results").hidden = true;
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") hidePop(); });
+addEventListener("resize", hidePop);
+const GMETA = {   // ícone, tema e onde o termo aparece no painel
+  rajada:["💨","Vento","#gauges"], acumulado:["🌧","Chuva","#gauges"], cape:["🔥","Tempestade","#c-storm"], shear:["🌀","Tempestade","#c-storm"],
+  supercelula:["⛈","Tempestade","#gauges"], pressao:["🧭","Pressão","#c-pres"], ciclone:["🌪","Pressão","#gauges"], niveis:["🚦","Níveis","#gauges"],
+  modelo:["🖥","Modelos","#modelos"], consenso:["🤝","Modelos","#gauges"], ensemble:["🎲","Modelos","#gauges"], rodada:["⏱","Modelos","#modelos"],
+};
+let gTheme = "Todos";
+function renderGlossary(){
+  const themes = ["Todos", ...new Set(Object.values(GMETA).map(m => m[1]))];
+  $("#gfilter").innerHTML = themes.map(t => `<button type="button" aria-pressed="${t === gTheme}" data-t="${t}">${t}</button>`).join("");
+  $("#gfilter").querySelectorAll("button").forEach(b => b.onclick = () => { gTheme = b.dataset.t; renderGlossary(); });
+  $("#gloss").innerHTML = Object.entries(GLOSS).filter(([k]) => gTheme === "Todos" || GMETA[k]?.[1] === gTheme).map(([k, g]) => {
+    const [ic, th, go] = GMETA[k] || ["•", "", ""]; const first = g[1].split(". ")[0]; const lead = first.endsWith(".") ? first : first + ".";
+    return `<article class="gcard" id="termo-${k}">
+      <button type="button" class="ghead" aria-expanded="false"><span class="gic" aria-hidden="true">${ic}</span><span><b>${esc(g[0])}</b><span class="gth">${esc(th)}</span></span><span class="gchev" aria-hidden="true">＋</span></button>
+      <p class="glead">${esc(lead)}</p>
+      <div class="gmore" hidden><p>${esc(g[1].slice(lead.length).trim())}</p><p class="gref">${esc(g[2])}</p>${go ? `<a href="${go}" class="ggo">Ver no painel ↓</a>` : ""}</div>
+    </article>`; }).join("");
+  $("#gloss").querySelectorAll(".ghead").forEach(b => b.onclick = () => { const c = b.closest(".gcard"), open = b.getAttribute("aria-expanded") !== "true";
+    b.setAttribute("aria-expanded", open); c.querySelector(".gmore").hidden = !open; c.classList.toggle("open", open); });
+}
+
+/* ====================== motor 3D compartilhado ====================== */
+const HAS3D = (() => { try { if (!THREE) return false; const c = document.createElement("canvas"); return !!(c.getContext("webgl2") || c.getContext("webgl")); } catch { return false; } })();
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const STAGES = [];
+const C = k => new THREE.Color(css(k));
+const hdr = (hex, k) => new THREE.Color(hex).multiplyScalar(k);   // cor acima de 1 = brilha com o bloom
+const isDark = () => { const t = document.documentElement.dataset.theme; return t === "dark" || (t !== "light" && matchMedia("(prefers-color-scheme: dark)").matches); };
+let SOFT = null;
+function softTex(){
+  if (SOFT) return SOFT; const c = document.createElement("canvas"); c.width = c.height = 128; const x = c.getContext("2d");
+  const g = x.createRadialGradient(64,64,0,64,64,64); g.addColorStop(0,"rgba(255,255,255,1)"); g.addColorStop(0.3,"rgba(255,255,255,.75)"); g.addColorStop(0.65,"rgba(255,255,255,.22)"); g.addColorStop(1,"rgba(255,255,255,0)");
+  x.fillStyle = g; x.fillRect(0,0,128,128); SOFT = new THREE.CanvasTexture(c); SOFT.colorSpace = THREE.SRGBColorSpace; return SOFT;
+}
+function skyTex(){
+  const c = document.createElement("canvas"); c.width = 4; c.height = 256; const x = c.getContext("2d"); const g = x.createLinearGradient(0,0,0,256);
+  g.addColorStop(0, css("--sky-top")); g.addColorStop(0.62, css("--sky-mid")); g.addColorStop(1, css("--scene")); x.fillStyle = g; x.fillRect(0,0,4,256);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+function stage(host, o = {}){
+  if (!HAS3D || !host) return null;
+  let renderer; try { renderer = new THREE.WebGLRenderer({ antialias:true, powerPreference:"high-performance" }); } catch { return null; }
+  renderer.setPixelRatio(Math.min(o.small ? 1.25 : 2, devicePixelRatio || 1));
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.85;
+  host.prepend(renderer.domElement);
+  const S = { renderer, scene:new THREE.Scene(), camera:new THREE.PerspectiveCamera(o.fov || 32, 1, 0.1, 1000), host,
+    az:o.az ?? 0, el:o.el ?? 0.45, dist:o.dist ?? 20, target:new THREE.Vector3(...(o.target || [0,1,0])),
+    azLim:o.azLim ?? 1.1, elMin:o.elMin ?? 0.05, elMax:o.elMax ?? 1.3, labels:[], group:null, visible:true, frame:null, t0:performance.now(), spin:o.spin || 0, every:o.small ? 2 : 1, fc:0 };
+  // iluminação de ambiente (reflexos realistas)
+  try { const pm = new THREE.PMREMGenerator(renderer); S.scene.environment = pm.fromScene(new FX.RoomEnvironment(), 0.04).texture; pm.dispose(); } catch {}
+  // pós-processamento: brilho (bloom) cinematográfico
+  if (FX){
+    S.composer = new FX.EffectComposer(renderer);
+    S.composer.addPass(new FX.RenderPass(S.scene, S.camera));
+    S.bloom = new FX.UnrealBloomPass(new THREE.Vector2(256, 256), 0.6, 0.55, 0.85);
+    S.composer.addPass(S.bloom); S.composer.addPass(new FX.OutputPass());
+  }
+  let down = null; const el = renderer.domElement;
+  el.addEventListener("pointerdown", e => { down = { x:e.clientX, y:e.clientY, az:S.az, el:S.el, moved:false }; S.onDown?.(); el.setPointerCapture(e.pointerId); });
+  el.addEventListener("pointermove", e => {
+    if (down){ const dx = e.clientX - down.x, dy = e.clientY - down.y; if (Math.hypot(dx,dy) > 5) down.moved = true;
+      if (down.moved){
+        if (S.onPan) S.onPan(dx); else S.az = clamp(down.az - dx * 0.006, -S.azLim, S.azLim);
+        S.el = clamp(down.el + dy * 0.004, S.elMin, S.elMax); S.onLeave?.(); return; } }
+    S.onHover?.(e);
+  });
+  el.addEventListener("pointerup", e => { if (down && !down.moved) S.onPick?.(e); down = null; });
+  el.addEventListener("pointerleave", () => { if (!down) S.onLeave?.(); });
+  new ResizeObserver(() => resizeStage(S)).observe(host);
+  new IntersectionObserver(es => { S.visible = es[0].isIntersecting; }).observe(host);
+  STAGES.push(S); resizeStage(S); return S;
+}
+function dropStage(S){ if (!S) return; const i = STAGES.indexOf(S); if (i >= 0) STAGES.splice(i, 1); S.labels.forEach(l => l.el.remove()); S.composer?.dispose?.(); S.renderer.dispose(); S.renderer.forceContextLoss?.(); S.renderer.domElement.remove(); }
+function resizeStage(S){
+  const w = S.host.clientWidth, h = S.host.clientHeight; if (!w || !h) return;
+  S.renderer.setSize(w, h, false); S.composer?.setPixelRatio(S.renderer.getPixelRatio()); S.composer?.setSize(w, h);
+  S.camera.aspect = w/h; S.camera.updateProjectionMatrix(); S.onResize?.();
+}
+function resetStage(S){
+  if (S.group){ S.scene.remove(S.group); S.group.traverse(o => { o.geometry?.dispose(); if (o.material) [].concat(o.material).forEach(m => { if (m.map && m.map !== SOFT) m.map.dispose(); m.dispose(); }); }); }
+  S.labels.forEach(l => l.el.remove()); S.labels = []; S.frame = null; S.onResize = null;
+  S.group = new THREE.Group(); S.scene.add(S.group);
+  S.scene.background?.dispose?.(); S.scene.background = skyTex();
+  S.scene.fog = new THREE.Fog(C("--scene"), S.dist * 1.6, S.dist * 3.4);
+  if (S.bloom){ const dk = isDark(); S.bloom.strength = dk ? 0.45 : 0.18; S.bloom.threshold = dk ? 0.9 : 0.96; S.bloom.radius = 0.5; }
+  S.needEnv = true;
+  S.t0 = performance.now(); return S.group;
+}
+function lights(S, { span = 30, shadow = true, warm = true } = {}){
+  const g = S.group, dk = isDark();
+  g.add(new THREE.HemisphereLight(dk ? 0x9fb8d0 : 0xffffff, C("--scene-ground"), dk ? 0.35 : 0.7));
+  const sun = new THREE.DirectionalLight(warm ? 0xffe2bd : 0xe8f0ff, dk ? 1.9 : 2.4); sun.position.set(-span*0.45, span*0.75, span*0.55);
+  if (shadow){ sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left:-span, right:span, top:span, bottom:-span, near:0.5, far:span*4 }); sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4; }
+  g.add(sun, sun.target);
+  const rim = new THREE.DirectionalLight(0x7fb4ff, dk ? 1.1 : 0.6); rim.position.set(span*0.6, span*0.35, -span); g.add(rim);
+  return sun;
+}
+function label(S, html, cls, pos, align = "center"){
+  const el = document.createElement("span"); el.className = "lbl " + cls; el.innerHTML = html;
+  S.host.appendChild(el); const L = { el, pos, align }; S.labels.push(L); return L;
+}
+const mat = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness:0.5, metalness:0.05, ...o });
+const phys = (color, o = {}) => new THREE.MeshPhysicalMaterial({ color, roughness:0.3, metalness:0.05, clearcoat:0.6, clearcoatRoughness:0.25, ...o });
+const _v = HAS3D ? new THREE.Vector3() : null;
+function loop(now){
+  requestAnimationFrame(loop);
+  if (document.hidden) return;
+  for (const S of STAGES){
+    if (!S.visible || !S.group) continue;
+    if (++S.fc % S.every) continue;   // cenas pequenas a 30 quadros por segundo
+    const t = (now - S.t0) / 1000;
+    if (S.spin && !reduceMotion) S.az += S.spin;
+    const c = S.camera;
+    c.position.set(S.target.x + S.dist*Math.sin(S.az)*Math.cos(S.el), S.target.y + S.dist*Math.sin(S.el), S.target.z + S.dist*Math.cos(S.az)*Math.cos(S.el));
+    c.lookAt(S.target);
+    S.frame?.(t, now);
+    if (S.needEnv){ const ei = isDark() ? 0.3 : 0.55; S.group.traverse(o => { if (o.material) [].concat(o.material).forEach(m => { if ("envMapIntensity" in m) m.envMapIntensity = ei; }); }); S.needEnv = false; }
+    if (S.composer) S.composer.render(); else S.renderer.render(S.scene, c);
+    const w = S.host.clientWidth, h = S.host.clientHeight;
+    for (const l of S.labels){
+      if (l.hidden){ l.el.style.visibility = "hidden"; continue; }
+      _v.copy(l.pos).project(c);
+      if (_v.z > 1 || Math.abs(_v.x) > (l.pin ? 1.6 : 1.04) || Math.abs(_v.y) > 1.1){ l.el.style.visibility = "hidden"; continue; }
+      l.el.style.visibility = "visible";
+      let x = (_v.x + 1) / 2 * w; const y = (1 - _v.y) / 2 * h;
+      const lw = l.el.offsetWidth; const ox = l.align === "right" ? -lw : l.align === "left" ? 0 : -lw/2;
+      x = clamp(x + ox, 4, Math.max(4, w - lw - 4));
+      l.el.style.transform = `translate(${x.toFixed(1)}px, ${(y - l.el.offsetHeight/2).toFixed(1)}px)`;
+    }
+  }
+}
+if (HAS3D) requestAnimationFrame(loop);
+function fitWidth(S, halfW, halfH = 0, k = 1){
+  const vf = THREE.MathUtils.degToRad(S.camera.fov/2), hf = Math.atan(Math.tan(vf) * S.camera.aspect);
+  S.dist = Math.max(halfW / Math.tan(hf), halfH / Math.tan(vf)) * k;
+  if (S.scene.fog){ S.scene.fog.near = S.dist * 1.6; S.scene.fog.far = S.dist * 3.4; }
+  S.camera.far = S.dist * 6; S.camera.updateProjectionMatrix();
+}
+// terreno ondulado com cores por altura; devolve a malha e a função de altura
+function terrain(S, r, amp, lo, hi, o = {}){
+  const geo = new THREE.CircleGeometry(r, 96, 0, Math.PI * 2); geo.rotateX(-Math.PI/2);
+  const seg = new THREE.PlaneGeometry(r * 2, r * 2, 96, 96); seg.rotateX(-Math.PI/2);
+  const H = (x, z) => { const d = Math.hypot(x, z) / r; const edge = clamp((d - 0.45) / 0.55, 0, 1);
+    return amp * (0.35*Math.sin(x*0.9+0.4)*Math.cos(z*0.8) + 0.2*Math.sin(x*2.1-z*1.7) + 0.12*Math.sin(x*4.3+z*3.1)) * (0.25 + edge) + edge * edge * amp * 1.4; };
+  const p = seg.attributes.position, col = new Float32Array(p.count * 3), a = new THREE.Color(lo), b = new THREE.Color(hi);
+  for (let i = 0; i < p.count; i++){ const x = p.getX(i), z = p.getZ(i); const y = H(x, z); p.setY(i, y);
+    const c = a.clone().lerp(b, clamp(0.5 + y / (amp * 2) + (Math.sin(x*3.7)*Math.cos(z*2.9))*0.12, 0, 1)); col[i*3] = c.r; col[i*3+1] = c.g; col[i*3+2] = c.b; }
+  seg.setAttribute("color", new THREE.BufferAttribute(col, 3)); seg.computeVertexNormals();
+  const m = new THREE.Mesh(seg, new THREE.MeshStandardMaterial({ vertexColors:true, roughness:o.rough ?? 0.92, metalness:o.metal ?? 0 })); m.receiveShadow = true; S.group.add(m);
+  geo.dispose(); return { mesh:m, h:H };
+}
+function groundDisc(S, r = 8){ return terrain(S, r, 0.25, "#2c3a33", "#3e5143").mesh; }
+
+/* ====================== régua HTML ====================== */
+function rulerHTML(kind, value, thr){
+  const R = REF[kind]; const max = R.max; const pct = v => clamp(v / max * 100, 0, 100);
+  const seg = [[0, thr[0], "--lv0"], [thr[0], thr[1], "--lv1"], [thr[1], thr[2], "--lv2"], [thr[2], max, "--lv3"]];
+  const bar = seg.map(([a,b,c]) => `<span style="width:${pct(b)-pct(a)}%;background:var(${c});opacity:${c === "--lv0" ? .55 : 1}"></span>`).join("");
+  let here = -1; R.rows.forEach((r,i) => { if (value != null && value >= r[0]) here = i; });
+  const rows = R.rows.map((r,i) => `<li class="${i === here ? "here" : ""}"><span class="num">${nf(r[0])}</span><span>${i === here ? "▶ " : ""}${esc(r[1])}</span></li>`).join("");
+  return `<div class="ruler"><div class="rbar-wrap"><div class="rbar">${bar}${value != null ? `<span class="rmark" style="left:${pct(value)}%" data-v="${nf(value)}"></span>` : ""}</div></div>
+    <span class="runit">Régua em ${esc(R.unit)}. A linha marca a previsão.</span>
+    <ul class="rlist">${rows}</ul></div>`;
+}
+// escala de baldes: cada balde = 10 litros por m² (10 mm); mostra todos até 160 mm, com o contorno na cor da faixa
+function bucketsHTML(mm){
+  if (mm == null) return "";
+  const thr = CFG.thr.rain24, total = 16, filled = clamp(mm / 10, 0, total);
+  const zone = k => { const v = (k + 1) * 10; return v > thr[2] ? 3 : v > thr[1] ? 2 : v > thr[0] ? 1 : 0; };
+  const cells = Array.from({ length:total }, (_, k) => { const f = clamp(filled - k, 0, 1);
+    return `<span class="bk" data-z="${zone(k)}"><b style="height:${Math.round(f * 100)}%"></b></span>`; }).join("");
+  const marks = thr.map((t, i) => `<span class="bk-m" data-lv="${i + 1}" style="left:${t / 160 * 100}%">${t}</span>`).join("");
+  return `<div class="bkw" title="Cada balde = 10 litros por metro quadrado (10 mm)"><div class="bk-row">${cells}</div><div class="bk-ax">${marks}</div>
+    <div class="bk-cap"><b>${nf(filled, 1)}</b> de ${total} baldes · cada balde = 10 mm (10 litros por m²)</div></div>`;
+}
+
+/* ====================== faixa ====================== */
+const BAND = { key:null };
+const CATNAME = { gust:"vento", rain:"chuva", storm:"tempestade", cyclone:"ciclone" };
+function bandMatrix(A, key){
+  const tl = A.timeline, n = tl.length, names = A.ok.map(m => m.name);
+  const perLv = (h, mi) => h.per[mi]?.lv[key] ?? 0;
+  const cons = tl.map(h => h.lv[key]);
+  let a = cons.findIndex(v => v >= 1), b = a; if (a >= 0) while (b + 1 < n && cons[b + 1] >= 1) b++;
+  const inWin = (mi) => a >= 0 && tl.slice(a, b + 1).some(h => perLv(h, mi) >= 1);
+  const rows = names.map((nm, mi) => `<div class="mx-row" style="--n:${n}">${tl.map(h => `<i data-lv="${perLv(h, mi)}" title="${esc(nm)} · ${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${LEVEL_NAMES[perLv(h, mi)]}"></i>`).join("")}</div>`);
+  const consRow = `<div class="mx-row cons" style="--n:${n}">${tl.map((h, j) => { const c = h.per.filter((_, mi) => perLv(h, mi) >= Math.max(1, cons[j])).length;
+    return `<i data-lv="${cons[j]}" title="${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${LEVEL_NAMES[cons[j]]}${cons[j] ? ` · ${c} modelos concordam` : ""}"></i>`; }).join("")}</div>`;
+  const days = tl.map((h, j) => j && h.t.slice(11,13) === "00" ? `<span class="day" style="left:${j / n * 100}%"></span>` : "").join("");
+  const axis = tl.map((h, j) => j === 0 || h.t.slice(11,13) === "00" ? `<span style="left:${j / n * 100}%">${j === 0 ? "agora" : esc(rel(h.t) || weekday(h.t).slice(0, 3))}</span>` : "").join("");
+  const win = a >= 0 ? `<div class="mx-win" style="left:calc(${a / n * 100}% - 3px);width:calc(${(b - a + 1) / n * 100}% + 5px)"><span>${b - a + 1} h</span></div>` : "";
+  const ends = names.map((nm, mi) => { const on = inWin(mi), mx = Math.max(...tl.map(h => perLv(h, mi)));
+    return `<span class="${on ? "on" : ""}" style="--c:var(--lv${Math.max(1, mx)})" title="${on ? "concorda com a janela de risco" : mx ? "prevê risco, mas em outras horas" : "não prevê risco"}">${on ? "✓" : mx ? "◦" : "·"}</span>`; });
+  const agreeN = a >= 0 ? names.filter((_, mi) => inWin(mi)).length : 0;
+  // riscos isolados (um modelo só): mostra como etiquetas quando não há consenso
+  const iso = a >= 0 ? [] : names.map((nm, mi) => { const j = tl.findIndex(h => perLv(h, mi) >= 1); if (j < 0) return null; const mx = Math.max(...tl.map(h => perLv(h, mi)));
+    return `<span class="tag" style="--c:var(--lv${mx})"><i></i>${esc(nm)} · ${esc(j === 0 ? "agora" : `${weekday(tl[j].t).slice(0,3)} ${hourOf(tl[j].t)}`)} · ${LEVEL_NAMES[mx].toLowerCase()}</span>`; }).filter(Boolean);
+  return { html:`<div class="mx">
+      <div class="mx-lab">${names.map((nm, mi) => `<span class="${inWin(mi) ? "hot" : ""}">${nm}</span>`).join("")}<span class="cons">≥2</span></div>
+      <div class="mx-cells">${days}${rows.join("")}${consRow}${win}<span class="mx-now" title="agora"></span></div>
+      <div class="mx-end">${ends.join("")}<span class="cons">${agreeN || ""}</span></div>
+      <div></div><div class="mx-axis">${axis}</div><div></div>
+    </div>
+    ${iso.length ? `<div class="mx-iso">só um modelo, sem acordo: ${iso.join("")}</div>` : ""}
+    <div class="mx-legend"><span>linha = um modelo · última linha = consenso (≥2 na mesma hora) · ✓ concorda · ◦ risco em outra hora</span></div>
+    <div class="lv-key"><span class="k">cores</span><span><i style="background:#3fcf8e"></i>sem risco</span><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span></div>`, a, b, agreeN, iso:iso.length };
+}
+function renderBand(A, place){
+  const L = A.levels, ok = A.ok; const lv = Math.max(L.gust, L.rain, L.storm, L.cyclone);
+  const parts = [];
+  if (L.gust) parts.push(`rajadas de até ${nf(A.peak.gust.v)} km/h`);
+  if (L.rain) parts.push(`até ${nf(A.peak.rain24.v)} mm de chuva em 24 horas`);
+  if (L.storm) parts.push("condições para tempestades fortes com granizo");
+  if (L.cyclone) parts.push("pressão caindo rápido, sinal de ciclone");
+  $("#band").dataset.lv = lv;
+  const elev = median(ok.map(m => m.grid?.elev));
+  $("#band-place").textContent = `${place.name} · ${place.lat.toFixed(4)}, ${place.lon.toFixed(4)}${elev != null ? ` · ${nf(elev)} m` : ""} · ${hourOf(nowKey() + ":00")}`;
+  $("#band-lv").textContent = LEVEL_NAMES[lv];
+  $("#band-title").textContent = lv ? cap1(parts.join(" · ")) : "Nada relevante nas próximas 72 horas";
+  $("#band-detail").textContent = "";
+  const c = A.cur;
+  $("#now").innerHTML = `<div>temp <b>${nf(c.temp,1)}</b><small>°C</small></div><div>vento <b>${nf(c.wind)}</b><small>km/h · raj ${nf(c.gust)}</small></div><div>pressão <b>${nf(c.pres,0)}</b><small>hPa</small></div>`;
+  const keys = ["storm","gust","rain","cyclone"];
+  if (!BAND.key || !keys.includes(BAND.key) || BAND.place !== place) { BAND.key = (keys.filter(k => L[k] === lv && lv)[0]) || "storm"; BAND.place = place; }
+  const M = bandMatrix(A, BAND.key), tl = A.timeline;
+  const when = M.a < 0 ? (M.iso ? `<i style="--c:#8ea4b6">sem acordo</i>` : "—") : M.a >= 0 ? `${cap1(rel(tl[M.a].t) || weekday(tl[M.a].t))} ${hourOf(tl[M.a].t)} <i style="--c:#8ea4b6">→</i> ${tl[M.b].t.slice(0,10) !== tl[M.a].t.slice(0,10) ? cap1(rel(tl[M.b].t) || weekday(tl[M.b].t)) + " " : ""}${hourOf(tl[M.b].t)}` : "—";
+  const dur = M.a >= 0 ? M.b - M.a + 1 : 0;
+  $("#band-facts").innerHTML = `
+    <div class="b-fact"><span class="k">o quê</span><span class="b-cats">${["storm","gust","rain","cyclone"].map(k => `<span class="b-cat" data-lv="${L[k]}" title="${CATNAME[k]}: ${LEVEL_NAMES[L[k]]}">${CATNAME[k]} <small>${LEVEL_NAMES[L[k]].toLowerCase()}</small></span>`).join("")}</span></div>
+    <div class="b-fact"><span class="k">quando · ${CATNAME[BAND.key]}</span><span class="v">${when}</span></div>
+    <div class="b-fact"><span class="k">duração</span><span class="v">${dur ? `${dur} h` : "—"}</span></div>
+    <div class="b-fact"><span class="k">modelos</span><span class="v"><i style="--c:var(--lv${Math.max(1, L[BAND.key] || 0)})">${M.agreeN}</i>/${ok.length} ${termBtn("consenso")}</span></div>`;
+  $("#band-src").innerHTML = `<div class="mx-tabs"><span class="k">ver por</span>${keys.map(k => `<button type="button" data-k="${k}" aria-pressed="${k === BAND.key}"><i data-lv="${L[k]}"></i>${CATNAME[k]}</button>`).join("")}</div>${M.html}`;
+  $("#band-src").querySelectorAll("[data-k]").forEach(b => b.onclick = () => { BAND.key = b.dataset.k; renderBand(A, place); });
+}
+
+/* ====================== cartões de risco ====================== */
+// nível que o modelo atinge nas horas em que há consenso; sem consenso, o próprio pior nível (risco isolado)
+function lvSameHour(A, k, mi, own){
+  const hrs = A.timeline.filter(h => h.lv[k] >= 1); if (!hrs.length) return own;
+  return Math.max(0, ...hrs.map(h => h.per[mi]?.lv[k] ?? 0));
+}
+// medidor horizontal: número, significado e uma barra com as zonas de nível
+// dots = valor de cada modelo [{name,v}]; sp = robust() desses valores (faixa típica e quem destoa)
+function hzGauge({ value, max, thr, unit, lv, meaning, label, dec = 0, compact = false, dots = null, sp = null }){
+  const pct = v => clamp((v ?? 0) / max * 100, 0, 100);
+  const zones = [[0, thr[0]], [thr[0], thr[1]], [thr[1], thr[2]], [thr[2], max]];
+  const zoneHTML = zones.map(([a, b], i) => `<span class="hz-zone" data-lv="${i}" style="left:${pct(a)}%;width:${pct(b) - pct(a)}%"></span>`).join("");
+  const ticks = thr.map((v, i) => `<span class="hz-tick" data-lv="${i + 1}" style="left:${pct(v)}%">${nf(v)}</span>`).join("");
+  const outI = new Set((sp?.out || []).map(o => o.i));
+  const range = sp && sp.lo != null && sp.n > 1 ? `<span class="hz-range" style="left:${pct(sp.lo)}%;width:${Math.max(.8, pct(sp.hi) - pct(sp.lo))}%" title="faixa entre os modelos que concordam entre si: ${nf(sp.lo, dec)} a ${nf(sp.hi, dec)} ${unit}"></span>` : "";
+  const dotHTML = dots ? `<div class="hz-dots">${range}${dots.map((d, i) => d.v == null ? "" : `<span class="hz-dot${outI.has(i) ? " out" : ""}" style="left:${pct(d.v)}%" title="${esc(d.name)}: ${nf(d.v, dec)} ${unit}${outI.has(i) ? " · destoa dos outros, fora da conta" : ""}"></span>`).join("")}</div>` : "";
+  const out = sp?.out?.[0], outTxt = out && dots ? `<div class="hz-out"><b>${esc(dots[out.i].name)}</b> destoa: ${nf(out.v, dec)} ${unit}, ${out.dir > 0 ? "bem acima" : "bem abaixo"} dos outros (${nf(out.ref, dec)}). Fica de fora.</div>` : "";
+  const body = `${dotHTML}<div class="hz-track">${zoneHTML}<span class="hz-fill" data-lv="${lv}" data-w="${pct(value)}%" style="width:0"></span><span class="hz-mark" data-lv="${lv}" style="left:${pct(value)}%"></span></div><div class="hz-ticks">${ticks}</div>${outTxt}`;
+  if (compact) return `<div class="hz-row"><div class="hz-top"><span class="hz-lab">${label}</span><span class="hz-num sm" data-lv="${lv}">${nf(value, dec)}<small>${unit}</small></span></div>${body}</div>`;
+  return `<div class="hz"><span class="hz-lab">${label}</span><div class="hz-num" data-lv="${lv}">${nf(value, dec)}<small>${unit}</small></div><div class="hz-mean" data-lv="${lv}">${esc(meaning)}</div>${body}</div>`;
+}
+const G3 = {};
+function renderGauges(A, E){
+  const ok = A.ok, L = A.levels;
+  // pior caso entre os modelos que não destoam (o discrepante aparece à parte, no medidor)
+  const worst = (k, sk) => { const outI = new Set((A.spread[sk]?.out || []).map(o => o.i)); const c = ok.filter((_, i) => !outI.has(i)); return c.reduce((a,b) => (b[k].v ?? -1e9) > (a[k].v ?? -1e9) ? b : a, c[0] || ok[0]); };
+  const wg = worst("gust", "gust"), wr = worst("rain24", "rain24"), wp = worst("pf", "pfall");
+  const st = ok.reduce((a,b) => b.stormBest.s > a.stormBest.s ? b : a, ok[0]);
+  // número principal = pico do consenso (≥2 modelos na mesma hora): um modelo exagerado sozinho não muda o número
+  const P = A.peak, SP = A.spread;
+  const gMed = P.gust.v, rMed = P.rain24.v, r1Med = P.rain1.v;
+  const cMed = P.storm.cape, shMed = P.storm.shear;
+  const pfMed = P.pfall.v == null ? null : Math.max(0, P.pfall.v), pminMed = SP.pmin.v;
+  const dots = f => ok.map(m => ({ name:m.name, v:f(m) }));
+  const card = (k, title, term, lv, headline, body, equiv, ruler, agree, extra) => `
+    <article class="gauge" data-lv="${lv}">
+      <div class="viz" id="viz-${k}"></div>
+      <div class="body">
+        <div class="topline"><h3>${title} ${termBtn(term)}</h3><span class="pill" data-lv="${lv}">${LEVEL_NAMES[lv]}</span></div>
+        ${headline ? `<div class="headline">${headline}</div>` : ""}
+        <p>${body}</p>
+        ${equiv ? `<div class="equiv">${equiv}</div>` : ""}
+        ${ruler}
+        ${agree}
+        ${extra ? `<p class="agree-txt muted">${extra}</p>` : ""}
+        <p class="src">${srcLine(A, "número = o que pelo menos 2 modelos preveem na mesma hora · pontos = pico de cada modelo")}</p>
+      </div>
+    </article>`;
+  $("#gauges").innerHTML = [
+    card("gust", "Vento", "rajada", L.gust, "",
+      `${EFFECT.gust[L.gust]} Mais forte ${whenLong(wg.gust.t)} no pior caso (${wg.name}, ${nf(wg.gust.v)} km/h).`,
+      `<span>É ${carCompare(gMed ?? 0)}.</span>`,
+      "",
+      agreeHTML(ok.map((m, mi) => ({ name:m.name, lv:lvSameHour(A, "gust", mi, m.lv.gust), v:m.gust.v })), L.gust, v => nf(v)),
+      E?.pctGust != null ? `Em ${Math.round(E.pctGust*100)}% dos ${E.n} cenários do GFS ${termBtn("ensemble")} há rajada acima de ${CFG.ensProb.gust} km/h.` : ""),
+    card("rain", "Chuva", "acumulado", L.rain, "",
+      `${EFFECT.rain[L.rain]} No pior caso (${wr.name}), ${nf(wr.rain24.v)} milímetros até ${whenLong(wr.rain24.t)}. Hora mais forte: ${nf(r1Med,1)} mm.`,
+      `<span><b>${nf(rMed)} ${Math.round(rMed ?? 0) === 1 ? "litro" : "litros"}</b> em cada metro quadrado · <b>${nf((rMed ?? 0)*100)} litros</b> num telhado de 100 m² </span>${bucketsHTML(rMed)}`,
+      "",
+      agreeHTML(ok.map((m, mi) => ({ name:m.name, lv:lvSameHour(A, "rain", mi, m.lv.rain), v:m.rain24.v })), L.rain, v => nf(v) + " mm"),
+      E?.pctRain != null ? `Em ${Math.round(E.pctRain*100)}% dos ${E.n} cenários do GFS ${termBtn("ensemble")} chove mais de ${CFG.ensProb.rain24} milímetros em 24 horas.` : ""),
+    card("storm", "Tempestade e tornado", "supercelula", L.storm,
+      L.storm ? (L.storm >= 2 ? "Condições para tempestades fortes com granizo e tornado" : "Condições para tempestades fortes") : "Sem condições para tempestades severas",
+      L.storm ? `Pior momento: ${whenLong(st.stormBest.t)}, segundo o ${st.name}. Energia ${capeWord(st.stormBest.cape)} ${termBtn("cape")} e vento em altura ${shearWord(st.stormBest.shear)} ${termBtn("shear")} ao mesmo tempo. ${EFFECT.storm[L.storm]}`
+        : `${stormStory(A).html.replace(/<\/?b>/g, "")} ${termBtn("cape")}`,
+      `<span>As duas barras precisam subir juntas: energia (${nf(cMed)} J/kg) e cisalhamento (${nf(shMed)} m/s ${termBtn("shear")}). Só um deles alto não basta para tempestade severa.</span>`,
+      "",
+      agreeHTML(ok.map((m, mi) => ({ name:m.name, lv:lvSameHour(A, "storm", mi, m.lv.storm), v:m.stormBest.cape })), L.storm, v => nf(v)),
+      L.storm ? "Condições favoráveis não garantem que a tempestade vá acontecer. Acompanhe o radar e a PREVOTS." : ""),
+    card("cyclone", "Ciclone e pressão", "ciclone", L.cyclone,
+      "",
+      L.cyclone ? `${EFFECT.cyclone[L.cyclone]} Queda mais forte até ${whenLong(wp.pf.t)} no pior caso (${wp.name}). Mínima prevista: ${nf(pminMed,1)} hPa ${termBtn("pressao")}.`
+        : `A maior queda prevista é de ${nf(pfMed,1)} hPa em 24 horas, dentro do normal ${termBtn("pressao")}.`,
+      `<span>Pressão mínima ${nf(pminMed,1)} hPa. O normal é 1.013 hPa; ciclones fortes chegam abaixo de 990 hPa no centro.</span>`,
+      "",
+      agreeHTML(ok.map((m, mi) => ({ name:m.name, lv:lvSameHour(A, "cyclone", mi, m.lv.cyclone), v:m.pf.v })), L.cyclone, v => nf(v,1)),
+      ""),
+  ].join("");
+  for (const k in G3) dropStage(G3[k]);
+  const meaningOf = (rows, v) => { let m = rows[0][1]; rows.forEach(r => { if (v != null && v >= r[0]) m = r[1]; }); return m; };
+  $("#viz-gust").innerHTML = hzGauge({ value:gMed, max:REF.gust.max, thr:CFG.thr.gust, unit:"km/h", lv:L.gust, meaning:meaningOf(REF.gust.rows, gMed), label:"rajada máxima", dots:dots(m => m.gust.v), sp:SP.gust });
+  $("#viz-rain").innerHTML = hzGauge({ value:rMed, max:REF.rain.max, thr:CFG.thr.rain24, unit:"mm", lv:L.rain, meaning:meaningOf(REF.rain.rows, rMed), label:"chuva em 24 horas", dots:dots(m => m.rain24.v), sp:SP.rain24 });
+  const okE = (cMed ?? 0) >= CFG.thr.cape[0], okS = (shMed ?? 0) >= CFG.thr.shear[0];
+  const verdict = okE && okS ? ["os dois altos: tempestade severa possível", 3] : okS ? ["falta energia: sem tempestade severa", 0] : okE ? ["falta vento em altura: pancadas curtas", 1] : ["os dois baixos", 0];
+  $("#viz-storm").innerHTML = `<div class="hz dual">
+    ${hzGauge({ value:cMed, max:3000, thr:CFG.thr.cape, unit:"J/kg", lv:lvOf(cMed, CFG.thr.cape), label:"energia", compact:true, dots:dots(m => m.stormBest.cape), sp:SP.cape })}
+    ${hzGauge({ value:shMed, max:35, thr:CFG.thr.shear, unit:"m/s", lv:lvOf(shMed, CFG.thr.shear), label:"vento em altura", compact:true, dots:dots(m => m.stormBest.shear), sp:SP.shear })}
+    <div class="hz-verdict" data-lv="${verdict[1]}">${verdict[0]}</div></div>`;
+  $("#viz-cyclone").innerHTML = hzGauge({ value:pfMed, max:REF.cyclone.max, thr:CFG.thr.pfall, unit:"hPa", lv:L.cyclone, meaning:meaningOf(REF.cyclone.rows, pfMed), label:"queda em 24 horas", dec:1, dots:dots(m => m.pf.v), sp:SP.pfall });
+  requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll(".hz-fill").forEach(f => f.style.width = f.dataset.w)));
+}
+
+/* --- régua 3D: tubo de vidro com energia luminosa, anéis de nível e referências --- */
+function gaugeTube(g, x, H, Y, thr, value, r, LV, lv){
+  const y0 = Y(0);
+  // base metálica com aro de luz na cor do nível
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.9, r * 2.1, 0.22, 48), new THREE.MeshStandardMaterial({ color:"#1b232b", metalness:0.9, roughness:0.35 }));
+  base.position.set(x, y0 - 0.12, 0); base.receiveShadow = true; g.add(base);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(r * 1.95, 0.025, 8, 64), new THREE.MeshBasicMaterial({ color:LV[lv].clone().multiplyScalar(2.2) }));
+  rim.rotation.x = Math.PI / 2; rim.position.set(x, y0 - 0.01, 0); g.add(rim);
+  // tubo de vidro
+  const glass = new THREE.Mesh(new THREE.CylinderGeometry(r, r, H, 40, 1, true), new THREE.MeshPhysicalMaterial({ color:0x9fb6c8, transmission:0.6, thickness:0.2, roughness:0.08, ior:1.4, transparent:true, opacity:0.14, side:THREE.DoubleSide, depthWrite:false }));
+  glass.position.set(x, y0 + H / 2, 0); g.add(glass);
+  const cap = new THREE.Mesh(new THREE.TorusGeometry(r, 0.02, 8, 48), new THREE.MeshBasicMaterial({ color:hdr("#cfe3f5", 1.2) })); cap.rotation.x = Math.PI / 2; cap.position.set(x, y0 + H, 0); g.add(cap);
+  // faixas de nível: casca colorida translúcida + anel brilhante no limite
+  const bounds = [[0, thr[0]], [thr[0], thr[1]], [thr[1], thr[2]], [thr[2], null]];
+  bounds.forEach(([a], i) => {
+    if (!i) return; const ya = Y(a), reached = value >= a;
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(r * 1.18, reached ? 0.035 : 0.022, 8, 56), new THREE.MeshBasicMaterial({ color:LV[i].clone().multiplyScalar(reached ? 2.6 : 0.9), transparent:true, opacity:reached ? 1 : 0.75 }));
+    ring.rotation.x = Math.PI / 2; ring.position.set(x, ya, 0); g.add(ring);
+  });
+  // energia: coluna que brilha, com gradiente do verde até a cor do valor
+  const fillG = new THREE.CylinderGeometry(r * 0.8, r * 0.8, 1, 32, 24); fillG.translate(0, 0.5, 0);
+  const pos = fillG.attributes.position, col = new Float32Array(pos.count * 3), top = LV[lv].clone(), bot = LV[0].clone().lerp(LV[lv], 0.35);
+  for (let i = 0; i < pos.count; i++){ const f = pos.getY(i); const c = bot.clone().lerp(top, f).multiplyScalar(0.7 + f * 0.35); col[i*3] = c.r; col[i*3+1] = c.g; col[i*3+2] = c.b; }
+  fillG.setAttribute("color", new THREE.BufferAttribute(col, 3));
+  const fill = new THREE.Mesh(fillG, new THREE.MeshBasicMaterial({ vertexColors:true, transparent:true, opacity:0.92 }));
+  fill.position.set(x, y0, 0); fill.scale.y = 0.001; g.add(fill);
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.22, r * 0.22, 1, 12), new THREE.MeshBasicMaterial({ color:hdr("#ffffff", 1.2), transparent:true, opacity:0.3 }));
+  core.geometry.translate(0, 0.5, 0); core.position.copy(fill.position); core.scale.y = 0.001; g.add(core);
+  // anel do valor (pulsa) e luz que sai do tubo
+  const mark = new THREE.Mesh(new THREE.TorusGeometry(r * 1.3, 0.04, 10, 64), new THREE.MeshBasicMaterial({ color:LV[lv].clone().multiplyScalar(3) }));
+  mark.rotation.x = Math.PI / 2; mark.position.set(x, y0, 0); g.add(mark);
+  const glow = new THREE.PointLight(LV[lv].getHex(), 3, 3); glow.position.set(x, y0, 0.6); g.add(glow);
+  // partículas subindo dentro da energia
+  const NP = 70, pp = new Float32Array(NP * 3), ph = [];
+  for (let i = 0; i < NP; i++){ const a = Math.random() * 6.28, rr = Math.random() * r * 0.75; pp[i*3] = x + Math.cos(a) * rr; pp[i*3+2] = Math.sin(a) * rr; ph.push(Math.random()); }
+  const pg = new THREE.BufferGeometry(); pg.setAttribute("position", new THREE.BufferAttribute(pp, 3));
+  const parts = new THREE.Points(pg, new THREE.PointsMaterial({ size:0.12, map:softTex(), color:LV[lv].clone().lerp(new THREE.Color("#ffffff"), 0.5).multiplyScalar(2), transparent:true, depthWrite:false, blending:THREE.AdditiveBlending }));
+  g.add(parts);
+  const target = Math.max(0.02, Y(value) - y0);
+  return (t) => {
+    const p = reduceMotion ? 1 : 1 - Math.pow(1 - clamp(t / 1.6, 0, 1), 3), h = target * p;
+    fill.scale.y = h; core.scale.y = h; mark.position.y = y0 + h; glow.position.y = y0 + h;
+    const pulse = reduceMotion ? 1 : 1 + Math.sin(t * 3.2) * 0.06; mark.scale.set(pulse, pulse, 1);
+    const a = pg.attributes.position; for (let i = 0; i < NP; i++){ ph[i] = (ph[i] + (reduceMotion ? 0 : 0.004 + lv * 0.003)) % 1; a.setY(i, y0 + ph[i] * h); } a.needsUpdate = true;
+  };
+}
+function sceneGauge(S, o){
+  if (!S) return; const g = resetStage(S);
+  { const c = document.createElement("canvas"); c.width = 4; c.height = 256; const x = c.getContext("2d"), gr = x.createLinearGradient(0, 0, 0, 256);
+    gr.addColorStop(0, "#05090e"); gr.addColorStop(0.7, "#0c141c"); gr.addColorStop(1, "#111c26"); x.fillStyle = gr; x.fillRect(0, 0, 4, 256);
+    S.scene.background?.dispose?.(); S.scene.background = new THREE.CanvasTexture(c); S.scene.background.colorSpace = THREE.SRGBColorSpace; }
+  S.scene.fog = new THREE.Fog(0x0a1118, 12, 26);
+  if (S.bloom){ S.bloom.strength = 0.6; S.bloom.threshold = 0.9; S.bloom.radius = 0.4; }
+  g.add(new THREE.HemisphereLight(0x9fb8d0, 0x0a0f14, 0.6));
+  const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(-3, 6, 5); g.add(key);
+  const grid = new THREE.GridHelper(24, 48, 0x2a6f8a, 0x173040); grid.material.transparent = true; grid.material.opacity = 0.45; grid.position.y = 0.01; g.add(grid);
+  const LV = [C("--lv0"), C("--lv1"), C("--lv2"), C("--lv3")].map(c => c.clone());
+  const H = 4.2, base = 0.3, Y = v => base + clamp(v / o.max, 0, 1) * H;
+  const tubes = [];
+  const xMain = o.dual ? -0.95 : -0.9;
+  tubes.push(gaugeTube(g, xMain, H, Y, o.thr, o.value ?? 0, 0.42, LV, o.lv));
+  if (o.dual){ const D2 = o.dual, Y2 = v => base + clamp(v / D2.max, 0, 1) * H;
+    tubes.push(gaugeTube(g, -2.75, H, Y2, D2.thr, D2.value ?? 0, 0.3, LV, D2.lv));
+    label(S, D2.name, "gsub", new THREE.Vector3(-2.75, base + H + 1.15, 0)); label(S, o.name, "gsub", new THREE.Vector3(xMain, base + H + 1.05, 0));
+  }
+  // limites (direita) e valor com significado (esquerda)
+  const NAMES = ["atenção", "alerta", "severo"];
+  o.thr.forEach((v, i) => { if (v > o.max) return; const L = label(S, `<b>${nf(v)}</b> ${NAMES[i]}`, "gtick", new THREE.Vector3(xMain + 0.75, Y(v), 0), "left"); L.el.style.setProperty("--c", "#" + LV[i + 1].getHexString()); });
+  let here = 0; o.rows.forEach((r, i) => { if (o.value != null && o.value >= r[0]) here = i; });
+  const meaning = o.rows[here]?.[1] || "";
+  const vc = "#" + (o.lv ? LV[o.lv] : LV[0].clone().lerp(new THREE.Color("#ffffff"), 0.3)).getHexString();
+  if (!o.dual){
+    const L = label(S, `<b>${nf(o.value, o.dec || 0)}</b><small>${o.unit}</small><em>${esc(meaning)}</em>`, "gcall", new THREE.Vector3(xMain - 1.0, Y(o.value ?? 0), 0), "right"); L.el.style.setProperty("--c", vc);
+  } else {
+    const D2 = o.dual, Y2 = v => base + clamp(v / D2.max, 0, 1) * H;
+    const L1 = label(S, `<b>${nf(o.value)}</b><small>${o.unit}</small>`, "gcall sm", new THREE.Vector3(xMain, base + H + 0.5, 0)); L1.el.style.setProperty("--c", vc);
+    const L2 = label(S, `<b>${nf(D2.value)}</b><small>${D2.unit}</small>`, "gcall sm", new THREE.Vector3(-2.75, base + H + 0.5, 0)); L2.el.style.setProperty("--c", "#" + (D2.lv ? LV[D2.lv] : LV[0]).getHexString());
+    D2.thr.forEach((v, i) => { const L = label(S, `<b>${nf(v)}</b>`, "gtick", new THREE.Vector3(-2.75 - 0.45, Y2(v), 0), "right"); L.el.style.setProperty("--c", "#" + LV[i + 1].getHexString()); });
+    const okE = (o.value ?? 0) >= o.thr[0], okS = (D2.value ?? 0) >= D2.thr[0];
+    const v = okE && okS ? ["os dois altos: tempestade severa possível", LV[3]] : okS ? ["cisalhamento alto, falta energia", LV[0]] : okE ? ["energia alta, falta cisalhamento", LV[1]] : ["os dois baixos", LV[0]];
+    const LV3 = label(S, v[0], "gverdict", new THREE.Vector3(-1.85, -0.55, 0.6)); LV3.el.style.setProperty("--c", "#" + v[1].getHexString());
+  }
+  S.target.set(o.dual ? -0.6 : -0.75, o.dual ? 2.8 : 2.45, 0);
+  S.onResize = () => fitWidth(S, 3.7, o.dual ? 3.75 : 2.85, 1.0); S.onResize();
+  S.frame = (t) => { tubes.forEach(f => f(t)); if (!reduceMotion) g.rotation.y = Math.sin(t * 0.35) * 0.08; };
+}
+
+/* --- título: nuvens, chuva e relâmpagos --- */
+function sceneHero(S){
+  if (!S) return; const g = resetStage(S);
+  S.scene.fog = null;
+  { const c = document.createElement("canvas"); c.width = 4; c.height = 256; const x = c.getContext("2d"), gr = x.createLinearGradient(0, 0, 0, 256);
+    gr.addColorStop(0, "#03060a"); gr.addColorStop(0.55, "#0d1722"); gr.addColorStop(1, "#1b2836"); x.fillStyle = gr; x.fillRect(0, 0, 4, 256);
+    S.scene.background?.dispose?.(); S.scene.background = new THREE.CanvasTexture(c); S.scene.background.colorSpace = THREE.SRGBColorSpace; }
+  if (S.bloom){ S.bloom.strength = 0.9; S.bloom.threshold = 0.7; S.bloom.radius = 0.6; }
+  g.add(new THREE.AmbientLight(0x6f86a0, 0.6));
+  const rnd = (() => { let x = 3; return () => (x = (x * 16807) % 2147483647) / 2147483647; })();
+  // camadas de nuvem: sprites macios que deslizam devagar
+  const layers = [];
+  for (let L = 0; L < 3; L++){
+    const grp = new THREE.Group(); grp.position.z = -L * 4; g.add(grp);
+    const m = new THREE.SpriteMaterial({ map:softTex(), color:new THREE.Color(["#5a6d80","#3c4c5e","#26333f"][L]), transparent:true, opacity:[0.6,0.75,0.9][L], depthWrite:false });
+    const puffs = [];
+    for (let i = 0; i < 42; i++){ const sp = new THREE.Sprite(m); const x = -26 + rnd() * 52, y = 2.2 + rnd() * 3.6 - L * 0.4; sp.position.set(x, y, rnd()); sp.scale.setScalar(3.2 + rnd() * 4 + L); grp.add(sp); puffs.push(sp); }
+    layers.push({ grp, puffs, mat:m, speed:0.12 + (2 - L) * 0.08, base:m.color.clone() });
+  }
+  // chuva fina
+  const NR = 700, rp = new Float32Array(NR * 3); for (let i = 0; i < NR; i++){ rp[i*3] = -24 + rnd() * 48; rp[i*3+1] = -6 + rnd() * 12; rp[i*3+2] = 2 - rnd() * 6; }
+  const rg = new THREE.BufferGeometry(); rg.setAttribute("position", new THREE.BufferAttribute(rp, 3));
+  const rain = new THREE.Points(rg, new THREE.PointsMaterial({ size:0.05, color:new THREE.Color("#9fc4ff"), transparent:true, opacity:0.45, depthWrite:false })); g.add(rain);
+  // relâmpago
+  const boltM = new THREE.MeshBasicMaterial({ color:hdr("#eef4ff", 7) }); let bolt = null;
+  const newBolt = () => { if (bolt){ g.remove(bolt); bolt.geometry.dispose(); }
+    const pts = []; let x = 4 + rnd() * 14, y = 3.2; while (y > -7){ pts.push(new THREE.Vector3(x, y, -1)); y -= 0.5 + rnd() * 0.7; x += (rnd() - 0.5) * 1.4; }
+    bolt = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.05), 60, 0.05, 5, false), boltM); bolt.visible = false; g.add(bolt); return x; };
+  let boltX = newBolt();
+  const flash = new THREE.PointLight(0xcfe0ff, 0, 40); flash.position.set(boltX, 3, 2); g.add(flash);
+  const hero = $("#hero"); let next = 1.5, last = -9;
+  S.camera.fov = 50; S.camera.updateProjectionMatrix(); S.target.set(0, 0, 0); S.dist = 14; S.el = 0.02; S.az = 0;
+  S.onResize = () => { const a = S.camera.aspect; S.dist = clamp(24 / a, 10, 22); };
+  S.onResize();
+  S.frame = (t) => {
+    const rm = reduceMotion ? 0 : 1;
+    layers.forEach(Ly => Ly.puffs.forEach(p => { p.position.x += Ly.speed * 0.016 * rm; if (p.position.x > 28) p.position.x = -28; }));
+    if (rm){ const a = rain.geometry.attributes.position; for (let i = 0; i < NR; i++){ let y = a.getY(i) - 0.22, x = a.getX(i) - 0.04; if (y < -6){ y = 6; x = -24 + Math.random() * 48; } a.setY(i, y); a.setX(i, x); } a.needsUpdate = true; }
+    if (rm && t > next){ last = t; next = t + 3 + Math.random() * 5; boltX = newBolt(); flash.position.x = boltX; }
+    const dt = t - last, on = rm && (dt < 0.07 || (dt > 0.13 && dt < 0.2) || (dt > 0.28 && dt < 0.33));
+    if (bolt) bolt.visible = on; flash.intensity = on ? 160 : 0;
+    layers.forEach((Ly, i) => Ly.mat.color.copy(Ly.base).multiplyScalar(on ? 2.6 - i * 0.4 : 1));
+    hero.classList.toggle("flash", on);
+  };
+}
+
+/* ====================== hora a hora (degraus) ====================== */
+const V = { mode: innerWidth < 640 ? 24 : 72, sel: null };
+const LANES = [
+  { key:"gust", name:"Vento", unit:"km/h", sub:"rajada", val:h => h.v.gust, thr:() => CFG.thr.gust, min:40 },
+  { key:"rain", name:"Chuva", unit:"mm", sub:"em 24 horas", val:h => h.v.rain24, thr:() => CFG.thr.rain24, min:20 },
+  { key:"storm", name:"Tempestade", unit:"J/kg", sub:"energia", val:h => h.v.cape, thr:() => CFG.thr.cape, min:1200 },
+  { key:"cyclone", name:"Pressão", unit:"hPa", sub:"queda em 24 horas", val:h => Math.max(0, h.v.pfall ?? 0), thr:() => CFG.thr.pfall, min:4, dec:1 },
+];
+function tlView(){ return lastA ? lastA.timeline.slice(0, V.mode) : []; }
+function defaultSel(tl){ let best = 0, bs = -1; tl.forEach((h,j) => { const m = Math.max(h.s.gust, h.s.rain, h.s.storm); if (m >= 1 && m > bs){ bs = m; best = j; } }); return best; }
+const HC = { geo:null, hover:-1 };
+function initHourly(){
+  const box = $("#hstage"), cv = $("#hcanvas");
+  new ResizeObserver(() => drawHourly()).observe(box);
+  const at = e => { const g = HC.geo; if (!g) return -1; const r = cv.getBoundingClientRect(); const x = e.clientX - r.left; const j = Math.floor((x - g.x0) / g.bw); return j >= 0 && j < g.N ? j : -1; };
+  let drag = false;
+  box.addEventListener("pointerdown", e => { const j = at(e); if (j >= 0){ drag = true; box.setPointerCapture(e.pointerId); selectHour(j); } });
+  box.addEventListener("pointermove", e => { const j = at(e); if (drag && j >= 0 && j !== V.sel) selectHour(j); if (HC.hover !== j){ HC.hover = j; drawHourly(); } showHourTip(e, j); });
+  box.addEventListener("pointerup", () => drag = false);
+  box.addEventListener("pointerleave", () => { HC.hover = -1; $("#htip").hidden = true; drawHourly(); });
+  box.addEventListener("keydown", e => { if (e.key === "ArrowRight"){ e.preventDefault(); selectHour(V.sel + 1); } if (e.key === "ArrowLeft"){ e.preventDefault(); selectHour(V.sel - 1); } });
+  return true;
+}
+function showHourTip(e, j){
+  const tip = $("#htip"), h = tlView()[j]; if (!h){ tip.hidden = true; return; }
+  tip.innerHTML = `<b>${esc(cap1(weekday(h.t)))}, ${hourOf(h.t)}</b> · ${LEVEL_NAMES[h.l]}<br>Rajada ${nf(h.v.gust)} km/h · chuva ${nf(h.v.rain1,1)} mm<br>Energia ${nf(h.v.cape)} J/kg · vento em altura ${nf(h.v.shear)} m/s`;
+  tip.hidden = false; const r = $("#hstage").getBoundingClientRect();
+  let x = e.clientX - r.left + 14, y = e.clientY - r.top + 14;
+  if (x + tip.offsetWidth > r.width - 8) x = e.clientX - r.left - tip.offsetWidth - 14; if (y + tip.offsetHeight > r.height - 8) y = e.clientY - r.top - tip.offsetHeight - 14;
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+function drawHourly(){
+  const tl = tlView(), cv = $("#hcanvas"), box = $("#hstage"); if (!tl.length || !cv) return;
+  const W = box.clientWidth, Hh = box.clientHeight, dpr = Math.min(2, devicePixelRatio || 1);
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(Hh * dpr)){ cv.width = Math.round(W * dpr); cv.height = Math.round(Hh * dpr); }
+  const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, Hh);
+  const narrow = W < 560, x0 = narrow ? 86 : 112, x1 = W - (narrow ? 40 : 60), top = 32, bottom = 42, gap = 14, NL = LANES.length;
+  const N = tl.length, bw = (x1 - x0) / N, laneH = (Hh - top - bottom - gap * (NL - 1)) / NL;
+  HC.geo = { x0, bw, N };
+  const LV = [css("--lv0"), css("--lv1"), css("--lv2"), css("--lv3")], mono = css("--f-mono"), sans = css("--f-body");
+  const sel = V.sel ?? 0, hov = HC.hover, ACC = css("--accent");
+  const hexA = (hex, a) => { const h = hex.replace("#", ""); const n = parseInt(h.length === 3 ? h.replace(/./g, c => c + c) : h, 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; };
+  const X = j => x0 + j * bw + bw / 2;
+  // dias
+  let lastR = -99; ctx.textBaseline = "middle";
+  tl.forEach((h, j) => { if (j === 0 || h.t.slice(11,13) === "00"){
+    const x = x0 + j * bw;
+    if (j){ const g = ctx.createLinearGradient(0, 10, 0, Hh - bottom); g.addColorStop(0, "rgba(120,180,210,0)"); g.addColorStop(.2, "rgba(120,180,210,.28)"); g.addColorStop(1, "rgba(120,180,210,.05)"); ctx.fillStyle = g; ctx.fillRect(x, 10, 1, Hh - bottom - 6); }
+    const r = rel(h.t); ctx.font = `600 11px ${sans}`; ctx.textAlign = "left";
+    let txt = (j === 0 ? "▸ agora" : (r || weekday(h.t))).toUpperCase();
+    if (x + 6 < lastR + 6) return; ctx.fillStyle = j === 0 ? ACC : "#9fb3c4"; ctx.letterSpacing = "1px"; ctx.fillText(txt, x + 6, 15); ctx.letterSpacing = "0px"; lastR = x + 6 + ctx.measureText(txt).width; } });
+  // coluna sob o dedo
+  if (hov >= 0 && hov !== sel){ ctx.fillStyle = "rgba(255,255,255,.04)"; ctx.fillRect(x0 + hov * bw, top - 6, bw, Hh - top - bottom + 8); }
+  LANES.forEach((L, k) => {
+    const y0 = top + k * (laneH + gap), yb = y0 + laneH, thr = L.thr();
+    const vals = tl.map(h => { const v = L.val(h); return v == null ? null : Math.max(0, v); }), dmax = Math.max(0, ...vals.filter(v => v != null));
+    const raw = Math.max(dmax * 1.2, thr[0] * 1.15, L.min * 0.25);
+    const mag = Math.pow(10, Math.floor(Math.log10(raw))), vmax = Math.ceil(raw / (mag / 2)) * (mag / 2);
+    const Y = v => yb - clamp((v ?? 0) / vmax, 0, 1) * (laneH - 6);
+    const zoneOf = v => v >= thr[2] ? 3 : v >= thr[1] ? 2 : v >= thr[0] ? 1 : 0;
+    // fundo: faixas de zona bem suaves acima de cada limite
+    ctx.fillStyle = "rgba(120,180,210,.03)"; ctx.fillRect(x0, y0, x1 - x0, laneH);
+    thr.forEach((t, i) => { if (t >= vmax) return; const ya = Y(t), yz = i < 2 && thr[i + 1] < vmax ? Y(thr[i + 1]) : y0; ctx.fillStyle = hexA(LV[i + 1], 0.035); ctx.fillRect(x0, yz, x1 - x0, ya - yz); });
+    // linhas de limite
+    let off = [];
+    thr.forEach((t, i) => { if (t > vmax){ off.push([t, i]); return; } const y = Math.round(Y(t)) + 0.5;
+      ctx.strokeStyle = hexA(LV[i + 1], 0.45); ctx.setLineDash([3, 5]); ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = LV[i + 1]; ctx.font = `600 ${narrow ? 9 : 10}px ${mono}`; ctx.textAlign = "left"; ctx.fillText(nf(t), x1 + 5, y); });
+    if (off.length){ ctx.font = `600 10px ${sans}`; ctx.textAlign = "right"; let xr = x1 - 6;
+      off.slice().reverse().forEach(([t, i]) => { const txt = narrow ? nf(t) : `${["atenção","alerta","severo"][i]} ${nf(t)}`; ctx.fillStyle = LV[i + 1]; ctx.fillText(txt, xr, y0 + 9); xr -= ctx.measureText(txt).width + 8; });
+      ctx.fillStyle = "#6f8899"; ctx.fillText(narrow ? "↑" : "↑ acima da escala:", xr, y0 + 9); }
+    // gradiente vertical com troca de cor exatamente nos limites
+    const grad = (alphaTop, alphaBot) => { const g = ctx.createLinearGradient(0, yb, 0, y0); const st = (y) => clamp((yb - y) / (yb - y0), 0, 1);
+      let prev = 0; const stops = [[0, 0]]; thr.forEach((t, i) => { if (t < vmax){ const p = st(Y(t)); stops.push([p, i]); stops.push([p, i + 1]); } });
+      stops.push([1, stops[stops.length - 1][1]]);
+      stops.forEach(([pp, z]) => g.addColorStop(pp, hexA(LV[z], alphaBot + (alphaTop - alphaBot) * pp))); return g; };
+    // curva suave
+    const pts = vals.map((v, j) => v == null ? null : [X(j), Y(v)]).filter(Boolean);
+    if (pts.length > 1){
+      const path = () => { ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let q = 1; q < pts.length; q++){ const [xa, ya] = pts[q - 1], [xb, yb2] = pts[q]; const xm = (xa + xb) / 2; ctx.bezierCurveTo(xm, ya, xm, yb2, xb, yb2); } };
+      path(); ctx.lineTo(pts[pts.length - 1][0], yb); ctx.lineTo(pts[0][0], yb); ctx.closePath(); ctx.fillStyle = grad(0.24, 0.02); ctx.fill();
+      path(); ctx.strokeStyle = grad(0.9, 0.9); ctx.lineWidth = 1.8; ctx.stroke(); ctx.lineWidth = 1;
+    }
+    // base
+    ctx.strokeStyle = "rgba(160,190,210,.16)"; ctx.beginPath(); ctx.moveTo(x0, yb + 0.5); ctx.lineTo(x1, yb + 0.5); ctx.stroke();
+    // ponto da hora escolhida
+    const v = vals[sel];
+    if (v != null){ const z = zoneOf(v), cx = X(sel), cy = Y(v), c = z ? LV[z] : LV[0];
+      ctx.fillStyle = hexA(c, 0.18); ctx.beginPath(); ctx.arc(cx, cy, 7, 0, 6.29); ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.shadowColor = c; ctx.shadowBlur = 5; ctx.beginPath(); ctx.arc(cx, cy, 3.5, 0, 6.29); ctx.fill(); ctx.shadowBlur = 0; }
+    // nome e valor
+    ctx.textAlign = "right"; ctx.fillStyle = "#e6eef4"; ctx.font = `600 ${narrow ? 11 : 12}px ${sans}`; ctx.letterSpacing = "1px"; ctx.fillText(L.name.toUpperCase(), x0 - 10, y0 + 9); ctx.letterSpacing = "0px";
+    ctx.fillStyle = "#6f8899"; ctx.font = `500 ${narrow ? 10 : 11}px ${sans}`; if (narrow) ctx.fillText(L.unit, x0 - 10, y0 + 23); else { ctx.fillText(L.sub, x0 - 10, y0 + 24); ctx.fillStyle = "#55707f"; ctx.font = `500 10px ${mono}`; ctx.fillText(L.unit, x0 - 10, y0 + 38); }
+    if (v != null){ const z = zoneOf(v); ctx.fillStyle = z ? LV[z] : "#ffffff"; ctx.shadowColor = z ? LV[z] : ACC; ctx.shadowBlur = 3; ctx.font = `600 ${narrow ? 15 : 18}px ${mono}`; ctx.fillText(nf(v, L.dec || 0), x0 - 10, yb - 8); ctx.shadowBlur = 0; }
+  });
+  // cursor da hora escolhida
+  const sx = Math.round(X(sel)) + 0.5, cg = ctx.createLinearGradient(0, top - 8, 0, Hh - bottom);
+  cg.addColorStop(0, hexA(ACC, 0.9)); cg.addColorStop(1, hexA(ACC, 0.25)); ctx.strokeStyle = cg; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(sx, top - 8); ctx.lineTo(sx, Hh - bottom + 4); ctx.stroke(); ctx.lineWidth = 1;
+  ctx.fillStyle = ACC; ctx.beginPath(); ctx.moveTo(sx - 5, top - 12); ctx.lineTo(sx + 5, top - 12); ctx.lineTo(sx, top - 5); ctx.fill();
+  // eixo das horas
+  ctx.fillStyle = "#6f8899"; ctx.font = `500 10px ${mono}`; ctx.textAlign = "center"; const step = N > 30 ? (W < 700 ? 12 : 6) : (W < 500 ? 6 : 3);
+  tl.forEach((h, j) => { const hr = +h.t.slice(11,13); if (hr % step === 0){ const x = X(j); ctx.fillRect(x - 0.5, Hh - bottom + 2, 1, 4); ctx.fillText(h.t.slice(11,16), x, Hh - bottom + 16); } });
+  const st = tl[sel]; const label = `${weekday(st.t).toUpperCase()} ${hourOf(st.t)}`; ctx.font = `600 11px ${sans}`; const tw = ctx.measureText(label).width + 16;
+  const lx = clamp(sx - tw / 2, 2, W - tw - 2); ctx.fillStyle = ACC; ctx.shadowColor = ACC; ctx.shadowBlur = 4;
+  ctx.beginPath(); ctx.roundRect ? ctx.roundRect(lx, Hh - 19, tw, 16, 8) : ctx.rect(lx, Hh - 19, tw, 16); ctx.fill(); ctx.shadowBlur = 0;
+  ctx.fillStyle = "#06120e"; ctx.textAlign = "center"; ctx.fillText(label, lx + tw / 2, Hh - 11);
+  $("#hstage").setAttribute("aria-valuemax", N - 1); $("#hstage").setAttribute("aria-valuenow", sel); $("#hstage").setAttribute("aria-valuetext", whenTitle(st.t));
+}
+function renderHourDetail(){
+  const tl = tlView(); if (!tl.length) return;
+  const h = tl[V.sel] ?? tl[0]; const v = h.v;
+  const chips = (k, fmt, val) => agreeHTML(h.per.map(p => ({ name:p.name, lv:p.lv[k], v:val(p) })), h.lv[k], fmt, true);
+  const pf = v.pfall != null && v.pfall > 0.5 ? `, caiu ${nf(v.pfall,1)} hPa nas últimas 24 horas` : v.pfall != null && v.pfall < -0.5 ? `, subiu ${nf(-v.pfall,1)} hPa nas últimas 24 horas` : ", estável";
+  $("#hour-detail").innerHTML = `
+    <div><div class="label">${V.sel === 0 ? "Agora" : "Hora escolhida"}</div><div class="when">${esc(whenTitle(h.t))}</div></div>
+    <span class="pill" data-lv="${h.l}" style="justify-self:start">${LEVEL_NAMES[h.l]}</span>
+    <div class="hrow" data-lv="${h.lv.gust}">
+      <div class="k"><b>Vento ${termBtn("rajada")}</b><span class="label">${LEVEL_NAMES[h.lv.gust]}</span></div>
+      <p>Rajadas de até <b>${nf(v.gust)} km/h</b>, ${carCompare(v.gust ?? 0)}.</p>
+      <p class="eff">${EFFECT.gust[h.lv.gust]}</p>
+      ${chips("gust", x => nf(x), p => p.gust)}
+    </div>
+    <div class="hrow" data-lv="${h.lv.rain}">
+      <div class="k"><b>Chuva ${termBtn("acumulado")}</b><span class="label">${LEVEL_NAMES[h.lv.rain]}</span></div>
+      <p><b>${nf(v.rain1,1)} mm</b> nesta hora · <b>${nf(v.rain24)} mm</b> nas 24 horas até aqui (${nf(v.rain24)} ${Math.round(v.rain24 ?? 0) === 1 ? "litro" : "litros"} por m²).</p>
+      ${bucketsHTML(v.rain24)}
+      <p class="eff">${EFFECT.rain[h.lv.rain]}</p>
+      ${chips("rain", x => `${nf(x.rain1, 1)} · ${nf(x.r24)} mm`, p => p)}
+      <p class="eff chip-key">cada modelo: mm <b>nesta hora</b> · mm <b>em 24 horas</b>. Os números em destaque acima são o 2º maior de cada coluna, ou seja, o que pelo menos 2 modelos preveem.</p>
+    </div>
+    <div class="hrow" data-lv="${h.lv.storm}">
+      <div class="k"><b>Tempestade ${termBtn("supercelula")}</b><span class="label">${LEVEL_NAMES[h.lv.storm]}</span></div>
+      <p>Energia ${capeWord(v.cape)} (${nf(v.cape)} J/kg) ${termBtn("cape")} e vento em altura ${shearWord(v.shear)} (${nf(v.shear)} m/s) ${termBtn("shear")}, no mesmo modelo e na mesma hora.</p>
+      <p class="eff">${EFFECT.storm[h.lv.storm]}</p>
+      ${chips("storm", x => `${nf(x.cape)} · ${nf(x.shear)} m/s`, p => p)}
+    </div>
+    <p class="status">Temperatura ${nf(v.temp,1)} °C · pressão ${nf(v.pres,1)} hPa${pf}.</p>
+    <div class="nav"><button class="btn" type="button" id="prevH">← Hora anterior</button><button class="btn" type="button" id="nextH">Próxima hora →</button></div>`;
+  $("#prevH").onclick = () => selectHour(V.sel - 1);
+  $("#nextH").onclick = () => selectHour(V.sel + 1);
+}
+function selectHour(j){ const tl = tlView(); if (!tl.length) return; V.sel = clamp(j, 0, tl.length - 1); renderHourDetail(); drawHourly(); }
+function renderHourly(){
+  const tl = tlView(); if (!tl.length) return;
+  if (V.sel == null || V.sel >= tl.length) V.sel = defaultSel(tl);
+  $("#m24").setAttribute("aria-pressed", V.mode === 24); $("#m72").setAttribute("aria-pressed", V.mode === 72);
+  drawHourly(); renderHourDetail();
+  $("#hsrc").innerHTML = srcLine(lastA, "curva = valor que pelo menos 2 modelos atingem na mesma hora");
+}
+document.querySelectorAll("[data-jump]").forEach(b => b.onclick = () => {
+  const tl = tlView(); const k = b.dataset.jump;
+  if (k === "now") selectHour(0); else if (k === "worst") selectHour(defaultSel(tl)); else selectHour(V.sel + (+k));
+});
+$("#m24").onclick = () => { V.mode = 24; V.sel = null; renderHourly(); };
+$("#m72").onclick = () => { V.mode = 72; V.sel = null; renderHourly(); };
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => drawHourly());
+
+/* ====================== comparar dias ====================== */
+const D = { center:null, v:"temp", pin:null, hide:[false,false,true] }; let DS = null;   // amanhã começa desligado; o botão liga
+const DAYCOL = ["#8fa6bf", "#f2b54a", "#b18cff"];   // anterior: aço · escolhido: ouro · seguinte: violeta
+const DVAR = {
+  temp:{ key:"temperature_2m", unit:"°C", name:"temperatura", dec:1, more:["mais quente","mais frio"] },
+  gust:{ key:"wind_gusts_10m", unit:"km/h", name:"rajada", dec:0, more:["a mais","a menos"] },
+  rain:{ key:"precipitation", unit:"mm", name:"chuva", dec:1, more:["a mais","a menos"] },
+};
+function trioDays(){ const A = lastA; let i = clamp(A.days.indexOf(D.center), 1, A.days.length - 2); D.center = A.days[i]; return [A.days[i-1], A.days[i], A.days[i+1]]; }
+const dayName = d => { const r = rel(d + "T12:00"); return cap1(r ? `${r}, ${weekday(d)}` : weekday(d)); };
+function dayHourly(d, key){ const A = lastA; return Array.from({ length:24 }, (_, h) => { const i = A.times.indexOf(`${d}T${String(h).padStart(2,"0")}:00`); return i < 0 ? null : mid(A.ok.map(m => m.s[key][i]), { temperature_2m:FLOOR.temp, wind_gusts_10m:FLOOR.gust, precipitation:FLOOR.mm }[key] ?? 0); }); }
+function renderDays(){
+  const A = lastA; if (!A || A.days.length < 3) return;
+  const today = dayKey(new Date());
+  if (!D.center || !A.days.includes(D.center)) D.center = A.days.includes(today) ? today : A.days[1];
+  const trio = trioDays();
+  $("#days-nav").innerHTML = A.days.slice(1, -1).map(d => `<button type="button" data-d="${d}" aria-pressed="${d === D.center}">${esc(dayName(d))}</button>`).join("");
+  $("#days-nav").querySelectorAll("button").forEach(b => b.onclick = () => { D.center = b.dataset.d; D.pin = null; renderDays(); });
+  const st = trio.map(d => A.dayStats[d]); const mid = st[1];
+  const delta = (v, ref, unit, d, words) => {
+    if (v == null || ref == null) return ""; const x = v - ref; if (Math.abs(x) < (d ? 0.5 : 1)) return `<span class="delta eq">igual</span>`;
+    return `<span class="delta ${x > 0 ? "up" : "down"}">${x > 0 ? "▲" : "▼"} ${nf(Math.abs(x), d)} ${unit} ${x > 0 ? words[0] : words[1]}</span>`; };
+  const roles = ["Dia anterior", "Dia escolhido", "Dia seguinte"];
+  $("#trio").innerHTML = trio.map((d, k) => { const s = st[k]; const isMid = k === 1;
+    const dd = (v, refv, u, dec, w) => isMid ? "" : delta(v, refv, u, dec, w);
+    return `<div class="dcard ${isMid ? "mid" : ""}">
+      <div><div class="label">${roles[k]}${d < today ? " · simulação" : ""}</div><div class="dname">${esc(dayTitle(d))}</div></div>
+      <div class="drow"><span class="label">Temperatura</span><span><span class="num">${nf(s.tmin)}° a ${nf(s.tmax)}°</span>${dd(s.tmax, mid.tmax, "°C", 1, ["mais quente","mais frio"])}</span></div>
+      <div class="drow"><span class="label">Rajada máxima</span><span><span class="num">${nf(s.gmax)} km/h</span>${dd(s.gmax, mid.gmax, "km/h", 0, ["a mais","a menos"])}</span></div>
+      <div class="drow"><span class="label">Chuva</span><span><span class="num">${nf(s.rain,1)} mm</span>${dd(s.rain, mid.rain, "mm", 1, ["a mais","a menos"])}<br><span class="muted" style="font-size:.82rem">${nf(s.rainH)} ${Math.round(s.rainH ?? 0) === 1 ? "hora" : "horas"} com chuva · ${nf(s.rain)} ${Math.round(s.rain ?? 0) === 1 ? "litro" : "litros"} por m²</span></span></div>
+      ${bucketsHTML(s.rain)}
+    </div>`; }).join("");
+  $("#dsrc").innerHTML = srcLine(A, "cada valor = mediana dos modelos naquela hora, sem o modelo que destoar muito dos outros; dias passados são simulação, não medição");
+  $("#dlegend").innerHTML = trio.map((d, k) => `<button type="button" data-k="${k}" aria-pressed="${!D.hide[k]}" style="--dc:${DAYCOL[k]}"><i class="sw"></i>${esc(dayName(d))} <span class="muted">${["anterior","escolhido","seguinte"][k]}</span></button>`).join("");
+  $("#dlegend").querySelectorAll("button").forEach(b => b.onclick = () => { const k = +b.dataset.k; D.hide[k] = !D.hide[k]; if (D.hide.every(Boolean)) D.hide[k] = false; renderDays(); });
+  if (DS) buildDays(trio); else $("#dstage").hidden = true;
+  renderDayPin(trio);
+  if ($("details.flat").open) renderDayChart(trio);
+}
+function dayValuesAt(trio, h){ const v = DVAR[D.v]; return trio.map(d => dayHourly(d, v.key)[h]); }
+function dayTipHTML(trio, h){
+  const v = DVAR[D.v]; const vals = dayValuesAt(trio, h); const mid = vals[1];
+  const row = (k) => { const x = vals[k]; let dl = "";
+    if (k !== 1 && x != null && mid != null){ const df = x - mid; dl = Math.abs(df) < (v.dec ? 0.3 : 1) ? ` <span class="delta eq">igual a hoje</span>` : ` <span class="delta ${df > 0 ? "up" : "down"}">${df > 0 ? "▲" : "▼"} ${nf(Math.abs(df), v.dec)} ${v.more[df > 0 ? 0 : 1]}</span>`; }
+    return `<span><i class="sw" style="background:${DAYCOL[k]}"></i> <b>${esc(dayName(trio[k]))}:</b> <span class="num">${nf(x, v.dec)} ${v.unit}</span>${dl}</span>`; };
+  return `<b>Às ${String(h).padStart(2,"0")}:00</b> · ${v.name}<br>${[0,1,2].filter(k => !D.hide[k]).map(row).join("<br>")}`;
+}
+function renderDayPin(trio){
+  const box = $("#dpin"); if (D.pin == null){ box.innerHTML = ""; return; }
+  box.innerHTML = `<div class="pinbox">${dayTipHTML(trio, D.pin).replace(/<br>/g, " ")} <button class="btn" type="button" id="unpin" style="margin-left:auto;padding:3px 10px">Soltar hora</button></div>`;
+  $("#unpin").onclick = () => { D.pin = null; renderDayPin(trio); if (DS) DS.pinH = null; };
+}
+function buildDays(trio){
+  const S = DS; const g = resetStage(S); lights(S, { span:22 });
+  const V0 = DVAR[D.v]; const data = trio.map(d => dayHourly(d, V0.key));
+  const all = data.filter((_, k) => !D.hide[k]).flat().filter(v => v != null); if (!all.length) all.push(0, 1);
+  let lo, hi, step;
+  if (D.v === "temp"){ lo = Math.floor(Math.min(...all) / 5) * 5; hi = Math.ceil(Math.max(...all) / 5) * 5; if (hi - lo < 10) hi = lo + 10; step = 5; }
+  else if (D.v === "gust"){ lo = 0; hi = Math.max(80, Math.ceil(Math.max(...all) / 20) * 20); step = 20; }
+  else { lo = 0; hi = Math.max(4, Math.ceil(Math.max(...all) / 2) * 2); step = hi > 20 ? 5 : hi > 8 ? 2 : 1; }
+  const H = 4.6, Y = v => clamp((v - lo) / (hi - lo), 0, 1.05) * H;
+  const XS = 1.15, X = h => (h - 11.5) * XS, ROWZ = [-5.4, 0, 5.4];
+  // celular: sem etiquetas de dia dentro da cena (ficam pequenas e se sobrepõem); nome e valor vão para os botões da legenda
+  const narrow = S.host.clientWidth < 640;
+  $("#dlegend").querySelectorAll(".dv").forEach(e => e.remove());
+  const LV = [C("--lv0"), C("--lv1"), C("--lv2"), C("--lv3")];
+  // chão espelhado com grade de horas
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(70, 50), new THREE.MeshStandardMaterial({ color:C("--scene-ground"), roughness:0.45, metalness:0.15 })); floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; g.add(floor);
+  const gridMat = new THREE.MeshBasicMaterial({ color:C("--line") });
+  for (let h = 0; h <= 24; h += 3){ const ln = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.01, 15.5), gridMat); ln.position.set(X(h) - XS/2, 0.006, 0); g.add(ln);
+    if (h < 24 && (!narrow || h % 6 === 0)) label(S, `${String(h).padStart(2,"0")}:00`, "hour", new THREE.Vector3(X(h), 0, 8.6)); }
+  // parede do fundo com régua
+  const wall = new THREE.Mesh(new THREE.PlaneGeometry(24 * XS + 1, H + 0.8), new THREE.MeshStandardMaterial({ color:C("--scene-ground"), roughness:0.9, transparent:true, opacity:0.8 }));
+  wall.position.set(0, (H + 0.8) / 2, -8.4); g.add(wall);
+  for (let v = lo; v <= hi + 1e-9; v += step){ const y = Y(v);
+    const ln = new THREE.Mesh(new THREE.BoxGeometry(24 * XS + 1, 0.025, 0.02), gridMat); ln.position.set(0, y, -8.35); g.add(ln);
+    label(S, `${nf(v)} ${V0.unit}`, "tick", new THREE.Vector3(X(0) - XS/2 - 0.6, y, -8.35), "right"); }
+  if (D.v === "gust") CFG.thr.gust.forEach((v, i) => { if (v > hi) return; const ln = new THREE.Mesh(new THREE.BoxGeometry(24 * XS + 1, 0.05, 0.03), new THREE.MeshBasicMaterial({ color:LV[i+1].clone().multiplyScalar(1.6) })); ln.position.set(0, Y(v), -8.3); g.add(ln);
+    label(S, ["atenção","alerta","severo"][i], "tick", new THREE.Vector3(X(23) + XS/2 + 0.5, Y(v), -8.3), "left").el.style.color = "#" + LV[i+1].getHexString(); });
+  // uma fita por dia, cada dia com sua cor
+  const rows = [], white = new THREE.Color("#ffffff");
+  trio.forEach((d, k) => {
+    if (D.hide[k]) { rows.push(null); return; }
+    const z = ROWZ[k], vals = data[k], isMid = k === 1, dc = new THREE.Color(DAYCOL[k]);
+    const row = new THREE.Group(); row.position.z = z; g.add(row); rows.push(row);
+    const depth = isMid ? 1.6 : 1.1; let extra = "";
+    if (D.v === "rain"){
+      vals.forEach((v, h) => { if (v == null) return; const hh = Math.max(0.03, Y(v));
+        const c = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 1, 24), phys(dc, { roughness:0.15, transmission:0.25, thickness:0.6, transparent:true, opacity:isMid ? 0.95 : 0.75, emissive:dc, emissiveIntensity: v >= 2 ? 0.5 : 0.15 }));
+        c.geometry.translate(0, 0.5, 0); c.scale.y = hh; c.position.set(X(h), 0, 0); c.castShadow = true; row.add(c); });
+      const tot = vals.reduce((a, v) => a + (v ?? 0), 0); extra = `${nf(tot, 1)} mm no dia`;
+    } else {
+      const pts = vals.map((v, h) => new THREE.Vector2(X(h), Y(v ?? lo)));
+      const sp = new THREE.SplineCurve(pts).getPoints(160);
+      const shape = new THREE.Shape(); shape.moveTo(sp[0].x, 0); sp.forEach(q => shape.lineTo(q.x, Math.max(0.02, q.y))); shape.lineTo(sp[sp.length-1].x, 0); shape.lineTo(sp[0].x, 0);
+      const geo = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled:true, bevelThickness:0.08, bevelSize:0.06, bevelSegments:3, curveSegments:1 });
+      geo.translate(0, 0, -depth/2);
+      const pos = geo.attributes.position, col = new Float32Array(pos.count * 3);
+      for (let i = 0; i < pos.count; i++){ const f = clamp(pos.getY(i) / H, 0, 1); const c = dc.clone().multiplyScalar(0.55 + f * 0.45).lerp(white, f * 0.18); col[i*3] = c.r; col[i*3+1] = c.g; col[i*3+2] = c.b; }
+      geo.setAttribute("color", new THREE.BufferAttribute(col, 3)); geo.computeVertexNormals();
+      const ribbon = new THREE.Mesh(geo, phys(0xffffff, { vertexColors:true, roughness:0.22, clearcoat:1, transparent:!isMid, opacity:isMid ? 1 : 0.62 }));
+      ribbon.castShadow = true; ribbon.receiveShadow = true; row.add(ribbon);
+      // fio de luz na crista, na cor do dia
+      const tube = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(sp.map(q => new THREE.Vector3(q.x, Math.max(0.02, q.y) + 0.06, depth/2 + 0.1))), 200, isMid ? 0.05 : 0.035, 6, false),
+        new THREE.MeshBasicMaterial({ color:dc.clone().multiplyScalar(isMid ? 2.4 : 1.6) }));
+      row.add(tube);
+      const iMax = vals.reduce((a, v, i) => (v ?? -1e9) > (vals[a] ?? -1e9) ? i : a, 0);
+      // máximo marcado por um ponto de luz na crista; o número vai junto do nome do dia (sem etiquetas soltas que se sobrepõem)
+      const pin = new THREE.Mesh(new THREE.SphereGeometry(isMid ? 0.2 : 0.16, 18, 12), new THREE.MeshBasicMaterial({ color:dc.clone().multiplyScalar(2.6) }));
+      pin.position.set(X(iMax), Math.max(0.05, Y(vals[iMax])) + 0.12, depth/2 + 0.1); row.add(pin);
+      extra = `máx ${nf(vals[iMax], V0.dec)} ${V0.unit}`;
+      if (D.v === "temp"){ const iMin = vals.reduce((a, v, i) => (v ?? 1e9) < (vals[a] ?? 1e9) ? i : a, 0); extra += ` · mín ${nf(vals[iMin], V0.dec)} ${V0.unit}`; }
+    }
+    // nome do dia nas duas pontas, com a cor do dia
+    const nm = `<i class="sw" style="background:${DAYCOL[k]}"></i>${esc(dayName(d))}`;
+    const lb = $(`#dlegend [data-k="${k}"]`); if (narrow && lb && extra) lb.insertAdjacentHTML("beforeend", `<span class="dv">${extra}</span>`);
+    if (narrow) return;
+    const L1 = label(S, nm, "dayname", new THREE.Vector3(X(0) - XS/2 - 0.4, 0.2, z + 0.4), "right"); L1.el.style.borderColor = DAYCOL[k];
+    const L2 = label(S, `${nm}${extra ? `<small class="dv">${extra}</small>` : ""}`, "dayname", new THREE.Vector3(X(23) + XS/2 + 0.4, 0.2, z + 0.4), "left"); L2.el.style.borderColor = DAYCOL[k];
+  });
+  // agora
+  const today = dayKey(new Date()), ti = trio.indexOf(today);
+  if (ti >= 0 && !D.hide[ti]){ const hNow = +nowKey().slice(11,13); const m = new THREE.Mesh(new THREE.BoxGeometry(0.06, H + 0.6, 0.06), new THREE.MeshBasicMaterial({ color:C("--accent").multiplyScalar(1.8) })); m.position.set(X(hNow), (H + 0.6)/2, ROWZ[ti] + 1.2); g.add(m);
+    label(S, "agora", "now", new THREE.Vector3(X(hNow), H + 0.8, ROWZ[ti] + 1.2)); }
+  // cursor de hora
+  const cursor = new THREE.Mesh(new THREE.BoxGeometry(XS * 0.9, H + 0.6, 15.5), new THREE.MeshBasicMaterial({ color:C("--accent"), transparent:true, opacity:0.1, depthWrite:false }));
+  cursor.geometry.translate(0, (H + 0.6)/2, 0); cursor.visible = false; g.add(cursor);
+  const dots = trio.map((_, k) => { const s = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 14), new THREE.MeshBasicMaterial({ color:new THREE.Color(DAYCOL[k]).multiplyScalar(2.5) })); s.visible = false; g.add(s); return s; });
+  const hits = []; const hitGeo = new THREE.BoxGeometry(XS, 10, 16); hitGeo.translate(0, 5, 0); const hitMat = new THREE.MeshBasicMaterial({ transparent:true, opacity:0, depthWrite:false });
+  for (let h = 0; h < 24; h++){ const b = new THREE.Mesh(hitGeo, hitMat); b.position.set(X(h), 0, 0); b.userData.h = h; g.add(b); hits.push(b); }
+  const showH = h => { if (h == null){ cursor.visible = false; dots.forEach(d => d.visible = false); return; }
+    cursor.visible = true; cursor.position.x = X(h);
+    data.forEach((vals, k) => { const v = vals[h]; dots[k].visible = v != null && !D.hide[k]; if (v != null) dots[k].position.set(X(h), Math.max(0.05, Y(v)) + 0.15, ROWZ[k] + (k === 1 ? 0.9 : 0.65)); }); };
+  const pick = e => { const r = S.renderer.domElement.getBoundingClientRect(); const p = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    const ray = new THREE.Raycaster(); ray.setFromCamera(p, S.camera); const hit = ray.intersectObjects(hits, false)[0]; return hit ? hit.object.userData.h : null; };
+  S.pinH = D.pin;
+  S.onHover = e => { const h = pick(e); const tip = $("#dtip");
+    if (h == null){ tip.hidden = true; showH(S.pinH); return; }
+    showH(h); tip.innerHTML = dayTipHTML(trio, h); tip.hidden = false;
+    const r = S.host.getBoundingClientRect(); let x = e.clientX - r.left + 16, y = e.clientY - r.top + 16;
+    if (x + tip.offsetWidth > r.width - 8) x = e.clientX - r.left - tip.offsetWidth - 16; if (y + tip.offsetHeight > r.height - 8) y = e.clientY - r.top - tip.offsetHeight - 16;
+    tip.style.left = x + "px"; tip.style.top = y + "px"; };
+  S.onLeave = () => { $("#dtip").hidden = true; showH(S.pinH); };
+  S.onPick = e => { const h = pick(e); D.pin = h; S.pinH = h; showH(h); renderDayPin(trio); };
+  showH(D.pin);
+  S.target.set(0, 1.8, 0.4);
+  S.onResize = () => S.host.clientWidth < 640 ? fitWidth(S, 24 * XS / 2 + 1.2, 6, 1.0) : fitWidth(S, 24 * XS / 2 + 5, 7, 1.0); S.onResize();
+  S.frame = (t) => { const p = reduceMotion ? 1 : 1 - Math.pow(1 - clamp((t - 0.05) / 0.9, 0, 1), 3); rows.forEach((r, k) => { if (r) r.scale.y = clamp(p * 1.25 - k * 0.12, 0.001, 1); });
+    dots.forEach(d => d.scale.setScalar(1 + 0.18 * Math.sin(t * 5))); };
+}
+let dayChart = null;
+function renderDayChart(trio){
+  if (!window.Chart) return;
+  dayChart?.destroy();
+  const hours = Array.from({ length:24 }, (_,h) => String(h).padStart(2,"0") + ":00");
+  const V0 = DVAR[D.v];
+  const styles = [ { c:css("--muted"), dash:[6,4], w:1.6 }, { c:css("--accent"), dash:[], w:3 }, { c:css("--cold"), dash:[2,3], w:2 } ];
+  const datasets = trio.map((d, k) => D.v === "rain"
+    ? { type:"bar", label:dayName(d), data:dayHourly(d, V0.key), backgroundColor:styles[k].c, borderRadius:2 }
+    : { type:"line", label:dayName(d), data:dayHourly(d, V0.key), borderColor:styles[k].c, backgroundColor:styles[k].c, borderDash:styles[k].dash, borderWidth:styles[k].w, pointRadius:0, tension:.3 });
+  const o = baseOpts(V0.unit); o.plugins.tooltip.callbacks.title = items => `às ${hours[items[0].dataIndex]}`;
+  dayChart = new Chart($("#c-days"), { type: D.v === "rain" ? "bar" : "line", data:{ labels:hours, datasets }, options:o });
+}
+document.querySelectorAll("#dias .seg button").forEach(b => b.onclick = () => {
+  D.v = b.dataset.var; document.querySelectorAll("#dias .seg button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  if (!lastA) return; const trio = trioDays(); if (DS) buildDays(trio); renderDayPin(trio); if ($("details.flat").open) renderDayChart(trio);
+});
+$("details.flat").addEventListener("toggle", e => { if (e.target.open && lastA) renderDayChart(trioDays()); });
+
+/* ====================== modelos ====================== */
+let MS = null;
+function renderModels(A, E){
+  $("#mgrid").innerHTML = A.models.map(m => {
+    const run = runTxt(m.meta?.last_run_initialisation_time);
+    return `<article class="mcard" style="--mc:${m.color}">
+      <h3>${esc(m.name)} <span class="muted" style="font:500 .8rem var(--f-body)">${esc(m.full)}</span></h3>
+      <div class="org"><b>${esc(m.org)}</b><br><span class="muted">${esc(m.where)}</span></div>
+      <dl>
+        <dt>Quadrado</dt><dd>${esc(m.resTxt)}</dd>
+        <dt>Roda a cada</dt><dd>${m.every} horas</dd>
+        <dt>Prevê até</dt><dd>${nf(m.days, m.days % 1 ? 1 : 0)} dias</dd>
+        <dt>Rodada ${termBtn("rodada")}</dt><dd>${run ? esc(run) : "não informada"}</dd>
+        <dt>Ponto usado</dt><dd>${m.grid ? `${m.grid.lat.toFixed(3)}, ${m.grid.lon.toFixed(3)} · a ${nf(m.grid.km, 1)} km de você` : "—"}</dd>
+        <dt>Status</dt><dd>${m.ok ? `respondeu (${esc(m.usedId)})` : "sem dados agora"}</dd>
+      </dl>
+      <div class="bar" title="Tamanho do quadrado (maior = menos detalhe)"><b style="width:${m.res / 25 * 100}%"></b></div>
+      <p>${esc(m.note)}</p>
+      <a href="${esc(m.url)}" target="_blank" rel="noopener">Site do ${esc(m.name)} ↗</a>
+    </article>`; }).join("");
+  const rows = A.models.map(m => {
+    if (!m.ok) return `<tr><td>${esc(m.name)}</td><td colspan="9" class="muted" style="text-align:left">sem dados para este ponto agora</td></tr>`;
+    // cor = nível de risco, só nas colunas que já são risco por si (bolinha + número, sem fundo pintado)
+    const c = (v, l, d=0) => `<td class="num"><span class="tv" data-lv="${l}">${nf(v,d)}</span></td>`;
+    // ingredientes (energia, vento em altura): sem cor de risco; "▲" quando passam do mínimo para tempestade
+    const ing = (v, thr, d=0) => `<td class="num"><span class="ti${v != null && v >= thr ? " hi" : ""}">${nf(v,d)}</span></td>`;
+    const ic = m.cape.t ? A.times.indexOf(m.cape.t) : -1, shAtCape = ic >= 0 ? m.shear[ic] : null;   // vento em altura na hora de maior energia
+    const why = m.lv.storm ? "" : (m.cape.v ?? 0) >= CFG.thr.cape[0] && (shAtCape ?? 0) < CFG.thr.shear[0] ? "falta vento em altura" : (shAtCape ?? 0) >= CFG.thr.shear[0] && (m.cape.v ?? 0) < CFG.thr.cape[0] ? "falta energia" : (m.cape.v ?? 0) >= CFG.thr.cape[0] ? "não na mesma hora" : "";
+    return `<tr><td><b style="color:${m.color}">●</b> <b>${esc(m.name)}</b></td>
+      ${c(m.gust.v, m.lv.gust)}<td class="muted">${m.gust.t ? `${weekday(m.gust.t)}, ${hourOf(m.gust.t)}` : "—"}</td>
+      ${c(m.rain24.v, lvOf(m.rain24.v, CFG.thr.rain24))}${c(m.rain1.v, lvOf(m.rain1.v, CFG.thr.rain1),1)}
+      ${ing(m.cape.v, CFG.thr.cape[0])}${ing(shAtCape, CFG.thr.shear[0])}
+      <td class="lvtxt"><span class="tv" data-lv="${m.lv.storm}">${LEVEL_NAMES[m.lv.storm]}</span>${why ? `<small>${why}</small>` : ""}</td>
+      <td class="num">${nf(m.pmin.v, 1)}</td>${c(m.pf.v, m.lv.cyclone, 1)}</tr>`;
+  }).join("");
+  const spread = (k, d=0) => { const v = A.ok.map(m => m[k].v).filter(x => x != null); return v.length > 1 ? nf(Math.max(...v) - Math.min(...v), d) : "—"; };
+  $("#models-table").innerHTML = `<thead><tr><th>Modelo</th><th>Rajada máxima (km/h)</th><th>Quando</th><th>Chuva em 24 horas (mm)</th><th>Chuva na pior hora (mm)</th><th class="ing">Energia CAPE (J/kg)</th><th class="ing">Vento em altura nessa hora (m/s)</th><th>Tempestade</th><th>Pressão mínima (hPa)</th><th>Queda em 24 horas (hPa)</th></tr></thead><tbody>${rows}
+    <tr><td class="muted">Diferença entre o maior e o menor</td><td class="num muted">${spread("gust")}</td><td></td><td class="num muted">${spread("rain24")}</td><td class="num muted">${spread("rain1",1)}</td><td class="num muted">${spread("cape")}</td><td></td><td></td><td class="num muted">${spread("pmin",1)}</td><td class="num muted">${spread("pf",1)}</td></tr></tbody>`;
+  $("#ens-status").innerHTML = (E ? `Nos ${E.n} cenários do GFS ${termBtn("ensemble")}: ${E.pctGust != null ? Math.round(E.pctGust*100) + "% têm rajada acima de " + CFG.ensProb.gust + " km/h" : "rajada indisponível"} e ${E.pctRain != null ? Math.round(E.pctRain*100) + "% têm mais de " + CFG.ensProb.rain24 + " milímetros em 24 horas" : "chuva indisponível"}. ` : "")
+    + "Quanto maior a diferença entre os modelos, maior a incerteza: olhe de novo depois da próxima rodada.";
+  if (MS) buildModels3D(A);
+}
+function buildModels3D(A){
+  const S = MS; const g = resetStage(S); lights(S, { span:22 });
+  const geo = new THREE.PlaneGeometry(36, 36, 120, 120); geo.rotateX(-Math.PI/2);
+  const p = geo.attributes.position; const colors = new Float32Array(p.count * 3);
+  const lo = C("--scene-ground"), hi = new THREE.Color("#5f8a5a");
+  for (let i = 0; i < p.count; i++){
+    const x = p.getX(i), z = p.getZ(i);
+    const h = 0.55*Math.sin(x*0.42+1.3)*Math.cos(z*0.37) + 0.35*Math.sin(x*1.1+z*0.8) + 0.18*Math.sin(x*2.3-z*1.9) + 0.8*Math.max(0, Math.sin((x+z)*0.15+0.5));
+    p.setY(i, h * 0.9); const c = lo.clone().lerp(hi, clamp(h*0.6 + 0.3, 0, 1)); colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
+  }
+  geo.setAttribute("color", new THREE.BufferAttribute(colors, 3)); geo.computeVertexNormals();
+  const terrain = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors:true, roughness:0.95, flatShading:true })); terrain.receiveShadow = true; g.add(terrain);
+  const red = C("--lv3");
+  const pin = new THREE.Mesh(new THREE.ConeGeometry(0.25, 1.1, 16), mat(red, { emissive:red, emissiveIntensity:0.4 })); pin.rotation.x = Math.PI; pin.position.set(0, 2.2, 0); pin.castShadow = true; g.add(pin);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.32, 20, 14), mat(red, { emissive:red, emissiveIntensity:0.4 })); head.position.set(0, 2.85, 0); g.add(head);
+  label(S, esc(place.name), "mdl", new THREE.Vector3(0, 3.6, 0));
+  const kmX = Math.cos(place.lat * Math.PI/180) * 111.32, kmZ = 110.57;
+  [...A.models].sort((a,b) => a.res - b.res).forEach((m, k) => {
+    const y = 2.6 + k * 0.75, s = m.res, col = new THREE.Color(m.color);
+    const ox = m.grid ? (m.grid.lon - place.lon) * kmX : 0, oz = m.grid ? -(m.grid.lat - place.lat) * kmZ : 0;   // centro real do quadrado usado
+    const gsq = new THREE.Group(); gsq.position.set(ox, 0, oz); g.add(gsq);
+    const sheet = new THREE.Mesh(new THREE.PlaneGeometry(s, s), new THREE.MeshBasicMaterial({ color:col, transparent:true, opacity:m.ok ? 0.13 : 0.05, side:THREE.DoubleSide, depthWrite:false }));
+    sheet.rotation.x = -Math.PI/2; sheet.position.y = y; gsq.add(sheet);
+    const pts = [[-s/2,-s/2],[s/2,-s/2],[s/2,s/2],[-s/2,s/2],[-s/2,-s/2]].map(([x,z]) => new THREE.Vector3(x, y, z));
+    gsq.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color:col.clone().multiplyScalar(1.8) })));
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.16, 14, 10), new THREE.MeshBasicMaterial({ color:col.clone().multiplyScalar(2) })); dot.position.y = y; gsq.add(dot);
+    const cx = [[1,1],[-1,1],[1,-1],[-1,-1],[0,1]][k]; const L = label(S, `${esc(m.name)} · ${esc(m.resTxt.split(" (")[0])}`, "mdl", new THREE.Vector3(ox + cx[0]*s/2, y, oz + cx[1]*s/2), cx[0] > 0 ? "left" : cx[0] < 0 ? "right" : "center"); L.el.style.borderColor = m.color;
+  });
+  label(S, "relevo ilustrativo, sem escala", "hour", new THREE.Vector3(-14, 0, 16));
+  S.target.set(0, 2.5, 0); S.onResize = () => fitWidth(S, 13, 7, 1.15); S.onResize();
+  S.frame = t => { pin.position.y = 2.2 + (reduceMotion ? 0 : Math.sin(t*2)*0.12); head.position.y = pin.position.y + 0.65; };
+}
+
+/* ====================== gráficos 2D ====================== */
+let charts = {};
+function baseOpts(yTitle){
+  const ink = css("--muted"), grid = css("--line");
+  return { responsive:true, maintainAspectRatio:false, animation:false, interaction:{mode:"index", intersect:false},
+    plugins:{ legend:{ labels:{ color:ink, boxWidth:10, font:{family:"IBM Plex Sans Condensed"} } }, tooltip:{ callbacks:{} } },
+    scales:{ x:{ ticks:{ color:ink, maxRotation:0, autoSkip:true, maxTicksLimit:8, font:{family:"IBM Plex Sans Condensed", size:11} }, grid:{ color:grid, drawTicks:false } },
+      y:{ title:{display:!!yTitle, text:yTitle, color:ink}, ticks:{ color:ink, font:{family:"IBM Plex Mono", size:10} }, grid:{ color:grid } } } };
+}
+// faixas de atenção/alerta/severo desenhadas no fundo do gráfico (fora da legenda e da dica)
+const bandsPlugin = { id:"bands", beforeDatasetsDraw(chart, _a, o){
+  const list = o?.list; if (!list?.length) return; const ax = chart.scales[o.axis || "y"]; if (!ax) return;
+  const { ctx, chartArea:{ left, right, top, bottom } } = chart; ctx.save();
+  list.forEach(({ from, to, color, text }) => {
+    const y1 = ax.getPixelForValue(from), y2 = to == null ? top : ax.getPixelForValue(to);
+    const a = clamp(Math.min(y1, y2), top, bottom), b = clamp(Math.max(y1, y2), top, bottom); if (b - a < 1 && (y1 < top || y1 > bottom)) return;
+    ctx.globalAlpha = 0.12; ctx.fillStyle = color; ctx.fillRect(left, a, right - left, b - a);
+    if (y1 >= top && y1 <= bottom){ ctx.globalAlpha = 0.9; ctx.fillRect(left, y1 - 0.75, right - left, 1.5);
+      ctx.font = "600 11px 'IBM Plex Sans Condensed', sans-serif"; ctx.textAlign = "right"; ctx.textBaseline = "bottom"; ctx.fillText(text, right - 6, y1 - 3); }
+  }); ctx.restore(); } };
+// faixa no topo do gráfico de tempestade: o que acontece em cada hora (os dois ingredientes juntos?)
+const comboPlugin = { id:"combo", afterDatasetsDraw(chart, _a, o){
+  const k = o?.kinds; if (!k?.length) return; const { ctx, chartArea:{ left, right, top } } = chart; const x = chart.scales.x;
+  const col = { both:css("--lv3"), shear:css("--cold"), cape:css("--lv1") }; const w = (right - left) / k.length;
+  ctx.save(); k.forEach((v, i) => { if (!col[v]) return; ctx.fillStyle = col[v]; ctx.globalAlpha = v === "both" ? 0.95 : 0.7; ctx.fillRect(x.getPixelForValue(i) - w/2, top, w + 0.5, 9); });
+  ctx.globalAlpha = 1; ctx.restore(); } };
+if (window.Chart) Chart.register(bandsPlugin, comboPlugin);
+// classifica cada hora: energia suficiente? cisalhamento suficiente? os dois?
+function stormKinds(A){
+  const capeOk = CFG.thr.cape[0], shearOk = CFG.thr.shear[0];
+  return A.idx.map((i, j) => { const c = A.timeline[j].v.cape, sh = A.timeline[j].v.shear;
+    const a = c != null && c >= capeOk, b = sh != null && sh >= shearOk; return { t:A.times[i], c, sh, k: a && b ? "both" : b ? "shear" : a ? "cape" : "none" }; });
+}
+function stormStory(A){
+  const K = stormKinds(A), n = k => K.filter(x => x.k === k).length;
+  const both = K.filter(x => x.k === "both"), maxC = Math.max(...K.map(x => x.c ?? 0)), maxS = Math.max(...K.map(x => x.sh ?? 0));
+  const capeOk = CFG.thr.cape[0], shearOk = CFG.thr.shear[0];
+  if (both.length){ const pk = both.reduce((a,b) => (b.c ?? 0) > (a.c ?? 0) ? b : a);
+    return { k:"both", kinds:K.map(x => x.k), html:`<b>Os dois ingredientes aparecem juntos em ${both.length} ${both.length === 1 ? "hora" : "horas"}</b>, com o pico ${whenLong(pk.t)} (energia ${nf(pk.c)} J/kg e cisalhamento ${nf(pk.sh)} m/s). É nessas horas, marcadas em vermelho no topo, que uma tempestade pode virar supercélula, com granizo, ventania ou tornado.` }; }
+  if (maxS >= shearOk && maxC < capeOk)
+    return { k:"shear", kinds:K.map(x => x.k), html:`<b>Cisalhamento alto, mas pouca energia.</b> O vento em altura chega a ${nf(maxS)} m/s, forte o bastante para organizar uma tempestade, porém a energia não passa de ${nf(maxC)} J/kg (o mínimo seria ${nf(capeOk)}). Sem combustível, não se formam tempestades severas: pode chover e até trovejar, mas sem supercélulas. Atenção ao vento, que pode descer em rajadas com a chuva.` };
+  if (maxC >= capeOk && maxS < shearOk)
+    return { k:"cape", kinds:K.map(x => x.k), html:`<b>Energia alta, mas pouco cisalhamento.</b> Há combustível (até ${nf(maxC)} J/kg), mas o vento em altura fica em ${nf(maxS)} m/s. As tempestades tendem a ser pancadas fortes e curtas, com raios, que se desmancham rápido.` };
+  if (maxC >= capeOk && maxS >= shearOk)
+    return { k:"cape", kinds:K.map(x => x.k), html:`<b>Os dois ingredientes aparecem, mas em horas diferentes.</b> Energia chega a ${nf(maxC)} J/kg e cisalhamento a ${nf(maxS)} m/s, só que nunca ao mesmo tempo. Sem a combinação, o risco de tempestade severa fica baixo.` };
+  return { k:"none", kinds:K.map(x => x.k), html:`<b>Nenhum ingrediente em nível de risco.</b> Energia máxima de ${nf(maxC)} J/kg e cisalhamento de até ${nf(maxS)} m/s.` };
+}
+const bands = (thr, unit) => [ { from:thr[0], to:thr[1], color:css("--lv1"), text:`atenção ${nf(thr[0])} ${unit}` }, { from:thr[1], to:thr[2], color:css("--lv2"), text:`alerta ${nf(thr[1])} ${unit}` }, { from:thr[2], to:null, color:css("--lv3"), text:`severo ${nf(thr[2])} ${unit}` } ];
+function renderCharts(A){
+  if (!window.Chart) { document.querySelectorAll(".charts .chart-box").forEach(b => b.innerHTML = '<p class="status">Gráficos indisponíveis (sem acesso ao cdnjs).</p>'); return; }
+  Object.values(charts).forEach(c => c.destroy()); charts = {};
+  const labels = A.idx.map(i => { const t = A.times[i]; return [weekday(t), hourOf(t)]; });
+  const n = labels.length;
+  const line = (m, arr) => ({ label:m.name, data:A.idx.map(i => arr?.[i] ?? null), borderColor:m.color, backgroundColor:m.color, borderWidth:1.6, pointRadius:0, tension:.25, spanGaps:true });
+  const tt = o => { o.plugins.tooltip.callbacks.title = items => whenTitle(A.times[A.idx[items[0].dataIndex]]); return o; };
+  const go = tt(baseOpts("km/h")); go.plugins.bands = { list:bands(CFG.thr.gust, "km/h") }; go.scales.y.suggestedMax = CFG.thr.gust[0] + 8; go.scales.y.min = 0;
+  charts.gust = new Chart($("#c-gust"), { type:"line", options: go, data:{ labels, datasets: A.ok.map(m => line(m, m.s.wind_gusts_10m)) } });
+  const med = A.timeline.map(h => h.v.rain1);
+  const cum = A.ok.map(m => { let a = 0; return A.idx.map(i => (a += m.s.precipitation[i] ?? 0)); });
+  const mx = A.idx.map(i => { const v = A.ok.map(m => m.s.precipitation[i]).filter(x => x != null); return v.length ? Math.max(...v) : null; });
+  const accum = A.idx.map((_, j) => cons(cum.map(c => c[j])));
+  const ro = tt(baseOpts("mm por hora")); ro.scales.y2 = { position:"right", title:{display:true, text:"acumulado mm", color:css("--muted")}, ticks:{color:css("--muted"), font:{family:"IBM Plex Mono", size:10}}, grid:{drawOnChartArea:false}, suggestedMax:CFG.thr.rain24[0] + 6, min:0 };
+  ro.plugins.bands = { list:bands(CFG.thr.rain24, "mm em 24 h"), axis:"y2" };
+  charts.rain = new Chart($("#c-rain"), { data:{ labels, datasets:[
+    { type:"bar", label:"consenso (≥2 modelos)", data:med, backgroundColor:css("--water"), order:2, grouped:false },
+    { type:"bar", label:"modelo mais chuvoso", data:mx, backgroundColor:css("--line"), order:3, grouped:false },
+    { type:"line", label:"acumulado", data:accum, yAxisID:"y2", borderColor:css("--lv2"), borderWidth:1.6, pointRadius:0, order:1 } ] }, options: ro });
+  charts.pres = new Chart($("#c-pres"), { type:"line", options: tt(baseOpts("hPa")), data:{ labels, datasets: A.ok.map(m => line(m, m.s.pressure_msl)) } });
+  const so = tt(baseOpts("energia J/kg")); so.scales.y2 = { position:"right", title:{display:true, text:"cisalhamento m/s", color:css("--muted")}, ticks:{color:css("--muted"), font:{family:"IBM Plex Mono", size:10}}, grid:{drawOnChartArea:false}, min:0 };
+  so.scales.y.min = 0; so.scales.y.suggestedMax = CFG.thr.cape[0] + 250; so.scales.y2.suggestedMax = CFG.thr.shear[2] + 3;
+  so.plugins.bands = { list:[ { from:CFG.thr.cape[0], to:CFG.thr.cape[0], color:css("--lv2"), text:`energia suficiente ${nf(CFG.thr.cape[0])} J/kg` } ] };
+  const SS = stormStory(A); so.plugins.combo = { kinds:SS.kinds }; so.layout = { padding:{ top:4 } };
+  $("#storm-story").innerHTML = SS.html; $("#storm-story").dataset.k = SS.k;
+  charts.storm = new Chart($("#c-storm"), { type:"line", options: so, data:{ labels, datasets:[
+    { label:"energia (CAPE)", data:A.timeline.map(h => h.v.cape), borderColor:css("--lv2"), backgroundColor:css("--lv2-bg"), fill:true, borderWidth:1.6, pointRadius:0, tension:.25 },
+    { label:"cisalhamento", data:A.timeline.map(h => h.v.shear), yAxisID:"y2", borderColor:css("--cold"), borderWidth:2, pointRadius:0, tension:.25 },
+    { label:`cisalhamento suficiente ${CFG.thr.shear[0]} m/s`, data:A.idx.map(() => CFG.thr.shear[0]), yAxisID:"y2", borderColor:css("--cold"), borderDash:[5,4], borderWidth:1.2, pointRadius:0 } ] } });
+  document.querySelectorAll(".charts [data-src]").forEach((p, k) => p.innerHTML = srcLine(A, k === 1 || k === 3 ? "linha e barras = consenso: o que pelo menos 2 modelos preveem na mesma hora" : "uma linha por modelo"));
+}
+
+function renderLinks(p){
+  const lat = p.lat.toFixed(3), lon = p.lon.toFixed(3);
+  // [ícone, título, quando usar, itens: nome, url, descrição, abre no lugar escolhido?]
+  const groups = [
+    ["🛰", "Agora", "O que está acontecendo neste momento: chuva, nuvens e raios.", [
+      ["RainViewer", `https://www.rainviewer.com/map.html?loc=${lat},${lon},9`, "Radar animado das últimas horas e para onde a chuva vai.", true],
+      ["LightningMaps", "https://www.lightningmaps.org/", "Raios caindo em tempo real (rede comunitária Blitzortung).", false],
+      ["Zoom Earth", `https://zoom.earth/maps/satellite/#view=${lat},${lon},7z`, "Satélite quase ao vivo: frentes e ciclones se formando.", true],
+      ["CPTEC · satélite GOES", "https://satelite.cptec.inpe.br/", "Imagens oficiais do INPE, com infravermelho realçado.", false],
+    ]],
+    ["🗺", "Próximos dias em mapa", "A previsão desenhada sobre o mapa, para ver o sistema inteiro chegando.", [
+      ["Windy", `https://www.windy.com/${lat}/${lon}?gust,${lat},${lon},9`, "Compara ECMWF, GFS e ICON; troque para chuva, CAPE ou pressão.", true],
+      ["Ventusky", `https://www.ventusky.com/?p=${lat};${lon};8&l=gust`, "Animação de vento e chuva muito fácil de ler.", true],
+      ["earth.nullschool", `https://earth.nullschool.net/#current/wind/surface/level/orthographic=${lon},${lat},2500`, "Código aberto; mostra a circulação de um ciclone com clareza.", true],
+    ]],
+    ["⛈", "Tempo severo", "Para dias de tempestade, granizo e tornado.", [
+      ["PREVOTS", "https://prevots.org/", "Meteorologistas brasileiros: previsões de tempo severo e registro de tornados.", false],
+      ["Ventusky · energia (CAPE)", `https://www.ventusky.com/?p=${lat};${lon};7&l=cape`, "Mapa do “combustível” para tempestades.", true],
+    ]],
+    ["🚨", "Avisos oficiais", "Quem decide alerta, evacuação e abrigo.", [
+      ["Defesa Civil", "https://www.gov.br/mdr/pt-br/assuntos/protecao-e-defesa-civil", "Alertas e orientações nacionais; procure também a do seu estado.", false],
+      ["INMET · avisos", "https://alertas2.inmet.gov.br/", "Avisos meteorológicos oficiais por município.", false],
+    ]],
+  ];
+  const dom = u => new URL(u).hostname.replace(/^www\./, "");
+  $("#links").innerHTML = `<div class="lgroups">${groups.map(([ic, t, why, items]) => `<section class="lgroup"><h3><span aria-hidden="true">${ic}</span>${esc(t)}</h3><p>${esc(why)}</p>${
+    items.map(([n, u, d, here]) => `<a class="ltile" href="${esc(u)}" target="_blank" rel="noopener"><b>${esc(n)} ↗</b><span class="dom">${esc(dom(u))}</span><span class="ds">${esc(d)}${here ? ` <span class="here">· abre em ${esc(p.name)}</span>` : ""}</span></a>`).join("")}${
+    t === "Avisos oficiais" ? `<div class="lsms">📱 <b>Alerta por SMS:</b> envie seu CEP para <span class="mono">40199</span>. É de graça e vale para todo o Brasil.</div>` : ""}</section>`).join("")}</div>`;
+}
+
+/* ====================== raios e avisos ====================== */
+function thunderWindow(A, maxH = 24){
+  const hits = A.thunder.slice(0, maxH).map((h, k) => ({ ...h, k })).filter(h => h.n >= 2);
+  if (!hits.length) return null; const a = hits[0], b = hits[hits.length - 1];
+  const all = [...new Set(hits.flatMap(h => h.who))];
+  return { a, b, hits, who:all, max:Math.max(...hits.map(h => h.n)) };
+}
+function renderThunder(A){
+  const W = thunderWindow(A), anyOne = A.thunder.some(h => h.n === 1);
+  const cells = A.thunder.map(h => `<span data-n="${Math.min(3, h.n)}" title="${esc(cap1(weekday(h.t)))}, ${hourOf(h.t)}: ${h.n} de ${A.ok.length} modelos${h.n ? " (" + h.who.join(", ") + ")" : ""}">${h.n >= 2 ? "⚡" : ""}</span>`).join("");
+  const labels = A.thunder.map((h, k) => `<span>${k % 3 === 0 ? hourOf(h.t) : ""}</span>`).join("");
+  let txt;
+  if (W) txt = `<b>Trovoada prevista ${whenLong(W.a.t)}${W.b.k > W.a.k ? ` até ${hourOf(W.b.t)}${W.b.t.slice(0,10) !== W.a.t.slice(0,10) ? ` de ${weekday(W.b.t)}` : ""}` : ""}.</b> Até ${W.max} de ${A.ok.length} modelos concordam (${joinPt(W.who)}). Em trovoadas, procure abrigo em construção fechada ao ouvir o primeiro trovão e espere 30 minutos depois do último.`;
+  else if (anyOne){
+    const solo = A.thunder.filter(h => h.n === 1), who = [...new Set(solo.map(h => h.who[0]))], others = A.ok.length - who.length;
+    const hrs = solo.map(h => hourOf(h.t)); const first = solo[0];
+    txt = `Só ${who.length === 1 ? "o" : "os modelos"} <b>${joinPt(who)}</b> ${who.length === 1 ? "prevê" : "preveem"} trovoada, ${whenLong(first.t)}${hrs.length > 1 ? ` e em mais ${hrs.length - 1} ${hrs.length - 1 === 1 ? "hora" : "horas"} (${hrs.slice(1).join(", ")})` : ""}. Os outros ${others} modelos não. Como não há acordo, o risco é baixo, mas vale olhar de novo depois da próxima rodada.`;
+  } else txt = "Nenhum dos 5 modelos prevê trovoada nas próximas 24 horas.";
+  $("#thunder").innerHTML = `<div class="thstrip" role="img" aria-label="Trovoada prevista nas próximas 24 horas">${cells}</div><div class="thlabels">${labels}</div><p class="story" data-k="${W ? "both" : "none"}" style="margin-top:8px">${txt}</p>`;
+  $("#tsrc").innerHTML = `${srcLine(A, "cor = quantos modelos preveem trovoada na hora")} Cada modelo calcula, hora a hora, se o tempo será de trovoada (códigos 95 a 99 da Organização Meteorológica Mundial). Isto é previsão, não detecção: para ver raios caindo agora, use o <a href="https://www.lightningmaps.org/" target="_blank" rel="noopener">LightningMaps ↗</a>.`;
+}
+// avisos do navegador: funcionam com a página aberta (pode ficar em segundo plano)
+const notifOn = () => store.get("sentinela.notify") === true && "Notification" in window && Notification.permission === "granted";
+function syncNotifBtn(){
+  const b = $("#notif"), m = $("#notif-msg");
+  if (!("Notification" in window)){ b.hidden = true; m.textContent = "Este navegador não permite avisos. Para avisos com a página fechada, cadastre seu CEP na Defesa Civil (SMS para 40199)."; return; }
+  b.textContent = notifOn() ? "🔕 Parar avisos" : "🔔 Avisar neste aparelho";
+  m.textContent = notifOn() ? "Avisos ligados: você recebe um alerta de trovoada nas próximas 3 horas ou de risco de nível alerta, enquanto esta página estiver aberta (mesmo em outra aba)." : "";
+}
+$("#notif").onclick = async () => {
+  if (notifOn()){ store.set("sentinela.notify", false); syncNotifBtn(); return; }
+  let perm = "denied"; try { perm = await Notification.requestPermission(); } catch {}
+  if (perm === "granted"){ store.set("sentinela.notify", true); syncNotifBtn(); if (lastA) checkAlerts(lastA, true); }
+  else $("#notif-msg").textContent = "O navegador não liberou os avisos. Abra o painel por um endereço https (como o GitHub Pages) e permita as notificações nas configurações do site.";
+};
+function checkAlerts(A, test){
+  if (!notifOn()) return;
+  const sent = store.get("sentinela.sent") || {}; const fire = (key, title, body) => { if (sent[key]) return; sent[key] = Date.now(); store.set("sentinela.sent", sent); try { new Notification(title, { body, tag:key }); } catch {} };
+  const W = thunderWindow(A, 3);
+  if (W) fire(`raio|${place.lat.toFixed(2)}|${W.a.t}`, `⚡ Trovoada prevista em ${place.name}`, `${cap1(whenLong(W.a.t))}. ${W.max} de ${A.ok.length} modelos concordam.`);
+  const L = A.levels, lv = Math.max(L.gust, L.rain, L.storm, L.cyclone);
+  if (lv >= 2) fire(`nivel|${place.lat.toFixed(2)}|${A.times[A.i0].slice(0,10)}|${lv}`, `${LEVEL_NAMES[lv]} em ${place.name}`, $("#band-title").textContent);
+  if (test && !W && lv < 2) fire(`teste|${Date.now()}`, "Sentinela do Tempo", `Avisos ligados para ${place.name}. Nada previsto por enquanto.`);
+}
+
+/* ====================== lugares ====================== */
+let myPlaces = store.get("sentinela.places") || [];
+let place = store.get("sentinela.place") || DEFAULT_PLACE;
+const allPlaces = () => myPlaces;
+const samePlace = (a, b) => Math.abs(a.lat - b.lat) < 1e-5 && Math.abs(a.lon - b.lon) < 1e-5;
+function renderMyPlaces(){
+  const box = $("#myplaces"); const saved = myPlaces.some(p => samePlace(p, place));
+  box.innerHTML = `<span class="label">Meus lugares</span>` + (myPlaces.length ? myPlaces.map((p, k) => `<span class="pchip" aria-current="${samePlace(p, place)}"><button type="button" data-go="${k}">${esc(p.name)}</button><button type="button" class="x" data-del="${k}" aria-label="Remover ${esc(p.name)}">✕</button></span>`).join("") : `<span class="status">nenhum ainda</span>`)
+    + (saved ? "" : ` <button class="btn" type="button" id="saveplace" style="padding:4px 10px;font-size:.85rem">☆ Salvar ${esc(place.name)}</button>`);
+  box.querySelectorAll("[data-go]").forEach(b => b.onclick = () => setPlace(myPlaces[+b.dataset.go]));
+  box.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { myPlaces.splice(+b.dataset.del, 1); store.set("sentinela.places", myPlaces); syncSelect(); });
+  $("#saveplace")?.addEventListener("click", () => { myPlaces.push({ ...place }); store.set("sentinela.places", myPlaces); syncSelect(); });
+}
+function syncSelect(){
+  const sel = $("#city"); const mine = allPlaces();
+  let opts = mine.length ? `<optgroup label="Meus lugares">${mine.map((p,k) => `<option value="p${k}">${esc(p.name)}</option>`).join("")}</optgroup>` : "";
+  opts += `<optgroup label="Capitais">${CITIES.map((c,k) => `<option value="c${k}">${esc(c.name)} · ${c.admin}</option>`).join("")}</optgroup>`;
+  const inMine = mine.findIndex(p => samePlace(p, place)), inCity = CITIES.findIndex(c => samePlace(c, place));
+  if (inMine < 0 && inCity < 0) opts += `<option value="x">${esc(place.name)}</option>`;
+  sel.innerHTML = opts; sel.value = inMine >= 0 ? "p" + inMine : inCity >= 0 ? "c" + inCity : "x";
+  renderMyPlaces();
+}
+function parseCoords(s){
+  s = s.trim(); let m = s.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) || s.match(/(-?\d+\.\d+)\s*[,;\s]\s*(-?\d+\.\d+)/);
+  if (!m){ const c = s.match(/(-?\d+,\d+)\s*[;\s]\s*(-?\d+,\d+)/); if (c) m = [null, c[1].replace(",","."), c[2].replace(",",".")]; }
+  if (!m) return null; const lat = +m[1], lon = +m[2];
+  return lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180 ? { lat, lon } : null;
+}
+$("#cform").addEventListener("submit", e => {
+  e.preventDefault(); const c = parseCoords($("#cin").value); const msg = $("#cmsg");
+  if (!c){ msg.textContent = "Não reconheci as coordenadas. Use o formato -15.7939, -47.8828 (latitude, longitude)."; msg.classList.add("err"); return; }
+  msg.classList.remove("err");
+  const name = $("#cname").value.trim() || `Ponto ${c.lat.toFixed(4)}, ${c.lon.toFixed(4)}`;
+  const p = { name, lat:c.lat, lon:c.lon, admin:"ponto exato" };
+  if (!allPlaces().some(x => samePlace(x, p))){ myPlaces.push(p); store.set("sentinela.places", myPlaces); }
+  msg.textContent = `Usando ${name} (${c.lat.toFixed(5)}, ${c.lon.toFixed(5)}). Salvo em “Meus lugares”.`;
+  $("#cin").value = ""; $("#cname").value = ""; setPlace(p);
+});
+
+/* ====================== ciclo principal ====================== */
+let lastA = null, lastE = null;
+async function load(){
+  $("#band-title").textContent = "Buscando previsões…"; document.body.classList.add("loading");
+  renderLinks(place);
+  try {
+    const [res, ens] = await Promise.all([
+      Promise.all(MODELS.map(async m => { const [json, meta] = await Promise.all([fetchModel(place, m), fetchMeta(m)]); return { m, json, meta }; })),
+      fetchEnsemble(place).catch(() => null) ]);
+    const A = analyze(res);
+    if (!A.ok.length) throw new Error("nenhum modelo retornou dados para este ponto");
+    lastA = A; lastE = ens ? analyzeEnsemble(ens, A) : null; V.sel = null;
+    renderAll(); checkAlerts(A);
+    $("#updated").textContent = `Dados buscados ${whenLong(nowKey() + ":00")}. Próxima busca automática em ${CFG.refreshMin} minutos.`;
+  } catch (e){
+    $("#band").dataset.lv = "";
+    $("#band-title").innerHTML = `<span class="err">Não consegui carregar a previsão.</span>`;
+    $("#band-detail").textContent = `Motivo: ${e.message}. Verifique a conexão e toque em Atualizar.`;
+  } finally { document.body.classList.remove("loading"); }
+}
+function renderAll(){
+  if (!lastA) return;
+  renderBand(lastA, place); renderThunder(lastA); renderGauges(lastA, lastE); renderHourly(); renderDays(); renderModels(lastA, lastE); renderCharts(lastA);
+}
+let obsDone = null;
+function setPlace(p){ place = p; store.set("sentinela.place", p); syncSelect(); load(); }
+$("#city").addEventListener("change", e => { const v = e.target.value; if (v[0] === "p") setPlace(allPlaces()[+v.slice(1)]); else if (v[0] === "c") setPlace(CITIES[+v.slice(1)]); });
+$("#refresh").addEventListener("click", load);
+$("#geo").addEventListener("click", () => {
+  if (!navigator.geolocation){ $("#cmsg").textContent = "Este navegador não informa a localização. Cole as coordenadas acima."; return; }
+  navigator.geolocation.getCurrentPosition(
+    pos => setPlace({ name:"Onde estou agora", lat:pos.coords.latitude, lon:pos.coords.longitude, admin:"GPS" }),
+    () => { $("#cmsg").textContent = "O navegador não liberou a localização. Cole as coordenadas acima ou escolha na lista."; $("#cmsg").classList.add("err"); },
+    { enableHighAccuracy:true, timeout:10000 });
+});
+let qTimer;
+$("#q").addEventListener("input", e => {
+  clearTimeout(qTimer); const q = e.target.value.trim(); const box = $("#results");
+  if (q.length < 3){ box.hidden = true; return; }
+  qTimer = setTimeout(async () => {
+    try {
+      const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=pt&format=json`);
+      const j = await r.json(); const res = j.results || [];
+      box.innerHTML = res.length ? res.map((c,i) => `<button type="button" data-i="${i}">${esc(c.name)} <span class="muted">${esc([c.admin1, c.country_code].filter(Boolean).join(" · "))}</span></button>`).join("") : `<div class="status" style="padding:8px 10px">Nada encontrado.</div>`;
+      box.hidden = false;
+      box.querySelectorAll("button").forEach(b => b.onclick = () => { const c = res[+b.dataset.i];
+        box.hidden = true; $("#q").value = ""; setPlace({ name:c.name, lat:c.latitude, lon:c.longitude, admin:c.admin1 || "" }); });
+    } catch { box.hidden = true; }
+  }, 300);
+});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => renderAll());
+
+renderGlossary();
+initHourly();
+document.fonts?.ready.then(() => { try { drawHourly(); } catch {} });   // redesenha com a fonte certa depois que ela carrega
+const HERO = stage($("#hero"), { fov:50, azLim:0.05, elMin:0, elMax:0.1 }); sceneHero(HERO);
+DS = stage($("#dstage"), { fov:30, el:0.4, az:0.2, azLim:0.95, elMin:0.12, elMax:1.15 }); if (!DS) $("#dstage").hidden = true;
+MS = stage($("#mstage"), { fov:34, el:0.62, azLim:1e9, elMin:0.2, elMax:1.35, spin:0.0015 }); if (!MS) $("#mstage").hidden = true;
+syncSelect(); syncNotifBtn(); load();
+setInterval(load, CFG.refreshMin * 60 * 1000);
+</script>
+</body>
+</html>
