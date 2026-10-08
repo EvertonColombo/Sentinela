@@ -867,7 +867,8 @@ function analyze(results){
   const ok = models.filter(m => m.ok);
 
 
-  const stormPair = (i, j) => { const rk = ok.map(m => ({ s:m.sc.storm[j], cape:m.s.cape[i], shear:m.shear[i] })).filter(x => x.cape != null || x.shear != null).sort((a, b) => b.s - a.s || (b.cape ?? 0) - (a.cape ?? 0));
+  const stormPair = (i, j) => { const all = ok.map(m => ({ s:m.sc.storm[j], cape:m.s.cape[i], shear:m.shear[i] }));
+    const both = all.filter(x => x.cape != null && x.shear != null), rk = (both.length ? both : all.filter(x => x.cape != null || x.shear != null)).sort((a, b) => b.s - a.s || (b.cape ?? 0) - (a.cape ?? 0));
     return rk[Math.min(1, rk.length - 1)] || {}; };
   const timeline = idx.map((i, j) => { const sp2 = stormPair(i, j);
     const s = { gust: cons(ok.map(m => m.sc.gust[j])) ?? 0, rain: cons(ok.map(m => m.sc.rain[j])) ?? 0, storm: cons(ok.map(m => m.sc.storm[j])) ?? 0, cyclone: cons(ok.map(m => m.sc.cyclone[j])) ?? 0 };
@@ -1828,9 +1829,17 @@ const bandsPlugin = { id:"bands", beforeDatasetsDraw(chart, _a, o){
     const y1 = ax.getPixelForValue(from), y2 = to == null ? top : ax.getPixelForValue(to);
     const a = clamp(Math.min(y1, y2), top, bottom), b = clamp(Math.max(y1, y2), top, bottom); if (b - a < 1 && (y1 < top || y1 > bottom)) return;
     ctx.globalAlpha = 0.12; ctx.fillStyle = color; ctx.fillRect(left, a, right - left, b - a);
-    if (y1 >= top && y1 <= bottom){ ctx.globalAlpha = 0.9; ctx.fillRect(left, y1 - 0.75, right - left, 1.5);
-      ctx.font = "600 11px 'IBM Plex Sans Condensed', sans-serif"; ctx.textAlign = "right"; ctx.textBaseline = "bottom"; ctx.fillText(text, right - 6, y1 - 3); }
-  }); ctx.restore(); } };
+    if (y1 >= top && y1 <= bottom){ ctx.globalAlpha = 0.9; ctx.fillRect(left, y1 - 0.75, right - left, 1.5); }
+  }); ctx.restore(); },
+  afterDatasetsDraw(chart, _a, o){   // rótulos depois das linhas, numa etiqueta com fundo, para não ficarem cobertos
+  const list = o?.list; if (!list?.length) return; const ax = chart.scales[o.axis || "y"]; if (!ax) return;
+  const { ctx, chartArea:{ left, right, top, bottom } } = chart; ctx.save();
+  ctx.font = "600 11px 'IBM Plex Sans Condensed', sans-serif"; ctx.textBaseline = "middle";
+  list.forEach(({ from, color, text }) => { const y1 = ax.getPixelForValue(from); if (y1 < top + 8 || y1 > bottom) return;
+    const w = ctx.measureText(text).width + 12, x = right - w - 4, y = y1 - 10;
+    ctx.globalAlpha = 0.92; ctx.fillStyle = css("--panel"); ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y - 8, w, 16, 4) : ctx.rect(x, y - 8, w, 16); ctx.fill();
+    ctx.globalAlpha = 1; ctx.fillStyle = color; ctx.textAlign = "left"; ctx.fillText(text, x + 6, y); });
+  ctx.restore(); } };
 // faixa no topo do gráfico de tempestade: o que acontece em cada hora (os dois ingredientes juntos?)
 const comboPlugin = { id:"combo", afterDatasetsDraw(chart, _a, o){
   const k = o?.kinds; if (!k?.length) return; const { ctx, chartArea:{ left, right, top } } = chart; const x = chart.scales.x;
@@ -1885,8 +1894,8 @@ function renderCharts(A){
   const SS = stormStory(A); so.plugins.combo = { kinds:SS.kinds }; so.layout = { padding:{ top:4 } };
   $("#storm-story").innerHTML = SS.html; $("#storm-story").dataset.k = SS.k;
   charts.storm = new Chart($("#c-storm"), { type:"line", options: so, data:{ labels, datasets:[
-    { label:"energia (CAPE)", data:A.timeline.map(h => h.v.cape), borderColor:css("--lv2"), backgroundColor:css("--lv2-bg"), fill:true, borderWidth:1.6, pointRadius:0, tension:.25 },
-    { label:"cisalhamento", data:A.timeline.map(h => h.v.shear), yAxisID:"y2", borderColor:css("--cold"), borderWidth:2, pointRadius:0, tension:.25 },
+    { label:"energia (CAPE)", data:A.timeline.map(h => h.v.cape), spanGaps:true, borderColor:css("--lv2"), backgroundColor:css("--lv2-bg"), fill:true, borderWidth:1.6, pointRadius:0, tension:.25 },
+    { label:"cisalhamento", data:A.timeline.map(h => h.v.shear), spanGaps:true, yAxisID:"y2", borderColor:css("--cold"), borderWidth:2, pointRadius:0, tension:.25 },
     { label:`cisalhamento suficiente ${CFG.thr.shear[0]} m/s`, data:A.idx.map(() => CFG.thr.shear[0]), yAxisID:"y2", borderColor:css("--cold"), borderDash:[5,4], borderWidth:1.2, pointRadius:0 } ] } });
   document.querySelectorAll(".charts [data-src]").forEach((p, k) => p.innerHTML = srcLine(A, k === 1 || k === 3 ? "linha e barras = consenso: o que pelo menos 2 modelos preveem na mesma hora" : "uma linha por modelo"));
 }
