@@ -23,7 +23,7 @@
   --lv0:#6f9f88; --lv1:#d9a514; --lv2:#e2711d; --lv3:#c62f2f;
   --lv0-bg:#e2f1ea; --lv1-bg:#fbf1cf; --lv2-bg:#fde3cf; --lv3-bg:#f8d9d9;
   --scene:#dfe6ea; --scene-ground:#cbd6dc; --sky-top:#9fb6c6; --sky-mid:#cfdbe3;
-  --ag1:#b9c3cb; --ag2:#8cc2f0; --ag3:#4a9be0; --ag4:#1f6fc4; --ag5:#0b4592; --tmin:#2563eb; --tmax:#ea580c;
+  --solo:#9aa6b1; --ag1:#b9c3cb; --ag2:#8cc2f0; --ag3:#4a9be0; --ag4:#1f6fc4; --ag5:#0b4592; --tmin:#2563eb; --tmax:#ea580c;
   --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --f-body:"IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
   --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -35,7 +35,7 @@
   --lv0:#4f8f74; --lv1:#f0c43a; --lv2:#f39147; --lv3:#ef5d5d;
   --lv0-bg:#173328; --lv1-bg:#3a3214; --lv2-bg:#3d2715; --lv3-bg:#41191b;
   --scene:#0c1418; --scene-ground:#16262f; --sky-top:#03070b; --sky-mid:#0a141b;
-  --ag1:#55626e; --ag2:#1d5fae; --ag3:#2b86e8; --ag4:#5aaeff; --ag5:#a9d8ff; --tmin:#60a5fa; --tmax:#fb923c;
+  --solo:#6b7885; --ag1:#55626e; --ag2:#1d5fae; --ag3:#2b86e8; --ag4:#5aaeff; --ag5:#a9d8ff; --tmin:#60a5fa; --tmax:#fb923c;
   color-scheme:dark;}}
 :root[data-theme="dark"]{
   --bg:#0f171c; --panel:#16222a; --ink:#e3eaee; --muted:#93a4ae; --line:#2a3a44;
@@ -43,7 +43,7 @@
   --lv0:#4f8f74; --lv1:#f0c43a; --lv2:#f39147; --lv3:#ef5d5d;
   --lv0-bg:#173328; --lv1-bg:#3a3214; --lv2-bg:#3d2715; --lv3-bg:#41191b;
   --scene:#0c1418; --scene-ground:#16262f; --sky-top:#03070b; --sky-mid:#0a141b;
-  --ag1:#55626e; --ag2:#1d5fae; --ag3:#2b86e8; --ag4:#5aaeff; --ag5:#a9d8ff; --tmin:#60a5fa; --tmax:#fb923c;
+  --solo:#6b7885; --ag1:#55626e; --ag2:#1d5fae; --ag3:#2b86e8; --ag4:#5aaeff; --ag5:#a9d8ff; --tmin:#60a5fa; --tmax:#fb923c;
   color-scheme:dark;}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -127,7 +127,7 @@ header{display:grid;gap:12px}
 /* matriz de concordância: só o risco acende */
 .mleg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:.82rem;color:var(--muted)}
 .mleg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
-.mx-tabs{display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.mx-tabs{display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-bottom:22px}
 .mx-tabs .k{font:600 .6rem var(--f-mono);letter-spacing:.12em;color:#6f8899;text-transform:uppercase;margin-right:6px}
 .mx-tabs button{font:600 .66rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:99px;border:1px solid #23323e;background:transparent;color:#9fb3c4;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
 .mx-tabs button i{width:7px;height:7px;border-radius:50%;background:#3fcf8e;box-shadow:0 0 5px rgb(63 207 142 / .6)}
@@ -566,7 +566,6 @@ header{display:grid;gap:12px}
 .off-all ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:5px}
 .off-all p{margin:6px 0 0}
 .b-facts{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr);gap:8px}
-.b-facts>.b-fact:first-child{grid-column:1 / -1}
 .b-fact .v{overflow:hidden;text-overflow:ellipsis}
 @media (max-width:560px){.b-facts{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr)}.b-fact .v{white-space:normal;font-size:.85rem;min-height:2.6em}.b-facts>.b-fact:not(:first-child) .k{min-height:2.5em}}
 
@@ -574,6 +573,71 @@ header{display:grid;gap:12px}
 .b-detail .k{font:600 .6rem var(--f-mono);letter-spacing:.12em;color:#6f8899;text-transform:uppercase}
 .b-detail .pill{font-size:.66rem}
 .b-detail .muted{color:#8ea4b6;font-size:.82rem}
+
+/* matriz: barrinhas (altura = intensidade) */
+.mx-lab,.mx-end,.mx-cells{grid-auto-rows:16px !important}
+.mx-row i{position:relative;background:rgb(120 170 200 / .05) !important;box-shadow:none !important;border-radius:2px}
+.mx-row i b{position:absolute;left:0;right:0;bottom:0;border-radius:2px 2px 1px 1px;background:var(--water)}
+.mx-row i[data-lv="1"] b{background:var(--lv1)} .mx-row i[data-lv="2"] b{background:var(--lv2)} .mx-row i[data-lv="3"] b{background:var(--lv3)}
+.mx-row i[data-lv="t"] b{background:#b18cff} .mx-row i[data-lv="s"] b{background:var(--solo)}
+.mx-row.cons{background:rgb(120 170 200 / .1)}
+.mx-row.offr i b{display:none}
+.mx-row.offr i[data-o="1"]{background:var(--lv1) !important} .mx-row.offr i[data-o="2"]{background:var(--lv2) !important} .mx-row.offr i[data-o="3"]{background:var(--lv3) !important}
+.akey.fen{gap:4px 12px}
+.akey.fen>span{display:inline-flex;align-items:center;gap:5px;margin:0;font:500 .74rem var(--f-body);color:var(--muted)}
+.akey.fen i{width:10px;height:10px;border-radius:2px}
+.band .akey.fen>span{color:#9fb3c4}
+.band .akey.fen{margin-top:8px}
+
+/* matriz: ponto = previsto pelo modelo; célula cheia = passou do limite; linha "quantos" = altura pelo número de modelos */
+.mx-row:not(.cons) i b{display:none}
+.mx-row:not(.cons) i[data-lv="1"]{background:var(--lv1) !important} .mx-row:not(.cons) i[data-lv="2"]{background:var(--lv2) !important} .mx-row:not(.cons) i[data-lv="3"]{background:var(--lv3) !important} .mx-row:not(.cons) i[data-lv="t"]{background:#b18cff !important}
+.mx-row i[data-p="1"]::after{content:"";position:absolute;left:50%;top:50%;width:min(5px,calc(100% - 1px));aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:#c9d6e0}
+.mx-row.cons i[data-lv="a"] b{background:var(--water)}
+.akey.fen i.dot{background:transparent;position:relative} .akey.fen i.dot::after{content:"";position:absolute;inset:2.5px;border-radius:50%;background:#c9d6e0}
+.akey.fen i.hgt{background:linear-gradient(90deg,var(--water) 0 30%,transparent 30% 35%,var(--water) 35% 65%,transparent 65% 70%,var(--water) 70%);clip-path:polygon(0 70%,30% 70%,30% 40%,65% 40%,65% 0,100% 0,100% 100%,0 100%)}
+.mx-lab .cons{font-size:.55rem}
+
+.rstrip{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;height:22px}
+.rstrip i{border-radius:3px;background:var(--water)}
+.rstrip i[data-off="1"]{background:color-mix(in srgb,var(--line) 60%,transparent)}
+.rstrip i[data-lv="1"]{background:var(--lv1)} .rstrip i[data-lv="2"]{background:var(--lv2)} .rstrip i[data-lv="3"]{background:var(--lv3)}
+.rstrip i.past{opacity:.4} .rstrip i.now{outline:2px solid var(--accent);outline-offset:1px}
+.hy-key{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.8rem;color:var(--muted)}
+.hy-key span{display:inline-flex;align-items:center;gap:6px} .hy-key b{font:600 .85rem var(--f-mono);color:var(--ink)}
+.hy-key i{width:18px;height:0;border-top:2px dashed var(--muted)} .hy-key i.kf{border-top-color:var(--tmax)}
+.ten-key .pp{font-family:var(--f-body)}
+.mx-crit b{font:inherit;font-weight:700;color:#fff;text-transform:none;letter-spacing:0;margin:0}
+.mx-crit b.c1{padding:0 5px;border-radius:3px;color:#1b1400;background:linear-gradient(90deg,var(--lv1),var(--lv2),var(--lv3))}
+.mx-crit b.ct{padding:0 5px;border-radius:3px;color:#1b1030;background:#b18cff}
+
+/* seção de riscos: uma aba por risco */
+.risks{gap:14px}
+.rk-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.rk-tabs button{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:600 .92rem var(--f-body);cursor:pointer}
+.rk-tabs button small{font:500 .74rem var(--f-body);color:var(--muted)}
+.rk-tabs button i{width:9px;height:9px;border-radius:50%;background:#3fcf8e}
+.rk-tabs button i[data-lv="1"]{background:var(--lv1)} .rk-tabs button i[data-lv="2"]{background:var(--lv2)} .rk-tabs button i[data-lv="3"]{background:var(--lv3)} .rk-tabs button i[data-lv="t"]{background:#b18cff}
+.rk-tabs button[aria-selected="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--panel))}
+.rk-dark{background:#070c12;border:1px solid #16222c;border-radius:12px;padding:12px 14px;color:#e6eef4;display:grid;gap:10px}
+.rk-grid{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:820px){.rk-grid{grid-template-columns:1fr}}
+.rk-left{display:grid;gap:12px;align-content:start}
+.rk-g{grid-template-columns:1fr !important}
+.rk-right{display:grid;gap:8px;min-width:0}
+.rk-right h3{margin:0;font-size:1rem}
+.rk-ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#riscos .hchart{height:300px !important}
+#riscos #gsrc{display:none}
+@media (max-width:560px){#riscos .hchart{height:240px !important}}
+.risks .gauge,.risks .hrow,.risks .rk-storm{display:none}
+.risks[data-k="gust"] .gauge[data-k="gust"],.risks[data-k="rain"] .gauge[data-k="rain"],.risks[data-k="storm"] .gauge[data-k="storm"],.risks[data-k="cyclone"] .gauge[data-k="cyclone"],.risks[data-k="thunder"] .gauge[data-k="thunder"]{display:flex}
+.risks[data-k="gust"] .hrow[data-k="gust"],.risks[data-k="rain"] .hrow[data-k="rain"],.risks[data-k="storm"] .hrow[data-k="storm"],.risks[data-k="cyclone"] .hrow[data-k="cyclone"],.risks[data-k="thunder"] .hrow[data-k="thunder"]{display:grid}
+.risks[data-k="storm"] .rk-storm{display:grid;gap:10px;border-top:1px solid var(--line);padding-top:12px}
+.risks .hour-detail .status{display:none}
+.thpips{display:flex;gap:6px;margin-top:6px} .thpips i{width:14px;height:14px;border-radius:50%;background:rgb(177 140 255 / .18)} .thpips i.on{background:#b18cff;box-shadow:0 0 8px #b18cff}
+.b-cat[data-k]{cursor:pointer}
+.b-go{margin-left:auto;color:#9fd9c2;font-size:.85rem}
 /* título: céu de tempestade em 3D (sempre noturno, nos dois temas) */
 .hero{position:relative;height:clamp(190px,26vw,260px);border-radius:12px;overflow:hidden;background:radial-gradient(120% 140% at 70% 0%,#1d2b3a 0%,#0a1018 55%,#04070b 100%);isolation:isolate}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
@@ -758,8 +822,7 @@ footer p{margin:0;max-width:80ch}
   <div class="b-head"><span class="b-lv" id="band-lv">—</span><strong id="band-title">Buscando previsões</strong></div>
   <div class="b-off" id="band-off"></div>
   <div id="band-detail" class="b-detail"></div>
-  <div class="b-facts" id="band-facts"></div>
-  <div class="b-mx" id="band-src"></div>
+
   <div class="b-notif"><button class="btn" type="button" id="notif">🔔 Avisar trovoada neste aparelho</button><span class="status" id="notif-msg"></span></div>
 </section>
 
@@ -773,33 +836,34 @@ footer p{margin:0;max-width:80ch}
   <div class="ten" id="ten"><p class="status">Calculando…</p></div>
 </section>
 
-<section class="card" id="historia">
+
+
+
+
+
+
+
+<section class="card risks" id="riscos" data-k="storm">
   <div class="card-head">
-    <h2 id="hist-title">Neste dia, desde 1940</h2>
-    <span class="hist-badge" title="ERA5: reconstrução do tempo passado feita pelo centro europeu ECMWF, juntando observações de estações, satélites, balões e navios com um modelo. É o que aconteceu, num quadrado de cerca de 25 km, e não uma previsão.">o que aconteceu · reanálise ERA5, não é previsão</span>
+    <h2>Riscos nas próximas 72 horas</h2>
+    <span class="label">o que os 5 modelos mostram · compare com o aviso do INMET no topo</span>
   </div>
-  <div class="hist" id="hist"><p class="status">Carregando histórico…</p></div>
-  <p class="src">Fonte: ERA5 (Copernicus / ECMWF), via Open-Meteo. Cada valor é para um quadrado de cerca de 25 km, não uma estação. A linha tracejada laranja é a única previsão desta seção. Normal = mediana das máximas de 1991 a 2020, de 3 dias antes a 3 dias depois desta data (referência climatológica atual).</p>
-</section>
-
-<section class="gauges" id="gauges" aria-label="Riscos nas próximas 72 horas"></section>
-<p class="src gsrc" id="gsrc"></p>
-
-<section class="card" id="hora-a-hora">
-  <div class="card-head">
-    <h2>Hora a hora</h2>
-    <div class="legend">
-      <span><i style="background:var(--lv0)"></i>sem risco</span><span><i style="background:var(--lv1)"></i>atenção</span>
-      <span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span>
+  <div class="rk-tabs" id="rtabs" role="tablist" aria-label="Escolha o risco"></div>
+  <div class="rk-dark">
+    <div class="b-facts" id="band-facts"></div>
+    <div class="b-mx" id="band-src"></div>
+  </div>
+  <div class="rk-grid">
+    <div class="rk-left">
+      <section class="gauges rk-g" id="gauges" aria-label="Pico nas próximas 72 horas"></section>
+      <aside class="hour-detail" id="hour-detail" aria-live="polite"></aside>
     </div>
-    <button class="btn" type="button" id="hmodels" aria-pressed="false">Ver cada modelo</button>
+    <div class="rk-right" id="hora-a-hora">
+      <div class="card-head"><h3>Hora a hora</h3><div class="rk-ctrl"><button class="btn" type="button" id="hmodels" aria-pressed="false">Ver cada modelo</button>
     <div class="seg" role="group" aria-label="Período">
       <button type="button" id="m24" aria-pressed="false">Próximas 24 horas</button>
       <button type="button" id="m72" aria-pressed="true">Próximas 72 horas</button>
-    </div>
-  </div>
-  <div class="hourly">
-    <div>
+    </div></div></div>
       <div class="hchart" id="hstage" tabindex="0" role="slider" aria-label="Gráfico hora a hora. Toque ou arraste para escolher a hora; setas do teclado também funcionam." aria-valuemin="0">
         <canvas id="hcanvas"></canvas>
         <div class="tip3d" id="htip" hidden></div>
@@ -811,11 +875,23 @@ footer p{margin:0;max-width:80ch}
         <button class="btn" type="button" data-jump="+1" aria-label="Próxima hora">→</button>
         <button class="btn" type="button" data-jump="worst">Pior hora</button>
       </div>
-      <p class="status" style="margin-top:10px">Quatro curvas no mesmo eixo de tempo: rajada, chuva acumulada em 24 horas, instabilidade do ar e queda de pressão (valor que pelo menos 2 modelos atingem na mesma hora). Em "Ver cada modelo", cada modelo aparece como uma linha fina na sua cor. A curva muda de cor ao cruzar atenção, alerta e severo; limites acima da escala aparecem com ↑ no canto. Toque ou arraste sobre o gráfico para ver os detalhes da hora.</p>
+      <p class="status" style="margin-top:10px">Curva = o que pelo menos 2 modelos preveem na mesma hora; muda de cor ao cruzar atenção, alerta e severo. Em "Ver cada modelo", cada modelo vira uma linha fina na sua cor. Toque ou arraste sobre o gráfico para ver a hora.</p>
       <p class="src" id="hsrc" style="margin-top:6px"></p>
     </div>
-    <aside class="hour-detail" id="hour-detail" aria-live="polite"></aside>
   </div>
+  <div class="rk-storm" data-only="storm"><div class="card-head"><h2>Ingredientes de tempestade <button class="term" data-term="cape" aria-label="O que é CAPE?">?</button></h2><span class="label">instabilidade (CAPE) e vento em altura</span></div>
+    <div class="combo-legend"><span><i style="background:var(--lv3)"></i>os dois juntos: tempestade severa possível</span><span><i style="background:var(--cold)"></i>só vento em altura: ar pouco instável</span><span><i style="background:var(--lv1)"></i>só instabilidade: pancadas curtas</span><span><i class="none"></i>nenhum</span></div>
+    <div class="chart-box"><canvas id="c-storm"></canvas></div><p class="story" id="storm-story"></p><p class="src" data-src></p></div>
+  <p class="src gsrc" id="gsrc"></p>
+</section>
+
+<section class="card" id="historia">
+  <div class="card-head">
+    <h2 id="hist-title">Neste dia, desde 1940</h2>
+    <span class="hist-badge" title="ERA5: reconstrução do tempo passado feita pelo centro europeu ECMWF, juntando observações de estações, satélites, balões e navios com um modelo. É o que aconteceu, num quadrado de cerca de 25 km, e não uma previsão.">o que aconteceu · reanálise ERA5, não é previsão</span>
+  </div>
+  <div class="hist" id="hist"><p class="status">Carregando histórico…</p></div>
+  <p class="src">Fonte: ERA5 (Copernicus / ECMWF), via Open-Meteo. Cada valor é para um quadrado de cerca de 25 km, não uma estação. A linha tracejada laranja é a única previsão desta seção. Normal = mediana das máximas de 1991 a 2020, de 3 dias antes a 3 dias depois desta data (referência climatológica atual).</p>
 </section>
 
 <section class="card" id="dias">
@@ -866,11 +942,7 @@ footer p{margin:0;max-width:80ch}
   <p class="status" id="ens-status"></p>
 </section>
 
-<section class="charts">
-  <div class="card"><div class="card-head"><h2>Ingredientes de tempestade <button class="term" data-term="cape" aria-label="O que é CAPE?">?</button></h2><span class="label">instabilidade (CAPE) e vento em altura</span></div>
-    <div class="combo-legend"><span><i style="background:var(--lv3)"></i>os dois juntos: tempestade severa possível</span><span><i style="background:var(--cold)"></i>só vento em altura: ar pouco instável</span><span><i style="background:var(--lv1)"></i>só instabilidade: pancadas curtas</span><span><i class="none"></i>nenhum</span></div>
-    <div class="chart-box"><canvas id="c-storm"></canvas></div><p class="story" id="storm-story"></p><p class="src" data-src></p></div>
-</section>
+
 
 <section class="card" id="termos">
   <div class="card-head">
@@ -1399,12 +1471,15 @@ const pct = p => p == null ? "" : `${Math.round(p * 10) * 10}%`;
 // chuva em cada hora do dia: quantos modelos preveem chuva (0,2 mm ou mais) e quanto chove nos que preveem
 function dayRainAgree(d){ const A = lastA; return Array.from({ length:24 }, (_, h) => { const i = A.times.indexOf(`${d}T${String(h).padStart(2,"0")}:00`);
   if (i < 0) return { n:0, k:0, mm:0 }; const v = A.ok.map(m => m.s.precipitation[i]).filter(x => x != null), w = v.filter(x => x >= 0.2);
-  return { n:v.length, k:w.length, mm:w.length ? median(w) : 0 }; }); }
+  return { n:v.length, k:w.length, mm:w.length >= 2 ? kth(w, 2) : 0, solo:w.length === 1 ? w[0] : 0 }; }); }
 // cor da coluna: mais forte quando mais modelos concordam
 // cor por número de modelos: cinza = só um (sem acordo); azul cada vez mais forte de 2 a 5
-const agreeCol = (k, n) => k ? `var(--ag${clamp(Math.round(k / Math.max(1, n) * 5), 1, 5)})` : "transparent";
-const agreeKey = () => `<span class="akey" title="quantos dos 5 modelos preveem chuva na hora"><span>modelos que preveem chuva na hora:</span><i style="background:var(--ag1)"></i><b>1 (sem acordo)</b>${[2,3,4,5].map(k => `<i style="background:var(--ag${k})"></i><b>${k}</b>`).join("")}</span>`;
-function rainCols(d, hMax, nowH){ return dayRainAgree(d).map((x, h) => `<i class="${nowH != null && h < nowH ? "past" : ""}${nowH === h ? " now" : ""}" style="height:${x.k ? Math.max(10, x.mm / hMax * 100) : 0}%;background:${agreeCol(x.k, x.n)}" title="${String(h).padStart(2, "0")}:00 · ${x.k} de ${x.n} modelos com chuva${x.k ? ` · ${nf(x.mm, 1)} mm` : ""}"></i>`).join(""); }
+// regra de cores única (matriz, Hoje e 10 dias): altura = intensidade; azul = previsto por 2 ou mais modelos; cinza = só um modelo; amarelo, laranja e vermelho = passou do limite do INMET
+const agreeCol = (k, n, mm) => !k ? "transparent" : k < 2 ? "var(--solo)" : mm >= CFG.thr.rain1[2] ? "var(--lv3)" : mm >= CFG.thr.rain1[1] ? "var(--lv2)" : mm >= CFG.thr.rain1[0] ? "var(--lv1)" : "var(--water)";
+const fenKey = (th) => `<span class="akey fen">${th ? `<span><i style="background:#b18cff"></i>trovoada prevista</span><span><i style="background:var(--solo)"></i>só um modelo</span>` : `<span class="hk">altura = intensidade</span><span><i style="background:var(--water)"></i>previsto (2 ou mais modelos)</span><span><i style="background:var(--solo)"></i>só um modelo</span><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span>`}</span>`;
+const agreeKey = () => fenKey(false);
+// coluna = o que pelo menos 2 modelos preveem na hora (mesma regra da página); só um modelo = toquinho cinza, sem acordo
+function rainCols(d, hMax, nowH){ return dayRainAgree(d).map((x, h) => `<i class="${nowH != null && h < nowH ? "past" : ""}${nowH === h ? " now" : ""}" style="height:${x.k >= 2 ? Math.max(25, Math.sqrt(x.mm / hMax) * 100) : x.k ? 12 : 0}%;background:${agreeCol(x.k, x.n, x.mm)}" title="${String(h).padStart(2, "0")}:00 · ${x.k} de ${x.n} modelos com chuva${x.k >= 2 ? ` · pelo menos 2 preveem ${nf(x.mm, 1)} mm` : x.k ? ` · só um modelo (${nf(x.solo, 1)} mm), sem acordo` : ""}"></i>`).join(""); }
 // nascer e pôr do sol (equação do nascer do sol; precisão de 1 a 2 minutos)
 function sunTimes(date, lat, lon){
   const r = Math.PI / 180, jd = Date.parse(date + "T12:00:00Z") / 864e5 + 2440587.5;
@@ -1471,12 +1546,13 @@ function renderToday(A){
     <div class="tt-s">agora ${nf(c.temp)}°</div></div>`;
   // chuva: 24 colunas, uma por hora
   const hr = dayHourly(today, "precipitation"), mx = Math.max(1, ...hr.filter(v => v != null)), tot = hr.reduce((a, v) => a + (v ?? 0), 0);
-  const wet = hr.map((v, h) => (v ?? 0) >= 0.2 ? h : -1).filter(h => h >= 0);
-  const hMaxT = Math.max(1, ...dayRainAgree(today).map(x => x.mm)), cols = rainCols(today, hMaxT, nowH);
+  const ag = dayRainAgree(today), wet = ag.map((x, h) => x.k >= 2 ? h : -1).filter(h => h >= 0);
+  const lvH = mm => mm >= CFG.thr.rain1[2] ? 3 : mm >= CFG.thr.rain1[1] ? 2 : mm >= CFG.thr.rain1[0] ? 1 : 0;
+  const strip = ag.map((x, h) => `<i class="${h < nowH ? "past" : ""}${h === nowH ? " now" : ""}" data-lv="${x.k >= 2 ? lvH(x.mm) : ""}"${x.k >= 2 ? "" : ' data-off="1"'} title="${String(h).padStart(2, "0")}:00 · ${x.k >= 2 ? `chuva prevista por ${x.k} modelos (${nf(x.mm, 1)} mm)` : "sem chuva com acordo"}"></i>`).join("");
   const tRain = `<div class="tt"><div class="tt-k">chuva</div>
     <div class="tt-big"><b>${nf(tot, tot < 10 ? 1 : 0)}</b><small>mm</small>${rainChance(A, today) != null ? `<em class="pchip" title="chance de chover pelo menos 1 mm hoje">${pct(rainChance(A, today))}</em>` : ""}</div>
-    <div class="rcols">${cols}</div><div class="rax"><span>06:00</span><span>12:00</span><span>18:00</span></div>${agreeKey()}
-    <div class="tt-s">${!wet.length ? "sem chuva" : wet[wet.length - 1] - wet[0] + 1 === wet.length ? `das ${String(wet[0]).padStart(2, "0")}:00 às ${String(wet[wet.length - 1] + 1).padStart(2, "0")}:00` : `em ${wet.length} ${wet.length === 1 ? "hora" : "horas"} do dia`}</div></div>`;
+    <div class="rstrip">${strip}</div><div class="rax"><span>06:00</span><span>12:00</span><span>18:00</span></div>
+    <div class="tt-s">${!wet.length ? "nenhuma hora com chuva prevista por 2 ou mais modelos" : wet[wet.length - 1] - wet[0] + 1 === wet.length ? `chuva das ${String(wet[0]).padStart(2, "0")}:00 às ${String(wet[wet.length - 1] + 1).padStart(2, "0")}:00` : `chuva em ${wet.length} ${wet.length === 1 ? "hora" : "horas"} do dia`}</div></div>`;
   // vento: bússola com a seta para onde o vento vai
   const lvG = lvOf(ds.gmax, CFG.thr.gust), rot = ((c.dir ?? 0) + 180) % 360;
   const ticks = Array.from({ length:36 }, (_, i) => { const a = i * 10 * Math.PI / 180, r1 = i % 9 ? 41 : 37; return `<line x1="${(50 + Math.sin(a) * r1).toFixed(1)}" y1="${(50 - Math.cos(a) * r1).toFixed(1)}" x2="${(50 + Math.sin(a) * 45).toFixed(1)}" y2="${(50 - Math.cos(a) * 45).toFixed(1)}"/>`; }).join("");
@@ -1540,7 +1616,7 @@ function renderTen(A){
   const defs = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="t-line" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">${tStops}</linearGradient>
     <linearGradient id="t-area" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">${tStops.replace(/"\/>/g, '" stop-opacity=".75"/>')}</linearGradient></defs></svg>`;
   const scale = TEN.mode === "temp" ? `<div class="tscale"><span>cor = temperatura</span><span class="tsb"><i style="background:${tempGrad(0, 35)}"></i><span class="ts-n"><b>0°</b><b>7°</b><b>14°</b><b>21°</b><b>28°</b><b>35°</b></span></span><span class="ts-k"><b class="mn"></b> mínima <b class="mx"></b> máxima${A.cur.temp != null ? ' <b class="now"></b> agora' : ""}</span></div>` : "";
-  const key = scale + (TEN.mode === "rain" ? agreeKey() : "") + `<p class="ten-key"><em class="pp">40%</em> chance de chover pelo menos 1 mm no dia${lastE?.dayP && Object.keys(lastE.dayP).length ? " (5 modelos e 31 cenários do GFS)" : " (5 modelos)"}${TEN.mode === "rain" ? " · colunas: chuva em cada hora do dia" : TEN.mode === "wind" ? ` · marcas em ${CFG.thr.gust.join(", ")} km/h` : ""}</p>`;
+  const key = scale + (TEN.mode === "rain" ? agreeKey() : "") + `<p class="ten-key"><b class="pp">azul embaixo do ícone</b> = chance de chover pelo menos 1 mm no dia${lastE?.dayP && Object.keys(lastE.dayP).length ? " (5 modelos e 31 cenários do GFS)" : " (5 modelos)"}${TEN.mode === "rain" ? ` · coluna = chuva em cada hora, quando 2 ou mais modelos concordam; amarelo a partir de ${CFG.thr.rain1[0]} mm na hora, laranja a partir de ${CFG.thr.rain1[1]} e vermelho a partir de ${CFG.thr.rain1[2]}` : TEN.mode === "wind" ? ` · marcas em ${CFG.thr.gust.join(", ")} km/h` : ""}</p>`;
   $("#ten").className = "ten m-" + TEN.mode; $("#ten").innerHTML = defs + head + rows + key;
 }
 document.querySelectorAll("#dez .seg button").forEach(b => b.onclick = () => {
@@ -1587,11 +1663,11 @@ function histStats(d, mmdd){
 async function loadHistory(){
   const p = place, today = nowKey().slice(0, 10), mmdd = today.slice(5), key = `${p.lat.toFixed(2)},${p.lon.toFixed(2)}|${today}`;
   if (HIST.key === key && HIST.data) return renderHistory();
-  const cached = store.get("sentinela.hist2"); if (cached?.key === key) { HIST.key = key; HIST.data = cached.data; return renderHistory(); }
+  const cached = store.get("sentinela.hist3"); if (cached?.key === key) { HIST.key = key; HIST.data = cached.data; return renderHistory(); }
   if (HIST.busy) return; HIST.busy = true; $("#hist").innerHTML = `<p class="status">Buscando ${new Date().getFullYear() - 1940} anos de registros…</p>`;
   const d = await fetchHistory(p); HIST.busy = false;
   if (!d){ $("#hist").innerHTML = `<p class="status">Não consegui carregar o histórico agora. O resto do painel não depende dele.</p>`; return; }
-  HIST.key = key; HIST.data = histStats(d, mmdd); store.set("sentinela.hist2", { key, data:HIST.data }); renderHistory();
+  HIST.key = key; HIST.data = histStats(d, mmdd); store.set("sentinela.hist3", { key, data:HIST.data }); renderHistory();
 }
 function renderHistory(){
   const H = HIST.data, A = lastA; if (!H){ $("#hist").innerHTML = `<p class="status">Sem dados históricos para este ponto.</p>`; return; }
@@ -1606,19 +1682,20 @@ function renderHistory(){
   const ys = H.perYear, lo = Math.min(...ys.map(x => x.tmax)), hiV = Math.max(...ys.map(x => x.tmax)), fc = A?.dayStats?.[today]?.tmax;
   const top = Math.max(hiV, fc ?? -99) + 1, bot = Math.min(lo, fc ?? 99) - 1, Yp = v => (v - bot) / (top - bot) * 100;
   const bars = ys.map(x => `<i style="height:${Yp(x.tmax)}%;background:${tempCol(x.tmax)}" title="${x.y}: máxima de ${nf(x.tmax, 1)}°"></i>`).join("");
-  const fLine = fc != null ? `<div class="hy-fc" style="bottom:${Yp(fc)}%"><span>previsão de hoje · ${nf(fc)}°</span></div>` : "";
-  const mLine = `<div class="hy-med" style="bottom:${Yp(H.tmaxMed)}%"><span>${H.normOk ? "normal 1991 a 2020" : "máxima típica"} · ${nf(H.tmaxMed)}°</span></div>`;
-  const diff = fc != null ? fc - H.tmaxMed : null;
+  const fLine = fc != null ? `<div class="hy-fc" style="bottom:${Yp(fc)}%"></div>` : "";
+  const mLine = `<div class="hy-med" style="bottom:${Yp(H.tmaxMed)}%"></div>`;
+  const lineKey = `<div class="hy-key"><span><i class="km"></i>${H.normOk ? "normal 1991 a 2020" : "máxima típica"} <b>${nf(H.tmaxMed)}°</b></span>${fc != null ? `<span><i class="kf"></i>previsão de hoje <b>${nf(fc)}°</b></span>` : ""}</div>`;
+  const diff = fc != null ? Math.round(fc) - Math.round(H.tmaxMed) : null;   // mesma conta dos números exibidos (inteiros)
   $("#hist").innerHTML = `
     <div class="hc"><div class="hc-k">como costuma ser este dia <small>(${H.y0} a ${H.y1}, 3 dias antes e depois)</small></div>${stack}</div>
     <div class="hc hc-wide"><div class="hc-k">temperatura máxima neste dia, ano a ano</div>
       <div class="hy">${mLine}${fLine}<div class="hy-bars">${bars}</div></div>
-      <div class="hy-ax"><span>${H.y0}</span><span>${Math.round((H.y0 + H.y1) / 2)}</span><span>${H.y1}</span></div>
+      <div class="hy-ax"><span>${H.y0}</span><span>${Math.round((H.y0 + H.y1) / 2)}</span><span>${H.y1}</span></div>${lineKey}
       <div class="hc-facts">
-        <span><small>recorde de calor</small><b style="color:${tempCol(H.tmaxRec.tmax)}">${nf(H.tmaxRec.tmax, 1)}°</b><em>${H.tmaxRec.y}</em></span>
-        <span><small>recorde de frio</small><b style="color:${tempCol(H.tminRec.tmin)}">${nf(H.tminRec.tmin, 1)}°</b><em>${H.tminRec.y}</em></span>
+        <span><small>recorde de calor · máxima</small><b style="color:${tempCol(H.tmaxRec.tmax)}">${nf(H.tmaxRec.tmax, 1)}°</b><em>${H.tmaxRec.y}</em></span>
+        <span><small>recorde de frio · mínima</small><b style="color:${tempCol(H.tminRec.tmin)}">${nf(H.tminRec.tmin, 1)}°</b><em>${H.tminRec.y}</em></span>
         ${H.trend != null ? `<span><small>máximas recentes × antigas</small><b>${H.trend >= 0 ? "+" : "−"}${nf(Math.abs(H.trend), 1)}°</b><em>${H.lastSpan} contra ${H.firstSpan}</em></span>` : ""}
-        ${diff != null ? `<span class="fcx"><small>previsão de hoje</small><b>${diff >= 0 ? "+" : "−"}${nf(Math.abs(diff))}°</b><em>em relação à ${H.normOk ? "normal de 1991 a 2020" : "máxima típica"}</em></span>` : ""}
+        ${diff != null ? `<span class="fcx"><small>previsão de hoje</small><b>${diff === 0 ? "na normal" : `${diff > 0 ? "+" : "−"}${nf(Math.abs(diff))}°`}</b><em>${diff === 0 ? "igual à" : diff > 0 ? "acima da" : "abaixo da"} ${H.normOk ? "normal de 1991 a 2020" : "máxima típica"}</em></span>` : ""}
       </div></div>
     <div class="hc"><div class="hc-k">chuva e vento neste dia</div>
       <div class="hc-facts">
@@ -1694,9 +1771,26 @@ function bandMatrix(A, key){
   const cons = tl.map(h => h.lv[key]);
   let a = cons.findIndex(v => v >= 1), b = a; if (a >= 0) while (b + 1 < n && cons[b + 1] >= 1) b++;
   const inWin = (mi) => a >= 0 && tl.slice(a, b + 1).some(h => perLv(h, mi) >= 1);
-  const rows = names.map((nmd, mi) => `<div class="mx-row" style="--n:${n}">${tl.map(h => `<i data-lv="${at(perLv(h, mi))}" title="${esc(nmd)} · ${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${nm(perLv(h, mi))}"></i>`).join("")}</div>`);
-  const consRow = `<div class="mx-row cons" style="--n:${n}">${tl.map((h, j) => { const c = h.per.filter((_, mi) => perLv(h, mi) >= Math.max(1, cons[j])).length;
-    return `<i data-lv="${at(cons[j])}" title="${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${nm(cons[j])}${cons[j] ? ` · ${c} modelos concordam` : ""}"></i>`; }).join("")}</div>`;
+  // linha de cada modelo: ponto = o modelo prevê o fenômeno; célula cheia na cor do nível = passou do limite
+  // linha "quantos": altura = quantos modelos preveem (cinza = só um, azul = 2 ou mais, cor do nível = consenso passou do limite)
+  const IV = { rain:{ f:p => p.rain1, min:0.2, unit:"mm na hora", dec:1, what:"chuva (0,2 mm ou mais na hora)" },
+    gust:{ f:p => p.gust, min:CFG.thr.gust[0] / 2, unit:"km/h de rajada", what:`rajada de ${nf(CFG.thr.gust[0] / 2)} km/h ou mais` },
+    storm:{ f:p => p.cape, min:CFG.thr.cape[0] / 2, unit:"J/kg de instabilidade", what:`instabilidade de ${nf(CFG.thr.cape[0] / 2)} J/kg ou mais` },
+    cyclone:{ f:p => p.pfall == null ? null : Math.max(0, p.pfall), min:CFG.thr.pfall[0] / 2, unit:"hPa de queda em 24 horas", dec:1, what:`queda de pressão de ${nf(CFG.thr.pfall[0] / 2)} hPa ou mais` },
+    thunder:{ f:p => p.lv.thunder ? 1 : 0, min:1, unit:"", what:"trovoada" } }[key];
+  const vtxt = v => TH || v == null ? "" : ` · ${nf(v, IV.dec || 0)} ${IV.unit}`;
+  // explicação em linguagem simples, por aba (os números exatos ficam ao passar o dedo)
+  const PLAIN = {
+    rain:`<b>•</b> o modelo prevê chuva nessa hora · <b class="c1">cor</b> chuva forte, a partir de ${CFG.thr.rain1[0]} mm em 1 hora ou ${CFG.thr.rain24[0]} mm em 24 horas`,
+    gust:`<b>•</b> vento já forte, mas ainda sem perigo (rajada a partir de ${nf(IV.min)} km/h) · <b class="c1">cor</b> vento perigoso, a partir de ${CFG.thr.gust[0]} km/h`,
+    storm:`<b>•</b> o ar já está ficando instável, sem perigo ainda · <b class="c1">cor</b> condições para tempestade forte`,
+    cyclone:`<b>•</b> a pressão está baixando: sinal de mudança de tempo, como frente fria. <b>Não é ciclone.</b> · <b class="c1">cor</b> queda forte de pressão, que pode indicar ciclone`,
+    thunder:`<b class="ct">cor</b> o modelo prevê trovoada nessa hora` };
+  const rows = names.map((nmd, mi) => `<div class="mx-row" style="--n:${n}">${tl.map(h => { const p = h.per[mi] || {}, v = p.lv ? IV.f(p) : null, l = perLv(h, mi), on = v != null && v >= IV.min;
+    return `<i data-lv="${at(l)}"${!l && on ? ' data-p="1"' : ""} title="${esc(nmd)} · ${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${l ? nm(l) : on ? "previsto, abaixo do limite" : "não prevê"}${vtxt(v)}"></i>`; }).join("")}</div>`);
+  const consRow = `<div class="mx-row cons" style="--n:${n}">${tl.map((h, j) => { const vs = h.per.map(p => p.lv ? IV.f(p) : null), k = vs.filter(v => v != null && v >= IV.min).length;
+    const st = cons[j] ? at(cons[j]) : k >= 2 ? "a" : k === 1 ? "s" : 0;
+    return `<i data-lv="${st}" title="${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${k} de ${h.per.length} modelos${cons[j] ? ` · ${nm(cons[j])}` : k === 1 ? " · sem acordo" : ""}"><b style="height:${k / Math.max(1, h.per.length) * 100}%"></b></i>`; }).join("")}</div>`;
   const offOn = !!OFF.list?.length;
   const offRow = offOn ? `<div class="mx-row offr" style="--n:${n}">${tl.map(h => { const v = officialAt(tDate(h.t).getTime()); return `<i data-o="${v}" title="INMET · ${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${v ? ["", "perigo potencial", "perigo", "grande perigo"][v] : "sem aviso"}"></i>`; }).join("")}</div>` : "";
   const days = tl.map((h, j) => j && h.t.slice(11,13) === "00" ? `<span class="day" style="left:${j / n * 100}%"></span>` : "").join("");
@@ -1709,15 +1803,15 @@ function bandMatrix(A, key){
   const iso = a >= 0 ? [] : names.map((nmd, mi) => { const j = tl.findIndex(h => perLv(h, mi) >= 1); if (j < 0) return null; const mx = Math.max(...tl.map(h => perLv(h, mi)));
     return `<span class="tag" style="--c:${col(mx)}"><i></i>${esc(nmd)} · ${esc(j === 0 ? "agora" : `${weekday(tl[j].t)} ${hourOf(tl[j].t)}`)} · ${nm(mx).toLowerCase()}${isoVal(A.ok[mi]) ? ` <small>(${isoVal(A.ok[mi])})</small>` : ""}</span>`; }).filter(Boolean);
   return { html:`<div class="mx">
-      <div class="mx-lab">${offOn ? `<span class="offl">INMET</span>` : ""}${names.map((nm, mi) => `<span class="${inWin(mi) ? "hot" : ""}">${nm}</span>`).join("")}<span class="cons">≥2</span></div>
+      <div class="mx-lab">${offOn ? `<span class="offl">INMET</span>` : ""}${names.map((nm, mi) => `<span class="${inWin(mi) ? "hot" : ""}">${nm}</span>`).join("")}<span class="cons">quantos</span></div>
       <div class="mx-cells">${days}${offRow}${rows.join("")}${consRow}${win}<span class="mx-now" title="agora"></span></div>
       <div class="mx-end">${offOn ? "<span></span>" : ""}${ends.join("")}<span class="cons">${agreeN || ""}</span></div>
       <div></div><div class="mx-axis">${axis}</div><div></div>
     </div>
     <div class="mx-iso">só um modelo, sem acordo: ${iso.length ? iso.join("") : `<span class="none">${a >= 0 ? "há acordo entre modelos (janela marcada acima)" : "nenhum"}</span>`}</div>
-    <div class="mx-crit"><b>acende quando:</b> ${CRIT[key]}${key === "rain" ? " · a chuva hora a hora (em Hoje e nos 10 dias) mostra qualquer chuva, mesmo fraca" : ""}</div>
-    <div class="mx-legend"><span>linha = um modelo · última linha = consenso (≥2 na mesma hora) · ✓ concorda · ◦ risco em outra hora</span></div>
-    <div class="lv-key"><span class="k">cores</span>${TH ? `<span><i style="background:#b18cff"></i>trovoada prevista pelo modelo</span><span><i style="background:rgb(63 207 142 / .4)"></i>sem trovoada</span>` : `<span><i style="background:#3fcf8e"></i>sem risco</span><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span>`}</div>`, a, b, agreeN, iso:iso.length };
+    <div class="mx-crit">${PLAIN[key]}</div>
+    <div class="mx-legend"><span>linha = um modelo · quantos = número de modelos que preveem na hora · ✓ concorda · ◦ risco em outra hora</span></div>
+    <div class="akey fen"><span><i class="dot"></i>previsto pelo modelo</span><span><svg width="14" height="10" viewBox="0 0 14 10" aria-hidden="true"><rect x="0" y="7" width="3.5" height="3" fill="var(--solo)"/><rect x="5" y="4" width="3.5" height="6" fill="var(--water)"/><rect x="10" y="0" width="3.5" height="10" fill="var(--water)"/></svg>em "quantos", altura = número de modelos</span><span><i style="background:var(--solo)"></i>só um</span><span><i style="background:var(--water)"></i>2 ou mais</span>${TH ? `<span><i style="background:#b18cff"></i>trovoada</span>` : `<span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span>`}</div>`, a, b, agreeN, iso:iso.length };
 }
 function renderBand(A, place){
   const L = A.levels, ok = A.ok; const lv = Math.max(L.gust, L.rain, L.storm, L.cyclone, L.thunder ? 1 : 0);   // trovoada com acordo = atenção (como o aviso amarelo do INMET)
@@ -1742,7 +1836,7 @@ function renderBand(A, place){
     $("#band").dataset.lv = lv; $("#band-lv").textContent = LEVEL_NAMES[lv];
     $("#band-title").textContent = OFF.err ? cap1(modelTxt) : "Consultando os avisos do INMET…";
   }
-  $("#band-detail").innerHTML = `<span class="k">o que os modelos mostram</span><span class="pill" data-lv="${lv}">${LEVEL_NAMES[lv]}</span><span>${esc(modelTxt)}</span>${OFF.err ? `<span class="muted">· INMET indisponível agora: o nível acima é o dos modelos</span>` : ""}`;
+  $("#band-detail").innerHTML = `<span class="k">o que os modelos mostram</span><span class="pill" data-lv="${lv}">${LEVEL_NAMES[lv]}</span><span>${esc(modelTxt)}</span><a class="b-go" href="#riscos">ver riscos em detalhe ↓</a>${OFF.err ? `<span class="muted">· INMET indisponível agora: o nível acima é o dos modelos</span>` : ""}`;
   const c = A.cur;
 
   const keys = ["storm","thunder","gust","rain","cyclone"];
@@ -1751,18 +1845,21 @@ function renderBand(A, place){
   const when = M.a < 0 ? (M.iso ? `<i style="--c:#8ea4b6">sem acordo</i>` : "—") : M.a >= 0 ? `${cap1(rel(tl[M.a].t) || weekday(tl[M.a].t))} ${hourOf(tl[M.a].t)} <i style="--c:#8ea4b6">→</i> ${tl[M.b].t.slice(0,10) !== tl[M.a].t.slice(0,10) ? cap1(rel(tl[M.b].t) || weekday(tl[M.b].t)) + " " : ""}${hourOf(tl[M.b].t)}` : "—";
   const dur = M.a >= 0 ? M.b - M.a + 1 : 0;
   $("#band-facts").innerHTML = `
-    <div class="b-fact"><span class="k">o quê</span><span class="b-cats">${["storm","thunder","gust","rain","cyclone"].map(k => k === "thunder" ? `<span class="b-cat" data-lv="${L.thunder ? "t" : 0}" title="raios: ${L.thunder ? "trovoada prevista por 2 ou mais modelos" : "sem trovoada com acordo"}">raios <small>${L.thunder ? "previstos" : "sem risco"}</small></span>` : `<span class="b-cat" data-lv="${L[k]}" title="${CATNAME[k]}: ${LEVEL_NAMES[L[k]]}">${CATNAME[k]} <small>${LEVEL_NAMES[L[k]].toLowerCase()}</small></span>`).join("")}</span></div>
     <div class="b-fact"><span class="k">quando · ${CATNAME[BAND.key]}</span><span class="v">${when}</span></div>
     <div class="b-fact"><span class="k">duração</span><span class="v">${dur ? `${dur} h` : "—"}</span></div>
     <div class="b-fact"><span class="k">modelos</span><span class="v"><i style="--c:var(--lv${Math.max(1, L[BAND.key] || 0)})">${M.agreeN}</i>/${ok.length} ${termBtn("consenso")}</span></div>`;
   const cur = BAND.key;
-  const srcHTML = key => `<div class="mx-tabs"><span class="k">ver por</span>${keys.map(k => `<button type="button" data-k="${k}" aria-pressed="${k === key}"><i data-lv="${k === "thunder" && L[k] ? "t" : L[k]}"></i>${CATNAME[k]}</button>`).join("")}</div>${key === cur ? M.html : bandMatrix(A, key).html}<p class="b-th" id="band-th" hidden></p>`;
+  $("#rtabs").innerHTML = keys.map(k => `<button type="button" role="tab" data-k="${k}" aria-selected="${k === cur}"><i data-lv="${k === "thunder" && L[k] ? "t" : L[k]}"></i>${cap1(CATNAME[k])}<small>${k === "thunder" ? (L.thunder ? "previstos" : "sem risco") : LEVEL_NAMES[L[k]].toLowerCase()}</small></button>`).join("");
+  const srcHTML = key => `${key === cur ? M.html : bandMatrix(A, key).html}<p class="b-th" id="band-th" hidden></p>`;
   const el = $("#band-src");
   // mede a altura de todas as abas e reserva a maior: trocar de aba não empurra o resto da página
   el.style.minHeight = ""; let mx = 0;
   for (const k of keys){ BAND.key = k; el.innerHTML = srcHTML(k); renderThunder(A); mx = Math.max(mx, el.offsetHeight); }
   BAND.key = cur; el.innerHTML = srcHTML(cur); renderThunder(A); el.style.minHeight = mx + "px";
-  el.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { BAND.key = b.dataset.k; renderBand(A, place); });
+  $("#rtabs").querySelectorAll("[data-k]").forEach(b => b.onclick = () => { BAND.key = b.dataset.k; renderBand(A, place); });
+  $("#band-facts").querySelectorAll(".b-cat[data-k]").forEach(b => b.onclick = () => { BAND.key = b.dataset.k; renderBand(A, place); });
+  $("#riscos").dataset.k = cur; $("#riscos").dataset.lv = L[cur] ? (cur === "thunder" ? 1 : L[cur]) : 0;
+  if (typeof drawHourly === "function" && V.sel != null){ try { drawHourly(); renderHourDetail(); } catch {} }
 }
 
 /* ====================== cartões de risco ====================== */
@@ -1803,7 +1900,7 @@ function renderGauges(A, E){
   const CLOCK = `<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5V8l2.5 1.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
   const when = (t, lbl) => t ? `<div class="g-when">${CLOCK}<span>${lbl} <b>${esc(whenLong(t))}</b></span></div>` : "";
   const card = (k, title, term, lv, extra) => `
-    <article class="gauge" data-lv="${lv}">
+    <article class="gauge" data-k="${k}" data-lv="${lv}">
       <div class="viz" id="viz-${k}"></div>
       <div class="body">
         <div class="topline"><h3>${title} ${termBtn(term)}</h3><span class="pill" data-lv="${lv}">${LEVEL_NAMES[lv]}</span></div>
@@ -1815,6 +1912,13 @@ function renderGauges(A, E){
     card("gust", "Vento", "rajada", L.gust, when(P.gust.t, "pico")),
     card("rain", "Chuva", "acumulado", L.rain, when(P.rain24.t, "mais chuva em 24 horas até") + bucketsHTML(rMed)),
     card("storm", "Tempestade e tornado", "supercelula", L.storm, L.storm ? when(P.storm.t, "pior momento") : ""),
+    (() => { const th = A.timeline.map(h => ({ t:h.t, n:h.per.filter(p => p.lv.thunder).length })), mx = Math.max(0, ...th.map(h => h.n)), first = th.find(h => h.n >= 2) || th.find(h => h.n >= 1);
+      return `<article class="gauge" data-k="thunder" data-lv="${L.thunder ? 1 : 0}"><div class="viz"><div class="hz"><span class="hz-lab">modelos com trovoada na mesma hora</span>
+        <div class="hz-num" data-lv="${L.thunder ? 1 : 0}">${mx}<small>de ${A.ok.length}</small></div><div class="hz-mean" data-lv="${L.thunder ? 1 : 0}">${mx >= 2 ? "trovoada com acordo" : mx === 1 ? "só um modelo, sem acordo" : "nenhum modelo prevê trovoada"}</div>
+        <div class="thpips">${Array.from({ length:A.ok.length }, (_, i) => `<i class="${i < mx ? "on" : ""}"></i>`).join("")}</div></div></div>
+        <div class="body"><div class="topline"><h3>Raios e trovoadas</h3><span class="pill" data-lv="${L.thunder ? 1 : 0}">${L.thunder ? "Atenção" : "Sem risco"}</span></div>
+        ${first ? `<div class="g-when"><span>${first.n >= 2 ? "primeira hora com acordo" : "só um modelo"} <b>${esc(whenLong(first.t))}</b></span></div>` : ""}
+        <div class="g-when"><span>Previsão, não detecção. Raios ao vivo: <a href="https://www.lightningmaps.org/" target="_blank" rel="noopener">LightningMaps ↗</a></span></div></div></article>`; })(),
     card("cyclone", "Ciclone e pressão", "ciclone", L.cyclone, when(P.pfall.t, "maior queda até") + `<div class="g-when">${termBtn("pressao")}<span>pressão mínima <b>${nf(pminMed, 1)} hPa</b> · normal 1.013 hPa</span></div>`),
   ].join("");
   for (const k in G3) dropStage(G3[k]);
@@ -1992,10 +2096,13 @@ const LANES = [
   { key:"gust", name:"Vento", unit:"km/h", sub:"rajada", val:h => h.v.gust, per:p => p.gust, thr:() => CFG.thr.gust, min:40 },
   { key:"rain", name:"Chuva", unit:"mm", sub:"em 24 horas", val:h => h.v.rain24, per:p => p.r24, thr:() => CFG.thr.rain24, min:20 },
   { key:"storm", name:"Tempestade", unit:"J/kg", sub:"instabilidade", val:h => h.v.cape, per:p => p.cape, thr:() => CFG.thr.cape, min:1200 },
+  { key:"thunder", name:"Raios", unit:"modelos", sub:"com trovoada", val:h => h.per.filter(p => p.lv.thunder).length, per:p => p.lv?.thunder ? 1 : 0, thr:() => [2, 3, 5], min:5 },
   { key:"cyclone", name:"Pressão", unit:"hPa", sub:"queda em 24 horas", val:h => Math.max(0, h.v.pfall ?? 0), per:p => p.pfall == null ? null : Math.max(0, p.pfall), thr:() => CFG.thr.pfall, min:4, dec:1 },
 ];
 function tlView(){ return lastA ? lastA.timeline.slice(0, V.mode) : []; }
-function defaultSel(tl){ let best = 0, bs = -1; tl.forEach((h,j) => { const m = Math.max(h.s.gust, h.s.rain, h.s.storm); if (m >= 1 && m > bs){ bs = m; best = j; } }); return best; }
+// pior hora do risco escolhido na aba (raios: hora com mais modelos prevendo trovoada)
+function defaultSel(tl){ const k = BAND.key || "storm"; let best = 0, bs = -1;
+  tl.forEach((h, j) => { const m = k === "thunder" ? h.per.filter(p => p.lv.thunder).length : (h.s[k] ?? 0); if (m > bs){ bs = m; best = j; } }); return bs > 0 ? best : 0; }
 const HC = { geo:null, hover:-1 };
 function initHourly(){
   const box = $("#hstage"), cv = $("#hcanvas");
@@ -2022,7 +2129,7 @@ function drawHourly(){
   const W = box.clientWidth, Hh = box.clientHeight, dpr = Math.min(2, devicePixelRatio || 1);
   if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(Hh * dpr)){ cv.width = Math.round(W * dpr); cv.height = Math.round(Hh * dpr); }
   const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, Hh);
-  const narrow = W < 560, x0 = narrow ? 86 : 112, x1 = W - (narrow ? 40 : 60), top = 32, bottom = 42, gap = 14, NL = LANES.length;
+  const narrow = W < 560, x0 = narrow ? 86 : 112, x1 = W - (narrow ? 40 : 60), top = 32, bottom = 42, gap = 14, LV_ = LANES.filter(L => L.key === (BAND.key || "storm")), NL = LV_.length || 1;
   const N = tl.length, bw = (x1 - x0) / N, laneH = (Hh - top - bottom - gap * (NL - 1)) / NL;
   HC.geo = { x0, bw, N };
   const LV = [css("--lv0"), css("--lv1"), css("--lv2"), css("--lv3")], mono = css("--f-mono"), sans = css("--f-body");
@@ -2039,7 +2146,7 @@ function drawHourly(){
     if (x + 6 < lastR + 6) return; ctx.fillStyle = j === 0 ? ACC : "#9fb3c4"; ctx.letterSpacing = "1px"; ctx.fillText(txt, x + 6, 15); ctx.letterSpacing = "0px"; lastR = x + 6 + ctx.measureText(txt).width; } });
   // coluna sob o dedo
   if (hov >= 0 && hov !== sel){ ctx.fillStyle = "rgba(255,255,255,.04)"; ctx.fillRect(x0 + hov * bw, top - 6, bw, Hh - top - bottom + 8); }
-  LANES.forEach((L, k) => {
+  (LV_.length ? LV_ : LANES.slice(0, 1)).forEach((L, k) => {
     const y0 = top + k * (laneH + gap), yb = y0 + laneH, thr = L.thr();
     const vals = tl.map(h => { const v = L.val(h); return v == null ? null : Math.max(0, v); });
     const pm = V.models ? lastA.ok.map((m, mi) => tl.map(h => { const v = L.per(h.per[mi] || {}); return v == null ? null : Math.max(0, v); })) : [];
@@ -2108,14 +2215,13 @@ function renderHourDetail(){
   const pf = v.pfall != null && v.pfall > 0.5 ? `, caiu ${nf(v.pfall,1)} hPa nas últimas 24 horas` : v.pfall != null && v.pfall < -0.5 ? `, subiu ${nf(-v.pfall,1)} hPa nas últimas 24 horas` : ", estável";
   $("#hour-detail").innerHTML = `
     <div><div class="label">${V.sel === 0 ? "Agora" : "Hora escolhida"}</div><div class="when">${esc(whenTitle(h.t))}</div></div>
-    <span class="pill" data-lv="${h.l}" style="justify-self:start">${LEVEL_NAMES[h.l]}</span>
-    <div class="hrow" data-lv="${h.lv.gust}">
+    <div class="hrow" data-k="gust" data-lv="${h.lv.gust}">
       <div class="k"><b>Vento ${termBtn("rajada")}</b><span class="label">${LEVEL_NAMES[h.lv.gust]}</span></div>
       <p>Rajadas de até <b>${nf(v.gust)} km/h</b>, ${carCompare(v.gust ?? 0)}.</p>
       <p class="eff">${EFFECT.gust[h.lv.gust]}</p>
       ${chips("gust", x => nf(x), p => p.gust)}
     </div>
-    <div class="hrow" data-lv="${h.lv.rain}">
+    <div class="hrow" data-k="rain" data-lv="${h.lv.rain}">
       <div class="k"><b>Chuva ${termBtn("acumulado")}</b><span class="label">${LEVEL_NAMES[h.lv.rain]}</span></div>
       <p><b>${nf(v.rain1,1)} mm</b> nesta hora · <b>${nf(v.rain24)} mm</b> nas 24 horas até aqui (${nf(v.rain24)} ${Math.round(v.rain24 ?? 0) === 1 ? "litro" : "litros"} por m²).</p>
       ${bucketsHTML(v.rain24)}
@@ -2123,11 +2229,21 @@ function renderHourDetail(){
       ${chips("rain", x => `${nf(x.rain1, 1)} · ${nf(x.r24)} mm`, p => p)}
       <p class="eff chip-key">cada modelo: mm <b>nesta hora</b> · mm <b>em 24 horas</b>. Os números em destaque acima são o 2º maior de cada coluna, ou seja, o que pelo menos 2 modelos preveem.</p>
     </div>
-    <div class="hrow" data-lv="${h.lv.storm}">
+    <div class="hrow" data-k="storm" data-lv="${h.lv.storm}">
       <div class="k"><b>Tempestade ${termBtn("supercelula")}</b><span class="label">${LEVEL_NAMES[h.lv.storm]}</span></div>
       <p>Instabilidade ${capeWord(v.cape)} (${nf(v.cape)} J/kg) ${termBtn("cape")} e vento em altura ${shearWord(v.shear)} (${nf(v.shear)} m/s) ${termBtn("shear")}, no mesmo modelo e na mesma hora.</p>
       <p class="eff">${EFFECT.storm[h.lv.storm]}</p>
       ${chips("storm", x => `${nf(x.cape)} · ${nf(x.shear)} m/s`, p => p)}
+    </div>
+    <div class="hrow" data-k="cyclone" data-lv="${h.lv.cyclone}">
+      <div class="k"><b>Pressão ${termBtn("pressao")}</b><span class="label">${LEVEL_NAMES[h.lv.cyclone]}</span></div>
+      <p>Pressão de <b>${nf(v.pres,1)} hPa</b>${pf}.</p>
+      <p class="eff">${h.lv.cyclone ? EFFECT.cyclone[h.lv.cyclone] : (v.pfall ?? 0) >= CFG.thr.pfall[0] / 2 ? "Pressão baixando: sinal de mudança de tempo, como frente fria. Não é ciclone." : "Pressão sem queda importante."}</p>
+      ${chips("cyclone", x => nf(x, 1) + " hPa", p => p.pfall == null ? null : Math.max(0, p.pfall))}
+    </div>
+    <div class="hrow" data-k="thunder" data-lv="${h.lv.thunder ? 1 : 0}">
+      <div class="k"><b>Raios</b><span class="label">${h.lv.thunder ? "Atenção" : "Sem risco"}</span></div>
+      <p>${(() => { const w = h.per.filter(p => p.lv.thunder).map(p => p.name); return w.length ? `<b>${w.length} de ${h.per.length}</b> modelos preveem trovoada nesta hora (${joinPt(w)}).` : "Nenhum modelo prevê trovoada nesta hora."; })()}</p>
     </div>
     <p class="status">Temperatura ${nf(v.temp,1)} °C · pressão ${nf(v.pres,1)} hPa${pf}.</p>
     <div class="nav"><button class="btn" type="button" id="prevH">← Hora anterior</button><button class="btn" type="button" id="nextH">Próxima hora →</button></div>`;
@@ -2522,7 +2638,7 @@ function renderCharts(A){
     { label:"instabilidade (CAPE)", data:A.timeline.map(h => h.v.cape), spanGaps:true, borderColor:css("--lv2"), backgroundColor:css("--lv2-bg"), fill:true, borderWidth:1.6, pointRadius:0, tension:.25 },
     { label:"cisalhamento", data:A.timeline.map(h => h.v.shear), spanGaps:true, yAxisID:"y2", borderColor:css("--cold"), borderWidth:2, pointRadius:0, tension:.25 },
     { label:`cisalhamento suficiente ${CFG.thr.shear[0]} m/s`, data:A.idx.map(() => CFG.thr.shear[0]), yAxisID:"y2", borderColor:css("--cold"), borderDash:[5,4], borderWidth:1.2, pointRadius:0 } ] } });
-  document.querySelectorAll(".charts [data-src]").forEach(p => p.innerHTML = srcLine(A, "linhas = consenso: o que pelo menos 2 modelos preveem na mesma hora"));
+  document.querySelectorAll("#riscos [data-src]").forEach(p => p.innerHTML = srcLine(A, "linhas = consenso: o que pelo menos 2 modelos preveem na mesma hora"));
 }
 
 function renderLinks(p){

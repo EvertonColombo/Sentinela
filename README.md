@@ -30,6 +30,13 @@ O nível do topo da faixa é o **aviso oficial do INMET**. Abaixo dele, o painel
 - **Tempestade:** energia (CAPE) e vento em altura (cisalhamento) vêm sempre do mesmo modelo e da mesma hora. Só há risco quando os dois aparecem juntos.
 - **Modelo que destoa:** nos medidores, cada modelo é um ponto. O que se afasta muito dos outros aparece em rosa e fica fora da conta.
 
+**Uma regra de cores em toda a página** (matriz, Hoje e 10 dias):
+- nas colunas de chuva dos 10 dias, cada coluna mostra o que pelo menos 2 modelos preveem naquela hora, e a altura é a quantidade de chuva; um toquinho cinza quer dizer que só um modelo prevê chuva ali; amarelo a partir de 20 mm na hora, laranja a partir de 30 e vermelho a partir de 60;
+- **azul** é previsto por 2 ou mais modelos;
+- **cinza** é previsto por um modelo só (sem acordo);
+- **amarelo, laranja e vermelho** são atenção, alerta e severo, os mesmos degraus do INMET;
+- **violeta** é trovoada.
+
 Níveis: **sem risco**, **atenção**, **alerta** e **severo**.
 
 | Categoria | Atenção | Alerta | Severo |
@@ -45,23 +52,27 @@ Vento e chuva seguem os mesmos degraus dos avisos do INMET (amarelo = perigo pot
 
 ## O que tem na página
 
+A página tem três camadas, de cima para baixo.
+
+**1. Para todo mundo**
 - **Céu do título com o tempo de agora:** sol, nuvens, chuva, noite estrelada e relâmpagos só quando há trovoada prevista, com a temperatura e a condição no canto.
-- **Neste dia, desde 1940:** como costuma ser a data de hoje no lugar escolhido. Mostra a porcentagem de dias com sol, sol entre nuvens, nublado e chuva, a máxima de cada ano desde 1940 com a normal de 1991 a 2020 (mediana das máximas de 3 dias antes a 3 dias depois da data) e a previsão de hoje marcadas, os recordes de calor e de frio, quanto as máximas recentes subiram em relação às antigas, e a maior chuva e a maior rajada nessa data. Os dados são da **reanálise ERA5**: o que aconteceu, reconstruído com observações e um modelo, e **não previsão**. Carrega depois do resto e fica guardado no navegador até o dia seguinte.
-- **Faixa de risco:**
-  - **No topo, o aviso oficial do INMET** para o ponto: perigo potencial, perigo ou grande perigo, com o tipo e o horário. Os avisos repetidos são juntados, e a lista completa fica recolhida. Se o INMET não puder ser consultado, o topo mostra o nível dos modelos e avisa isso.
-  - **Logo abaixo, o que os modelos mostram**, para análise própria: o que (tempestade, raios, vento, chuva, ciclone), quando, por quanto tempo e quantos modelos concordam. Trovoada prevista por 2 ou mais modelos na mesma hora conta como atenção.
-  - **A matriz de concordância** tem uma linha por modelo e uma coluna por hora das próximas 72 horas, com uma aba para cada risco, inclusive raios (em violeta). No topo dela fica a linha "INMET", colorida pelo nível do aviso em cada hora. A altura da faixa não muda ao trocar de aba. O aviso de trovoada no navegador fica ali mesmo.
-- **Hoje:** quatro cartões visuais. Temperatura; chuva hora a hora, com a chance do dia e a cor de cada coluna mostrando quantos modelos preveem chuva naquela hora; vento em bússola; arco do sol com nascer e pôr.
-- **Próximos 10 dias:** ícone e chance de chuva de cada dia, e três visões:
-  - **Temperatura:** a curva do dia, com área colorida pela temperatura (com escala), mínima em azul, máxima em laranja e o ponto de agora.
-  - **Chuva:** 24 colunas por dia, mostrando em que horas chove. A cor diz quantos modelos concordam: cinza quando é só um, azul cada vez mais forte de 2 a 5.
-  - **Vento:** rajada máxima com as marcas de atenção, alerta e severo.
-- **Medidores de risco:** número, significado ("folhas se mexem", "telhas voam"), zonas de nível, um ponto por modelo (o que destoa aparece em rosa) e o horário do pico.
-- **Hora a hora:** curvas de rajada, chuva em 24 horas, energia para tempestades e queda de pressão, que mudam de cor ao cruzar cada nível. Em "Ver cada modelo", cada modelo aparece como uma linha na sua cor.
-- **Comparar dias:** ontem, hoje e amanhã em 3D, hora a hora, para temperatura, rajadas ou chuva. Embaixo, três blocos de barras (temperatura, rajada máxima e chuva), uma barra por dia na cor do dia, com a diferença em relação ao dia escolhido.
-- **Ingredientes de tempestade:** energia (CAPE) e cisalhamento ao longo das horas, e quando aparecem juntos.
-- **E o INMET?** Cartão explicando que o INMET roda o COSMO, desenvolvido por um consórcio de serviços meteorológicos de vários países. É um modelo de área limitada: calcula só uma região, com quadrados de 7 a 2,8 km. Ele não está disponível no Open-Meteo, e que os avisos oficiais são feitos por meteorologistas a partir de vários modelos e observações.
-- **Os 5 modelos:** a origem de cada um (instituição, tamanho do quadrado em 3D sobre o relevo, última rodada) e o que cada um prevê: uma régua por grandeza, com as zonas de atenção, alerta e severo, um ponto colorido por modelo e, ao lado, o valor que pelo menos 2 modelos atingem. O modelo que destoa fica com contorno rosa. A tabela com os números exatos continua disponível, recolhida. Inclui os 31 cenários do ensemble GFS para rajada forte e chuva volumosa.
+- **Faixa do topo:** o **aviso oficial do INMET** para o ponto (perigo potencial, perigo ou grande perigo), com tipo e horário, e uma linha com o que os modelos mostram. Se o INMET não puder ser consultado, vale o nível dos modelos, com aviso. O botão de aviso de trovoada no navegador fica aqui.
+- **Hoje:** temperatura; chuva, com o total do dia, a chance e as horas com chuva prevista por 2 ou mais modelos; vento em bússola; arco do sol com nascer e pôr.
+- **Próximos 10 dias:** ícone e chance de chuva de cada dia, e três visões: temperatura (curva do dia), chuva (24 colunas por dia) e vento (rajada máxima com as marcas de atenção, alerta e severo).
+
+**2. Riscos nas próximas 72 horas**
+
+Uma seção com uma aba por risco: **tempestade, raios, vento, chuva e ciclone**. Cada aba mostra, sempre na mesma ordem:
+- quando, por quanto tempo e quantos modelos concordam;
+- a **matriz**: uma linha por modelo e uma coluna por hora, com a linha do INMET no topo e a linha "quantos" embaixo, mais uma explicação em linguagem simples;
+- o **medidor** do pico, com um ponto por modelo e o modelo que destoa em rosa;
+- o **hora a hora** daquele risco, com a opção de ver a linha de cada modelo, e o **detalhe da hora** escolhida;
+- na aba tempestade, o gráfico de **ingredientes** (instabilidade e vento em altura).
+
+**3. Contexto e referência**
+- **Neste dia, desde 1940:** como costuma ser a data no lugar escolhido, com dados da **reanálise ERA5**, ou seja, o que aconteceu, e não previsão. Mostra a máxima de cada ano, a normal de 1991 a 2020, recordes e tendência. Carrega depois do resto e fica guardado no navegador até o dia seguinte.
+- **Comparar dias:** ontem, hoje e amanhã em 3D, hora a hora, e em barras com a diferença entre os dias.
+- **Os 5 modelos:** origem, tamanho do quadrado e última rodada de cada um, o que cada um prevê em réguas visuais (com a tabela recolhida) e o cartão **"E o INMET?"**, sobre o modelo COSMO que o INMET roda.
 - **Termos explicados** e **links úteis** (radar, raios ao vivo, satélite, avisos oficiais).
 
 ## Privacidade
