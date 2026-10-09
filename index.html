@@ -23,6 +23,7 @@
   --lv0:#6f9f88; --lv1:#d9a514; --lv2:#e2711d; --lv3:#c62f2f;
   --lv0-bg:#e2f1ea; --lv1-bg:#fbf1cf; --lv2-bg:#fde3cf; --lv3-bg:#f8d9d9;
   --scene:#dfe6ea; --scene-ground:#cbd6dc; --sky-top:#9fb6c6; --sky-mid:#cfdbe3;
+  --ag1:#b9c3cb; --ag2:#8cc2f0; --ag3:#4a9be0; --ag4:#1f6fc4; --ag5:#0b4592; --tmin:#2563eb; --tmax:#ea580c;
   --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --f-body:"IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
   --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -34,6 +35,7 @@
   --lv0:#4f8f74; --lv1:#f0c43a; --lv2:#f39147; --lv3:#ef5d5d;
   --lv0-bg:#173328; --lv1-bg:#3a3214; --lv2-bg:#3d2715; --lv3-bg:#41191b;
   --scene:#0c1418; --scene-ground:#16262f; --sky-top:#03070b; --sky-mid:#0a141b;
+  --ag1:#55626e; --ag2:#1d5fae; --ag3:#2b86e8; --ag4:#5aaeff; --ag5:#a9d8ff; --tmin:#60a5fa; --tmax:#fb923c;
   color-scheme:dark;}}
 :root[data-theme="dark"]{
   --bg:#0f171c; --panel:#16222a; --ink:#e3eaee; --muted:#93a4ae; --line:#2a3a44;
@@ -41,6 +43,7 @@
   --lv0:#4f8f74; --lv1:#f0c43a; --lv2:#f39147; --lv3:#ef5d5d;
   --lv0-bg:#173328; --lv1-bg:#3a3214; --lv2-bg:#3d2715; --lv3-bg:#41191b;
   --scene:#0c1418; --scene-ground:#16262f; --sky-top:#03070b; --sky-mid:#0a141b;
+  --ag1:#55626e; --ag2:#1d5fae; --ag3:#2b86e8; --ag4:#5aaeff; --ag5:#a9d8ff; --tmin:#60a5fa; --tmax:#fb923c;
   color-scheme:dark;}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -109,7 +112,6 @@ header{display:grid;gap:12px}
 .band[data-lv="0"] .b-lv{background:transparent;color:#3fcf8e;box-shadow:inset 0 0 0 1px #3fcf8e}
 .band strong#band-title{font:600 clamp(1.1rem,2.2vw,1.45rem)/1.2 var(--f-display);color:#fff;text-wrap:balance}
 .b-detail{font-size:.88rem;color:#9fb3c4} .b-detail:empty{display:none}
-.b-facts{display:flex;flex-wrap:wrap;gap:8px}
 .b-fact{display:grid;gap:2px;padding:7px 12px;border:1px solid #1d2b37;border-radius:6px;background:rgb(255 255 255 / .02);min-width:0}
 .b-fact .k{font:600 .6rem var(--f-mono);letter-spacing:.12em;color:#6f8899;text-transform:uppercase}
 .b-fact .v{font:600 .95rem var(--f-mono);color:#fff;white-space:nowrap}
@@ -123,7 +125,9 @@ header{display:grid;gap:12px}
 .lv-key .k{font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#6f8899}
 .b-cat[data-lv="0"]{--c:#3fcf8e} .b-cat[data-lv="1"]{--c:var(--lv1)} .b-cat[data-lv="2"]{--c:var(--lv2)} .b-cat[data-lv="3"]{--c:var(--lv3)}
 /* matriz de concordância: só o risco acende */
-.mx-tabs{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.mleg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:.82rem;color:var(--muted)}
+.mleg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.mx-tabs{display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
 .mx-tabs .k{font:600 .6rem var(--f-mono);letter-spacing:.12em;color:#6f8899;text-transform:uppercase;margin-right:6px}
 .mx-tabs button{font:600 .66rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:99px;border:1px solid #23323e;background:transparent;color:#9fb3c4;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
 .mx-tabs button i{width:7px;height:7px;border-radius:50%;background:#3fcf8e;box-shadow:0 0 5px rgb(63 207 142 / .6)}
@@ -151,8 +155,12 @@ header{display:grid;gap:12px}
 .mx-axis span{position:absolute;top:0;padding-left:4px;border-left:1px solid #2a3a46;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
 .mx-cells .day{position:absolute;top:-6px;bottom:-6px;width:1px;background:rgb(160 190 210 / .18)}
 .mx-iso{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;font:500 .62rem var(--f-mono);color:#6f8899;text-transform:uppercase;letter-spacing:.06em}
+.mx-iso .none{text-transform:none;letter-spacing:0;color:#8ea4b6}
+.mcard.cosmo{border-style:dashed;margin-top:12px;--mc:#e9d7a1}
 .mx-iso .tag{display:inline-flex;gap:6px;align-items:center;padding:3px 8px;border-radius:99px;border:1px dashed var(--c);color:#d6e2ea;text-transform:none;letter-spacing:0}
 .mx-iso .tag i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+.mx-crit{margin-top:10px;font:500 .78rem var(--f-body);color:#c9d6e0}.mx-crit b{font:600 .62rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#6f8899;margin-right:4px}
+.mx-iso .tag small{color:#8ea4b6;font-size:.85em}
 .mx-legend{display:flex;flex-wrap:wrap;gap:12px;font:500 .62rem var(--f-mono);color:#6f8899;text-transform:uppercase;letter-spacing:.06em;margin-top:8px}
 .mx-legend i{display:inline-block;width:10px;height:10px;border-radius:1px;margin-right:5px;vertical-align:-1px}
 
@@ -222,6 +230,8 @@ header{display:grid;gap:12px}
 .viz .lbl.gsub{font:600 .6rem var(--f-body);color:#9fb3c4;text-align:center;line-height:1.25;text-transform:uppercase;letter-spacing:.06em}
 .viz .lbl.gsub b{font:600 .72rem var(--f-mono);color:#fff;text-transform:none;letter-spacing:0}
 .gauge .viz canvas{display:block;width:100%;height:100%}
+.gsrc{margin:-6px 4px 0}
+.g-when{display:flex;align-items:center;gap:7px;font-size:.88rem;color:var(--muted)} .g-when b{color:var(--ink);font-weight:600} .g-when svg{flex:none}
 .gauge .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:9px;flex:1}
 .gauge .topline{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .gauge h3{font:600 .78rem/1.3 var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
@@ -352,6 +362,218 @@ header{display:grid;gap:12px}
 .ltile .ds{font-size:.82rem;color:var(--muted)}
 .ltile .here{font-size:.7rem;color:var(--accent);font-weight:600}
 .lsms{font-size:.85rem;padding:8px 10px;border-radius:8px;border:1px dashed var(--accent);background:var(--panel)}
+
+/* agora, no canto do céu */
+.hero-now{position:absolute;top:clamp(12px,2.4vw,22px);right:clamp(12px,2.6vw,26px);z-index:2;display:flex;align-items:center;gap:10px;color:#fff;pointer-events:none;text-shadow:0 1px 8px rgb(0 0 0 / .45)}
+.hero-now .wx{filter:drop-shadow(0 4px 10px rgb(0 0 0 / .35))}
+.hn-t{font:300 clamp(2.4rem,6vw,3.6rem)/.9 var(--f-body);letter-spacing:-.02em}
+.hn-w{font:600 .82rem var(--f-body);letter-spacing:.04em;opacity:.95}
+.hn-r{display:flex;gap:10px;font:500 .74rem var(--f-mono);opacity:.8;margin-top:2px}
+.hero.day::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgb(6 14 24 / .5),rgb(6 14 24 / .12) 55%,transparent 80%),linear-gradient(0deg,rgb(6 14 24 / .45),transparent 55%)}
+@media (max-width:560px){header .hero{height:250px}.hero-now{top:12px;right:14px;gap:6px}.hero-now .wx{width:36px;height:36px}.hn-t{font-size:2.1rem}.hn-w{font-size:.74rem}.hn-r{display:none}}
+/* hoje */
+.today{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+@media (max-width:560px){.today{grid-template-columns:1fr 1fr;gap:8px}.tt{padding:10px 11px}.tt-big b,.cw b{font-size:1.6rem}.tt-big span{font-size:.95rem}.today .tt-wind{grid-template-columns:1fr;justify-items:start}.today .compass{width:64px;height:64px}.sun-t b{font-size:.92rem}}
+.tt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:8px;align-content:start;min-width:0}
+.tt-k{font:600 .66rem var(--f-body);text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.tt-big{display:flex;align-items:baseline;gap:8px;font-family:var(--f-mono)}
+.tt-big b{font-size:2rem;font-weight:600;line-height:1}
+.tt-big span{font-size:1.2rem;color:var(--muted)}
+.tt-big small{font-size:.9rem;color:var(--muted)}
+.tt-s{font-size:.82rem;color:var(--muted)}
+.tbar{position:relative;height:8px;border-radius:99px;background:color-mix(in srgb,var(--line) 70%,transparent)}
+.tbar i{position:absolute;top:0;bottom:0;left:0;right:0;border-radius:99px}
+.tbar b{position:absolute;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#fff;box-shadow:0 0 0 2.5px var(--panel),0 1px 4px rgb(0 0 0 / .4)}
+.rcols{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;align-items:end;height:46px}
+.rcols i{display:block;border-radius:2px 2px 1px 1px;background:var(--water);opacity:.85}
+.rcols i.past{opacity:.3} .rcols i.now{background:var(--accent);opacity:1}
+.tt-wind{grid-template-columns:auto 1fr;align-items:center;column-gap:12px}
+.tt-wind .tt-k,.tt-wind .tt-s{grid-column:1 / -1}
+.compass{width:86px;height:86px}
+.compass .ct{stroke:var(--muted);stroke-width:1.2;opacity:.6}
+.compass text{font:600 8px var(--f-mono);fill:var(--muted);text-anchor:middle;dominant-baseline:middle}
+.compass .arr{fill:var(--accent)} .compass .cc{fill:var(--panel);stroke:var(--line)}
+.cw{display:flex;align-items:baseline;gap:5px;font-family:var(--f-mono)}
+.cw b{font-size:2rem;line-height:1} .cw small{color:var(--muted)}
+.cw b[data-lv="1"]{color:var(--lv1)} .cw b[data-lv="2"]{color:var(--lv2)} .cw b[data-lv="3"]{color:var(--lv3)}
+.sunarc{width:100%;max-height:74px}
+.sa-bg{fill:none;stroke:var(--line);stroke-width:2.5;stroke-dasharray:2 4}
+.sa-fg{fill:none;stroke:#f5b83d;stroke-width:3;stroke-linecap:round}
+.sa-hz{stroke:var(--muted);stroke-width:1;opacity:.5}
+.sa-sun{fill:#ffd24a;filter:drop-shadow(0 0 5px #ffb52e)}
+.sun-t{display:flex;justify-content:space-between}
+.sun-t span{display:grid} .sun-t small{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em} .sun-t b{font:600 1.05rem var(--f-mono)}
+/* 10 dias */
+.ten{display:grid}
+.trow{display:grid;grid-template-columns:minmax(7.5em,9.5em) 34px 4.2em 1fr 4.6em;align-items:center;gap:10px;padding:7px 4px;border-top:1px solid var(--line)}
+.trow:first-child{border-top:0}
+.trow.today .td{font-weight:700}
+.td{font-size:.95rem;white-space:nowrap}
+.tv-l,.tv-r{font:500 .95rem var(--f-mono);white-space:nowrap}
+.tv-l{text-align:right;color:var(--muted)} .tv-r small{font-size:.72em;color:var(--muted);margin-left:2px}
+.trow .tbar{height:7px}
+.tbar.rain i{background:var(--water)} .tbar.rain i[data-lv="1"]{background:var(--lv1)} .tbar.rain i[data-lv="2"]{background:var(--lv2)} .tbar.rain i[data-lv="3"]{background:var(--lv3)}
+.tbar.wind i{background:#7fb3c8} .tbar.wind i[data-lv="1"]{background:var(--lv1)} .tbar.wind i[data-lv="2"]{background:var(--lv2)} .tbar.wind i[data-lv="3"]{background:var(--lv3)}
+.tbar em{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px;border-radius:1px;background:var(--c);opacity:.7;z-index:1}
+.tbar em[data-lv="1"]{--c:var(--lv1)} .tbar em[data-lv="2"]{--c:var(--lv2)} .tbar em[data-lv="3"]{--c:var(--lv3)}
+.pips{display:inline-flex;gap:3px;vertical-align:middle}
+.pips i{width:7px;height:7px;border-radius:50%;background:color-mix(in srgb,var(--water) 22%,transparent)}
+.pips i.on{background:var(--water)}
+.ten-key{margin:8px 0 0;font-size:.8rem;color:var(--muted)}
+@media (max-width:560px){.trow{grid-template-columns:6.9em 28px 3.2em 1fr 3.6em;gap:6px}.td{font-size:.86rem}.tv-l,.tv-r{font-size:.85rem}.pips i{width:5px;height:5px}}
+
+.ic{display:grid;justify-items:center;line-height:1}
+.pp{font:600 .7rem var(--f-mono);font-style:normal;color:#4fa8ff}
+.pchip{font:600 .78rem var(--f-mono);font-style:normal;color:#4fa8ff;background:color-mix(in srgb,#4fa8ff 14%,transparent);border-radius:99px;padding:2px 8px;margin-left:auto;align-self:center}
+.rax{position:relative;height:12px;font:500 .62rem/12px var(--f-mono);color:var(--muted);opacity:.85}
+.rax span{position:absolute;top:0;transform:translateX(-50%)}.rax span:nth-child(1){left:25%}.rax span:nth-child(2){left:50%}.rax span:nth-child(3){left:75%}
+.ten.m-rain .trow,.ten.m-wind .trow{grid-template-columns:minmax(7.5em,9.5em) 34px 1fr 4.6em}
+@media (max-width:560px){.ten.m-rain .trow,.ten.m-wind .trow{grid-template-columns:6.9em 28px 1fr 3.6em}.thead .rax span:nth-child(1),.thead .rax span:nth-child(3){display:none}}
+.rtl{display:grid;grid-template-columns:repeat(24,1fr);gap:1px;align-items:end;height:24px;position:relative;
+  background:linear-gradient(90deg,transparent calc(25% - .5px),var(--line) calc(25% - .5px) calc(25% + .5px),transparent 0,transparent calc(50% - .5px),var(--line) calc(50% - .5px) calc(50% + .5px),transparent 0,transparent calc(75% - .5px),var(--line) calc(75% - .5px) calc(75% + .5px),transparent 0),linear-gradient(0deg,var(--line) 1px,transparent 1px)}
+.rtl i{display:block;background:var(--water);border-radius:1.5px 1.5px 0 0}
+.rtl i.past{opacity:.35}
+.trow.thead{padding:0 4px;border-top:0}
+
+.mx-row i[data-lv="t"]{background:#b18cff;box-shadow:0 0 7px rgb(177 140 255 / .7)}
+.mx-tabs button i[data-lv="t"]{background:#b18cff;box-shadow:0 0 6px #b18cff}
+.b-cat[data-lv="t"]{--c:#b18cff}
+.b-th{margin:0;font-size:.88rem;color:#d6e2ea;border-left:2px solid #b18cff;padding:2px 0 2px 10px}
+.b-th .muted{color:#8ea4b6}
+.b-th a{color:#c9b3ff}
+.b-notif{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.b-notif .btn{background:rgb(255 255 255 / .04);border-color:#23323e;color:#d6e2ea}
+.b-notif .status{color:#8ea4b6;font-size:.82rem}
+
+.akey{display:flex;flex-wrap:wrap;align-items:center;gap:3px 4px;font:500 .66rem var(--f-mono);color:var(--muted)}
+.akey>span{margin-right:4px;font-family:var(--f-body);font-size:.74rem}
+.akey i{width:12px;height:10px;border-radius:2px;display:inline-block} .akey b{font-weight:600;margin-right:4px}
+.rcols i.now,.rtl i.now{outline:1.5px solid var(--accent);outline-offset:1px}
+.rcols i.past,.rtl i.past{filter:grayscale(.7);opacity:.55}
+.tcurve{position:relative;height:40px;
+  background:linear-gradient(90deg,transparent calc(25% - .5px),var(--line) calc(25% - .5px) calc(25% + .5px),transparent 0,transparent calc(50% - .5px),var(--line) calc(50% - .5px) calc(50% + .5px),transparent 0,transparent calc(75% - .5px),var(--line) calc(75% - .5px) calc(75% + .5px),transparent 0)}
+.tcurve svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.tcurve b,.ts-k b{position:absolute;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px var(--panel)}
+.tcurve b.now,.ts-k b.now{background:#fff;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;box-shadow:0 0 0 2.5px var(--panel),0 1px 4px rgb(0 0 0 / .5)}
+.ts-k b{position:static;display:inline-block;margin:0 2px 0 8px;vertical-align:-1px;--c:var(--muted)}
+.ts-k b.mn,.tcurve b.mn{background:var(--tmin)} .ts-k b.mx,.tcurve b.mx{background:var(--tmax)} .ts-k b.now{margin:0 2px 0 8px;width:10px;height:10px}
+.tscale{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:10px;font-size:.78rem;color:var(--muted)}
+.tsb{display:grid;gap:3px}.tsb>i{width:150px;height:7px;border-radius:99px}
+.tscale{position:relative}.ts-n{width:150px;justify-content:space-between}
+.ts-n{display:flex;font:500 .62rem var(--f-mono)} .ts-n b{font-weight:500}
+
+#trio{display:block}
+.dcomp{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+.dc-b{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;gap:8px;align-content:start}
+.dc-t{font:600 .7rem var(--f-body);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.dc-r{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"d v" "b b" "x x";gap:3px 10px;align-items:center}
+.dc-r.off{opacity:.35}
+.dc-r .dc-d{grid-area:d;font-size:.86rem;display:flex;align-items:center;gap:6px;min-width:0}
+.dc-r.mid .dc-d{font-weight:700}
+.dc-d i{width:10px;height:10px;border-radius:3px;flex:none}
+.dc-d small{color:var(--muted);font-size:.72rem}
+.dc-bar{grid-area:b;position:relative;height:9px;border-radius:99px;background:color-mix(in srgb,var(--line) 60%,transparent)}
+.dc-bar i{position:absolute;top:0;bottom:0;border-radius:99px}
+.dc-bar em{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--c);opacity:.8;z-index:1}
+.dc-bar em[data-lv="1"]{--c:var(--lv1)} .dc-bar em[data-lv="2"]{--c:var(--lv2)} .dc-bar em[data-lv="3"]{--c:var(--lv3)}
+.dc-v{grid-area:v;font:600 .9rem var(--f-mono);text-align:right;white-space:nowrap}
+.dc-v small{display:block;font:500 .7rem var(--f-body);color:var(--muted)}
+.dc-r>.delta,.dc-r>span:last-child{grid-area:x;font-size:.76rem}
+.dc-k{margin:8px 0 0;font-size:.78rem;color:var(--muted)}
+
+.models td.num{background:linear-gradient(90deg,transparent calc(100% - var(--w,0%)),color-mix(in srgb,var(--water) 16%,transparent) 0) no-repeat;background-size:calc(100% - 8px) 70%;background-position:center}
+.models td.dz .tv,.models td.dz .ti{box-shadow:0 0 0 2px #ff7ad9;border-radius:4px;padding:0 4px}
+
+/* neste dia, desde 1940 */
+.hist-badge{font:600 .66rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;color:#c9b3ff;border:1px dashed #9b7bff;background:color-mix(in srgb,#9b7bff 10%,transparent)}
+.hist{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr);gap:12px}
+@media (max-width:900px){.hist{grid-template-columns:1fr}}
+.hc{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:10px;align-content:start;min-width:0}
+.hc-k{font:600 .7rem var(--f-body);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.hc-k small{text-transform:none;letter-spacing:0;font-weight:500}
+.hk-bar{display:flex;height:14px;border-radius:99px;overflow:hidden;background:var(--line)}
+.hk-bar i{display:block}
+.hk-sol{background:#f5b83d} .hk-parcial{background:#9cc6e8} .hk-nublado{background:#8d99a6} .hk-chuva{background:var(--water)}
+.hk-leg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hk-leg span{display:grid;grid-template-columns:28px auto;column-gap:8px;align-items:center}
+.hk-leg .wx{grid-row:span 2}
+.hk-leg b{font:600 1.15rem var(--f-mono)} .hk-leg small{font-size:.74rem;color:var(--muted);line-height:1.15}
+.hy{position:relative;height:120px}
+.hy-bars{position:absolute;inset:0;display:flex;align-items:flex-end;gap:1px}
+.hy-bars i{flex:1;min-width:1px;border-radius:1px 1px 0 0;opacity:.9}
+.hy-med,.hy-fc{position:absolute;left:0;right:0;height:0;border-top:1.5px dashed var(--muted);z-index:1}
+.hy-fc{border-top:2px dashed var(--tmax)}
+.hy-med span,.hy-fc span{position:absolute;left:4px;bottom:2px;font:600 .66rem var(--f-mono);background:var(--panel);padding:0 5px;border-radius:3px;color:var(--muted)}
+.hy-fc span{left:auto;right:4px;color:var(--tmax)}
+.hy-ax{display:flex;justify-content:space-between;font:500 .66rem var(--f-mono);color:var(--muted)}
+.hc-facts{display:flex;flex-wrap:wrap;gap:10px 18px}
+.hc-facts span{display:grid}
+.hc-facts small{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.hc-facts b{font:600 1.35rem var(--f-mono)} .hc-facts em{font-style:normal;font-size:.78rem;color:var(--muted)}
+.hc-facts .fcx small,.hc-facts .fcx b{color:var(--tmax)}
+
+.b-off{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:.86rem}
+.b-off .k{font:600 .6rem var(--f-mono);letter-spacing:.12em;color:#6f8899;text-transform:uppercase}
+.b-off .off-none{color:#8ea4b6} .b-off a{color:#c9d6e0}
+.off{display:inline-flex;align-items:center;gap:7px;padding:4px 10px;border-radius:6px;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 16%,transparent);text-decoration:none;--c:var(--lv1)}
+.off[data-lv="2"]{--c:var(--lv2)} .off[data-lv="3"]{--c:var(--lv3)}
+.off i{width:9px;height:9px;border-radius:2px;background:var(--c)} .off b{color:#fff}
+
+/* o que cada modelo prevê: réguas */
+.mviz{display:grid;gap:4px}
+.mleg2{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.84rem;margin-bottom:6px;align-items:center}
+.mleg2 i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.mleg2 .mk{color:var(--muted);font-size:.78rem}
+.mrow{display:grid;grid-template-columns:minmax(10em,13em) 1fr 8.5em;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.mname{font-weight:600;font-size:.92rem;display:grid}
+.mname small{font-weight:400;color:var(--muted);font-size:.76rem}
+.mstrip{padding:22px 0 0}
+.mrow{min-height:76px}
+.mtrack{position:relative;height:12px;border-radius:6px;background:color-mix(in srgb,var(--line) 55%,transparent)}
+.mz{position:absolute;top:0;bottom:0}
+.mz[data-lv="1"]{background:color-mix(in srgb,var(--lv1) 22%,transparent)} .mz[data-lv="2"]{background:color-mix(in srgb,var(--lv2) 24%,transparent)} .mz[data-lv="3"]{background:color-mix(in srgb,var(--lv3) 26%,transparent);border-radius:0 6px 6px 0}
+.mticks{position:relative;height:14px;margin-top:2px}
+.mt{position:absolute;transform:translateX(-50%);font:600 .64rem var(--f-mono);color:var(--c)}
+.mt[data-lv="1"]{--c:var(--lv1)} .mt[data-lv="2"]{--c:var(--lv2)} .mt[data-lv="3"]{--c:var(--lv3)}
+.md{position:absolute;top:50%;width:0;height:0;z-index:2}
+.md i{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--mc);box-shadow:0 0 0 2px var(--panel)}
+.md.out i{box-shadow:0 0 0 2px var(--panel),0 0 0 4px #ff7ad9}
+.md em{position:absolute;left:0;transform:translateX(-50%);white-space:nowrap;font:600 .66rem var(--f-body);font-style:normal;color:var(--mc);background:var(--panel);padding:0 3px;border-radius:3px}
+.md em b{font-family:var(--f-mono);color:var(--ink);font-weight:600}
+.md em.l{transform:translateX(-7px)} .md em.r{transform:translateX(calc(-100% + 7px))}
+.md em.up{bottom:calc(9px + var(--l,0) * 14px)} .md em.dn{top:calc(9px + var(--l,0) * 14px)}
+.mcons{display:grid;justify-items:end;text-align:right;--c:var(--muted)}
+.mcons small{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.mcons b{font:600 1.35rem var(--f-mono)}
+.mcons span{font-size:.78rem;color:var(--c)}
+.mcons[data-lv="0"]{--c:#3fae7d} .mcons[data-lv="1"]{--c:var(--lv1)} .mcons[data-lv="2"]{--c:var(--lv2)} .mcons[data-lv="3"]{--c:var(--lv3)}
+.mcons[data-lv="1"] b,.mcons[data-lv="2"] b,.mcons[data-lv="3"] b{color:var(--c)}
+.mchips{display:flex;flex-wrap:wrap;gap:6px}
+.mchip{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;padding:3px 9px;border-radius:99px;border:1px solid var(--line)}
+.mchip i{width:8px;height:8px;border-radius:50%;background:var(--mc)}
+.mchip[data-lv="1"]{border-color:var(--lv1)} .mchip[data-lv="2"]{border-color:var(--lv2)} .mchip[data-lv="3"]{border-color:var(--lv3)}
+.mtable{margin-top:10px} .mtable summary{cursor:pointer;color:var(--accent);font-weight:600}
+@media (max-width:640px){.mrow{grid-template-columns:1fr auto;grid-template-areas:"n c" "s s";gap:4px 10px}.mname{grid-area:n}.mcons{grid-area:c}.mstrip{grid-area:s}.mstorm{grid-template-areas:"n n" "s s"}.mstorm .mchips{grid-area:s}}
+
+.mx-row.offr{margin-bottom:6px}
+.mx-row.offr i[data-o="0"]{background:rgb(255 255 255 / .03)}
+.mx-row.offr i[data-o="1"]{background:var(--lv1)} .mx-row.offr i[data-o="2"]{background:var(--lv2)} .mx-row.offr i[data-o="3"]{background:var(--lv3)}
+.mx-lab .offl{color:#e9d7a1;margin-bottom:6px}
+.mx-end>span:first-child:empty{margin-bottom:6px}
+.off-t{color:#9fb3c4;font-size:.84rem}
+.off-all{flex-basis:100%;font-size:.82rem;color:#8ea4b6}
+.off-all summary{cursor:pointer;color:#9fb3c4}
+.off-all ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:5px}
+.off-all p{margin:6px 0 0}
+.b-facts{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr);gap:8px}
+.b-facts>.b-fact:first-child{grid-column:1 / -1}
+.b-fact .v{overflow:hidden;text-overflow:ellipsis}
+@media (max-width:560px){.b-facts{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr)}.b-fact .v{white-space:normal;font-size:.85rem;min-height:2.6em}.b-facts>.b-fact:not(:first-child) .k{min-height:2.5em}}
+
+.b-detail{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:.9rem;color:#d6e2ea;padding-top:10px;border-top:1px solid #1d2b37}
+.b-detail .k{font:600 .6rem var(--f-mono);letter-spacing:.12em;color:#6f8899;text-transform:uppercase}
+.b-detail .pill{font-size:.66rem}
+.b-detail .muted{color:#8ea4b6;font-size:.82rem}
 /* título: céu de tempestade em 3D (sempre noturno, nos dois temas) */
 .hero{position:relative;height:clamp(190px,26vw,260px);border-radius:12px;overflow:hidden;background:radial-gradient(120% 140% at 70% 0%,#1d2b3a 0%,#0a1018 55%,#04070b 100%);isolation:isolate}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
@@ -490,6 +712,13 @@ footer p{margin:0;max-width:80ch}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <radialGradient id="g-sun" cx="40%" cy="35%"><stop offset="0" stop-color="#fff2b0"/><stop offset=".55" stop-color="#ffd24a"/><stop offset="1" stop-color="#f5a623"/></radialGradient>
+  <linearGradient id="g-moon" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbfdff"/><stop offset="1" stop-color="#b9c7d8"/></linearGradient>
+  <linearGradient id="g-cloud" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#c9d6e2"/></linearGradient>
+  <linearGradient id="g-cloud2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9e2ea"/><stop offset="1" stop-color="#9aabbb"/></linearGradient>
+  <linearGradient id="g-cloud3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9aa8b6"/><stop offset="1" stop-color="#5d6b79"/></linearGradient>
+</defs></svg>
 <div class="wrap">
 
 <header>
@@ -498,6 +727,7 @@ footer p{margin:0;max-width:80ch}
       <h1 class="logo"><span class="l1">Sentinela</span><span class="l2">do Tempo</span></h1>
       <p class="tag">Vento, chuva, raios, tempestades e ciclones em qualquer ponto do Brasil.<br><span>Cinco modelos de previsão, lado a lado.</span></p>
     </div>
+    <div class="hero-now" id="hero-now" aria-live="polite"></div>
   </div>
   <div class="top">
     <div class="controls">
@@ -524,25 +754,36 @@ footer p{margin:0;max-width:80ch}
 <section class="band" id="band" data-lv="">
   <div class="b-row1">
     <div class="b-place"><i class="b-live" aria-hidden="true"></i><span id="band-place">Carregando…</span></div>
-    <div class="now" id="now"></div>
   </div>
   <div class="b-head"><span class="b-lv" id="band-lv">—</span><strong id="band-title">Buscando previsões</strong></div>
+  <div class="b-off" id="band-off"></div>
   <div id="band-detail" class="b-detail"></div>
   <div class="b-facts" id="band-facts"></div>
   <div class="b-mx" id="band-src"></div>
+  <div class="b-notif"><button class="btn" type="button" id="notif">🔔 Avisar trovoada neste aparelho</button><span class="status" id="notif-msg"></span></div>
 </section>
 
-<section class="card" id="raios">
+<section class="today" id="today" aria-label="Hoje"></section>
+
+<section class="card" id="dez">
   <div class="card-head">
-    <h2>⚡ Raios e trovoadas</h2>
-    <button class="btn" type="button" id="notif">🔔 Avisar neste aparelho</button>
+    <h2>Próximos 10 dias</h2>
+    <div class="seg" role="group" aria-label="O que mostrar"><button type="button" data-m="temp" aria-pressed="true">Temperatura</button><button type="button" data-m="rain" aria-pressed="false">Chuva</button><button type="button" data-m="wind" aria-pressed="false">Vento</button></div>
   </div>
-  <div id="thunder"><p class="status">Calculando…</p></div>
-  <p class="status" id="notif-msg"></p>
-  <p class="src" id="tsrc"></p>
+  <div class="ten" id="ten"><p class="status">Calculando…</p></div>
+</section>
+
+<section class="card" id="historia">
+  <div class="card-head">
+    <h2 id="hist-title">Neste dia, desde 1940</h2>
+    <span class="hist-badge" title="ERA5: reconstrução do tempo passado feita pelo centro europeu ECMWF, juntando observações de estações, satélites, balões e navios com um modelo. É o que aconteceu, num quadrado de cerca de 25 km, e não uma previsão.">o que aconteceu · reanálise ERA5, não é previsão</span>
+  </div>
+  <div class="hist" id="hist"><p class="status">Carregando histórico…</p></div>
+  <p class="src">Fonte: ERA5 (Copernicus / ECMWF), via Open-Meteo. Cada valor é para um quadrado de cerca de 25 km, não uma estação. A linha tracejada laranja é a única previsão desta seção. Normal = mediana das máximas de 1991 a 2020, de 3 dias antes a 3 dias depois desta data (referência climatológica atual).</p>
 </section>
 
 <section class="gauges" id="gauges" aria-label="Riscos nas próximas 72 horas"></section>
+<p class="src gsrc" id="gsrc"></p>
 
 <section class="card" id="hora-a-hora">
   <div class="card-head">
@@ -551,6 +792,7 @@ footer p{margin:0;max-width:80ch}
       <span><i style="background:var(--lv0)"></i>sem risco</span><span><i style="background:var(--lv1)"></i>atenção</span>
       <span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span>
     </div>
+    <button class="btn" type="button" id="hmodels" aria-pressed="false">Ver cada modelo</button>
     <div class="seg" role="group" aria-label="Período">
       <button type="button" id="m24" aria-pressed="false">Próximas 24 horas</button>
       <button type="button" id="m72" aria-pressed="true">Próximas 72 horas</button>
@@ -562,13 +804,14 @@ footer p{margin:0;max-width:80ch}
         <canvas id="hcanvas"></canvas>
         <div class="tip3d" id="htip" hidden></div>
       </div>
+      <div class="mleg" id="hmleg" hidden></div>
       <div class="jump">
         <button class="btn" type="button" data-jump="now">Agora</button>
         <button class="btn" type="button" data-jump="-1" aria-label="Hora anterior">←</button>
         <button class="btn" type="button" data-jump="+1" aria-label="Próxima hora">→</button>
         <button class="btn" type="button" data-jump="worst">Pior hora</button>
       </div>
-      <p class="status" style="margin-top:10px">Quatro curvas no mesmo eixo de tempo: rajada, chuva acumulada em 24 horas, energia para tempestades e queda de pressão (valor que pelo menos 2 modelos atingem na mesma hora). A curva muda de cor ao cruzar atenção, alerta e severo; limites acima da escala aparecem com ↑ no canto. Toque ou arraste sobre o gráfico para ver os detalhes da hora.</p>
+      <p class="status" style="margin-top:10px">Quatro curvas no mesmo eixo de tempo: rajada, chuva acumulada em 24 horas, instabilidade do ar e queda de pressão (valor que pelo menos 2 modelos atingem na mesma hora). Em "Ver cada modelo", cada modelo aparece como uma linha fina na sua cor. A curva muda de cor ao cruzar atenção, alerta e severo; limites acima da escala aparecem com ↑ no canto. Toque ou arraste sobre o gráfico para ver os detalhes da hora.</p>
       <p class="src" id="hsrc" style="margin-top:6px"></p>
     </div>
     <aside class="hour-detail" id="hour-detail" aria-live="polite"></aside>
@@ -600,25 +843,32 @@ footer p{margin:0;max-width:80ch}
 
 <section class="card" id="modelos">
   <div class="card-head">
-    <h2>De onde vêm os dados <button class="term" data-term="modelo" aria-label="O que é um modelo?">?</button></h2>
+    <h2>Os 5 modelos <button class="term" data-term="modelo" aria-label="O que é um modelo?">?</button></h2>
     <span class="label">tamanho do quadrado que cada modelo enxerga</span>
   </div>
   <div class="stage" id="mstage"><span class="hint">Arraste para girar</span></div>
   <p class="status">Cada modelo divide o planeta em quadrados e calcula um único valor para cada um. O pino vermelho é o seu lugar; o ponto colorido no meio de cada quadrado é o centro que o modelo realmente usou. Tudo que acontece dentro do quadrado, incluindo vales, morros e o litoral, vira uma média: por isso nenhum modelo enxerga uma tempestade isolada, e um endereço exato e o centro da cidade costumam cair no mesmo quadrado.</p>
   <div class="mgrid" id="mgrid"></div>
+  <article class="mcard cosmo">
+    <h3>E o INMET? <span class="muted" style="font:500 .8rem var(--f-body)">COSMO, modelo de área limitada</span></h3>
+    <div class="org"><b>Roda no INMET</b> (Instituto Nacional de Meteorologia, Brasil)<br><span class="muted">Desenvolvido pelo consórcio COSMO, de serviços meteorológicos de vários países, como Alemanha, Suíça e Itália</span></div>
+    <dl><dt>Quadrado</dt><dd>7 km a 2,8 km</dd><dt>Prevê até</dt><dd>174 horas (7 dias)</dd><dt>Aqui no painel</dt><dd>não entra nas contas</dd></dl>
+    <p>Em vez de calcular o planeta inteiro, como os 5 modelos acima, o COSMO calcula só uma região (no INMET, a América do Sul), e por isso consegue usar quadrados bem menores. Os dados dele não estão disponíveis no Open-Meteo. Os avisos oficiais são feitos por meteorologistas, que juntam o COSMO, outros modelos, radar, satélite e estações. Por isso o nível do topo da faixa é o aviso do INMET, e os 5 modelos ficam logo abaixo, para comparar.</p>
+    <a href="https://portal.inmet.gov.br/servicos/previs%C3%A3o-num%C3%A9rica-modelo" target="_blank" rel="noopener">Sobre o COSMO no INMET ↗</a>
+  </article>
   <h3>O que cada modelo prevê para as próximas 72 horas</h3>
+  <div class="mviz" id="mviz"></div>
+  <details class="mtable"><summary>Ver os números em tabela</summary>
   <div class="table-wrap"><table class="models" id="models-table"></table></div>
-  <div class="tkey"><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span><span>cor só onde o valor já é risco por si</span><span>▲ ingrediente acima do mínimo para tempestade: só vira risco quando energia e vento em altura aparecem juntos (coluna Tempestade)</span></div>
-  <div class="rule2"><b>Como o painel lê os 5 modelos, em toda a página:</b> <span><b>riscos</b> (vento, chuva, tempestade, queda de pressão) = o maior valor que <b>pelo menos 2 modelos</b> atingem na mesma hora; um modelo sozinho não muda o número.</span> <span><b>condições gerais</b> (temperatura, pressão, Comparar dias) = <b>mediana</b> dos modelos, tirando o que destoar muito dos outros.</span></div>
+  <div class="tkey"><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span><span>cor só onde o valor já é risco por si</span><span><i style="background:color-mix(in srgb,var(--water) 30%,transparent);border-radius:2px"></i>faixa azul = tamanho em relação ao maior da coluna</span><span><i style="background:transparent;box-shadow:0 0 0 2px #ff7ad9"></i>destoa dos outros modelos</span><span>▲ ingrediente acima do mínimo para tempestade: só vira risco quando instabilidade e vento em altura aparecem juntos (coluna Tempestade)</span></div>
+  </details>
+  <div class="rule2"><b>Como o painel lê os 5 modelos, em toda a página:</b> <span><b>nível do topo da faixa</b> = aviso oficial do INMET (quando o INMET não responde, vale o nível dos modelos).</span> <span><b>riscos</b> (vento, chuva, tempestade, queda de pressão) = o maior valor que <b>pelo menos 2 modelos</b> atingem na mesma hora; um modelo sozinho não muda o número.</span> <span><b>condições gerais</b> (temperatura, pressão, Comparar dias) = <b>mediana</b> dos modelos, tirando o que destoar muito dos outros.</span></div>
   <p class="status" id="ens-status"></p>
 </section>
 
 <section class="charts">
-  <div class="card"><div class="card-head"><h2>Rajadas de vento <button class="term" data-term="rajada" aria-label="O que é rajada?">?</button></h2><span class="label">km/h · cada linha é um modelo</span></div><div class="chart-box"><canvas id="c-gust"></canvas></div><p class="src" data-src></p></div>
-  <div class="card"><div class="card-head"><h2>Chuva <button class="term" data-term="acumulado" aria-label="O que é acumulado?">?</button></h2><span class="label">milímetros por hora e acumulado</span></div><div class="chart-box"><canvas id="c-rain"></canvas></div><p class="src" data-src></p></div>
-  <div class="card"><div class="card-head"><h2>Pressão do ar <button class="term" data-term="pressao" aria-label="O que é pressão?">?</button></h2><span class="label">hPa · queda rápida indica ciclone</span></div><div class="chart-box"><canvas id="c-pres"></canvas></div><p class="src" data-src></p></div>
-  <div class="card"><div class="card-head"><h2>Ingredientes de tempestade <button class="term" data-term="cape" aria-label="O que é CAPE?">?</button></h2><span class="label">energia (CAPE) e cisalhamento</span></div>
-    <div class="combo-legend"><span><i style="background:var(--lv3)"></i>os dois juntos: tempestade severa possível</span><span><i style="background:var(--cold)"></i>só cisalhamento: falta energia</span><span><i style="background:var(--lv1)"></i>só energia: pancadas curtas</span><span><i class="none"></i>nenhum</span></div>
+  <div class="card"><div class="card-head"><h2>Ingredientes de tempestade <button class="term" data-term="cape" aria-label="O que é CAPE?">?</button></h2><span class="label">instabilidade (CAPE) e vento em altura</span></div>
+    <div class="combo-legend"><span><i style="background:var(--lv3)"></i>os dois juntos: tempestade severa possível</span><span><i style="background:var(--cold)"></i>só vento em altura: ar pouco instável</span><span><i style="background:var(--lv1)"></i>só instabilidade: pancadas curtas</span><span><i class="none"></i>nenhum</span></div>
     <div class="chart-box"><canvas id="c-storm"></canvas></div><p class="story" id="storm-story"></p><p class="src" data-src></p></div>
 </section>
 
@@ -661,8 +911,9 @@ try {
 const CFG = {
   horizon: 72, refreshMin: 30,
   // limites [atenção, alerta, severo]
-  thr: { gust:[60,80,100], rain1:[20,30,50], rain24:[50,80,120], pfall:[8,12,18], cape:[1000,1500,2500], shear:[15,20,25] },
-  ensProb: { gust:80, rain24:50 },
+  thr: { gust:[40,60,100], rain1:[20,30,60], rain24:[30,50,100],   // vento e chuva: os mesmos degraus dos avisos do INMET (amarelo, laranja, vermelho)
+         pfall:[8,12,18], cape:[1000,1500,2500], shear:[15,20,25] },
+  ensProb: { gust:60, rain24:50 },   // degraus de "perigo" (laranja) do INMET
 };
 // Fontes: cada modelo é buscado separadamente; se um identificador falhar, tenta o próximo.
 const MODELS = [
@@ -673,7 +924,7 @@ const MODELS = [
   { key:"gfs", name:"GFS", ids:["gfs_seamless","ncep_gfs_seamless"], meta:["ncep_gfs013","ncep_gfs025"], color:"#4c7fd1",
     full:"Global Forecast System", org:"NOAA / NCEP, serviço meteorológico dos Estados Unidos", where:"Estados Unidos",
     res:13, resTxt:"13 km (25 km nas camadas altas)", every:6, days:16, url:"https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast",
-    note:"Gratuito há décadas e o mais usado em sites e aplicativos. Tende a mostrar mais energia para tempestades (CAPE) que os outros." },
+    note:"Gratuito há décadas e o mais usado em sites e aplicativos. Tende a mostrar mais instabilidade (CAPE) que os outros." },
   { key:"icon", name:"ICON", ids:["icon_seamless","dwd_icon_seamless"], meta:["dwd_icon"], color:"#b25bc4",
     full:"ICON Global", org:"DWD, Serviço Meteorológico Alemão", where:"Alemanha",
     res:11, resTxt:"11 km", every:6, days:7.5, url:"https://www.dwd.de/",
@@ -701,7 +952,7 @@ const CITIES = [   // capitais, de norte a sul
 const LEVEL_NAMES = ["Sem risco","Atenção","Alerta","Severo"];
 const TZ = "America/Sao_Paulo";
 const HOURLY = ["precipitation","wind_speed_10m","wind_direction_10m","wind_gusts_10m","pressure_msl",
-  "cape","wind_speed_500hPa","wind_direction_500hPa","temperature_2m","weather_code"];
+  "cape","wind_speed_500hPa","wind_direction_500hPa","temperature_2m","weather_code","cloud_cover","is_day"];
 const THUNDER = [95, 96, 99];   // códigos de trovoada (com ou sem granizo)
 
 /* ====================== referências visuais ====================== */
@@ -713,8 +964,8 @@ const EFFECT = {
 };
 const REF = {
   gust: { unit:"rajada em km/h", max:130, rows:[[0,"calmo"],[20,"folhas se mexem"],[40,"galhos balançam"],[60,"galhos quebram"],[80,"telhas voam"],[100,"árvores caem"],[119,"força de furacão"]] },
-  rain: { unit:"milímetros em 24 horas", max:160, rows:[[0,"sem chuva"],[5,"chuva fraca"],[20,"chuva moderada"],[50,"alagamentos"],[80,"deslizamentos"],[120,"enchentes"]] },
-  storm:{ unit:"energia em J/kg", max:3500, rows:[[0,"estável"],[500,"pancadas"],[1000,"tempestades fortes"],[1500,"granizo"],[2500,"muito fortes"]] },
+  rain: { unit:"milímetros em 24 horas", max:160, rows:[[0,"sem chuva"],[5,"chuva fraca"],[15,"chuva moderada"],[30,"chuva forte"],[50,"alagamentos"],[100,"enchentes e deslizamentos"]] },
+  storm:{ unit:"instabilidade em J/kg", max:3500, rows:[[0,"estável"],[500,"pancadas"],[1000,"tempestades fortes"],[1500,"granizo"],[2500,"muito fortes"]] },
   cyclone:{ unit:"hPa de queda em 24 horas", max:24, rows:[[0,"estável"],[4,"frente fria"],[8,"baixa se aprofunda"],[12,"ciclone se intensifica"],[18,"ciclone forte"]] },
 };
 const carCompare = v => v < 25 ? "como o vento de andar de bicicleta" : v < 45 ? "como pôr a mão para fora de um carro numa rua de bairro" : v < 70 ? "como pôr a mão para fora de um carro numa avenida" : v < 115 ? "como pôr a mão para fora de um carro na rodovia" : "mais rápido que um carro na rodovia";
@@ -723,9 +974,9 @@ const carCompare = v => v < 25 ? "como o vento de andar de bicicleta" : v < 45 ?
 const GLOSS = {
   rajada: ["Rajada","Pico de vento que dura poucos segundos e é bem mais forte que o vento médio. É a rajada que destelha casas e derruba árvores.","Referência: 60 km/h quebra galhos · 80 km/h destelha · 100 km/h derruba árvores grandes."],
   acumulado: ["Chuva acumulada em 24 horas","Soma de toda a chuva que cai em 24 horas seguidas, contadas a partir de qualquer hora. 1 milímetro de chuva é 1 litro de água em cada metro quadrado.","Em encostas, solo encharcado mais chuva forte é a receita de deslizamento. 50 mm já pede atenção; acima de 100 mm o risco é alto."],
-  cape: ["CAPE (energia para tempestades)","Mede quanto “combustível” a atmosfera tem para levantar o ar quente e formar nuvens de tempestade. A unidade é J/kg.","Abaixo de 1.000: pouca energia · 1.000 a 2.500: moderada · acima de 2.500: muita. Sozinho não basta: precisa do cisalhamento junto."],
+  cape: ["CAPE (instabilidade do ar)","Mede o quanto o ar quente e úmido perto do chão tende a subir sozinho e formar nuvens de tempestade. Quanto maior, mais instável o ar e mais fortes podem ser as tempestades. A unidade é J/kg.","Abaixo de 1.000: instabilidade baixa · 1.000 a 2.500: moderada · acima de 2.500: alta. Sozinha não basta: precisa de vento em altura junto."],
   shear: ["Cisalhamento do vento","Diferença de velocidade e direção do vento entre o chão e cerca de 5 quilômetros de altura (em inglês, shear).","Com pouco cisalhamento, a tempestade nasce e morre rápido. Acima de 20 m/s (cerca de 72 km/h) ela pode girar e durar horas, virando uma supercélula."],
-  supercelula: ["Supercélula","Tempestade que gira por dentro e dura horas. É responsável pela maior parte do granizo grande, das ventanias mais fortes e dos tornados.","Ela precisa de energia (CAPE) e cisalhamento ao mesmo tempo, mais algo que dispare a nuvem, como uma frente fria."],
+  supercelula: ["Supercélula","Tempestade que gira por dentro e dura horas. É responsável pela maior parte do granizo grande, das ventanias mais fortes e dos tornados.","Ela precisa de instabilidade (CAPE) e vento em altura ao mesmo tempo, mais algo que dispare a nuvem, como uma frente fria."],
   pressao: ["Pressão do ar (hPa)","Peso do ar acima de nós, ajustado ao nível do mar para comparar lugares em altitudes diferentes. O normal fica perto de 1.013 hPa.","Quando a pressão cai rápido, um sistema de baixa pressão (frente fria ou ciclone) está chegando ou se fortalecendo."],
   ciclone: ["Ciclone extratropical","Centro de baixa pressão comum no Sul do Brasil. No Hemisfério Sul os ventos giram no sentido horário em volta dele. Traz ventania e chuva numa área grande.","No centro do ciclone, uma queda de cerca de 13 hPa em 24 horas nesta latitude já caracteriza um “ciclone bomba”."],
   modelo: ["Modelo de previsão","Programa de computador que simula a atmosfera para prever o tempo. Cada centro meteorológico tem o seu.","ECMWF (Europa) · GFS (Estados Unidos) · ICON (Alemanha) · GEM (Canadá) · UKMO (Reino Unido). Quando eles concordam, a previsão é mais confiável."],
@@ -798,7 +1049,7 @@ function fillGaps(arr, max = 6){ const a = arr.slice(); let last = -1;
     if (last >= 0 && i - last > 1 && i - last <= max) for (let k = last + 1; k < i; k++) a[k] = a[last] + (a[i] - a[last]) * (k - last) / (i - last);
     last = i; } return a; }
 function rolling(arr, i, w){ let s = 0, n = 0; for (let k = Math.max(0,i-w+1); k <= i; k++) if (arr[k] != null){ s += arr[k]; n++; } return n ? s : null; }
-const capeWord = c => c == null ? "—" : c < 1000 ? "pouca" : c < 2500 ? "moderada" : "muita";
+const capeWord = c => c == null ? "—" : c < 1000 ? "baixa" : c < 2500 ? "moderada" : "alta";
 const shearWord = s => s == null ? "—" : s < 15 ? "fraco" : s < 20 ? "moderado" : "forte";
 function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
@@ -807,7 +1058,7 @@ async function fetchModel(p, m){
   for (const id of m.ids){
     const u = new URL("https://api.open-meteo.com/v1/forecast");
     u.search = new URLSearchParams({ latitude:p.lat, longitude:p.lon, hourly:HOURLY.join(","), models:id,
-      timezone:TZ, past_days:2, forecast_days:7, wind_speed_unit:"kmh" });
+      timezone:TZ, past_days:2, forecast_days:10, wind_speed_unit:"kmh" });
     try { const r = await fetch(u); if (r.ok){ const j = await r.json(); if (j.hourly) return { ...j, usedId:id }; } } catch {}
   }
   return null;
@@ -820,7 +1071,7 @@ async function fetchMeta(m){
 }
 async function fetchEnsemble(p){
   const u = new URL("https://ensemble-api.open-meteo.com/v1/ensemble");
-  u.search = new URLSearchParams({ latitude:p.lat, longitude:p.lon, hourly:"wind_gusts_10m,precipitation", models:"gfs025", timezone:TZ, past_days:2, forecast_days:4 });
+  u.search = new URLSearchParams({ latitude:p.lat, longitude:p.lon, hourly:"wind_gusts_10m,precipitation", models:"gfs025", timezone:TZ, past_days:2, forecast_days:10 });
   const r = await fetch(u); if (!r.ok) throw new Error("ensemble " + r.status); return r.json();
 }
 
@@ -854,11 +1105,12 @@ function analyze(results){
     const gust = maxOf(s.wind_gusts_10m), rain1 = maxOf(s.precipitation), rain24 = maxOf(r24);
     const pf = maxOf(pfall), pmin = minOf(s.pressure_msl), cape = maxOf(s.cape);
     const daily = {};
-    times.forEach((t,i) => { const d = t.slice(0,10); const o = daily[d] ||= { temps:[], gusts:[], rain:0, rainH:0, n:0 };
+    times.forEach((t,i) => { const d = t.slice(0,10); const o = daily[d] ||= { temps:[], gusts:[], rain:0, rainH:0, n:0, cl:[], th:0 };
+      const hr = +t.slice(11,13); if (hr >= 8 && hr <= 17 && s.cloud_cover?.[i] != null) o.cl.push(s.cloud_cover[i]); if (THUNDER.includes(s.weather_code?.[i])) o.th++;
       if (s.temperature_2m[i] != null) o.temps.push(s.temperature_2m[i]); if (s.wind_gusts_10m[i] != null) o.gusts.push(s.wind_gusts_10m[i]);
       if (s.precipitation[i] != null){ o.rain += s.precipitation[i]; o.n++; if (s.precipitation[i] >= 0.2) o.rainH++; } });
     for (const d in daily){ const o = daily[d]; o.tmin = o.temps.length ? Math.min(...o.temps) : null; o.tmax = o.temps.length ? Math.max(...o.temps) : null;
-      o.gmax = o.gusts.length ? Math.max(...o.gusts) : null; if (!o.n) o.rain = null; }
+      o.gmax = o.gusts.length ? Math.max(...o.gusts) : null; if (!o.n) o.rain = null; o.cloud = o.cl.length ? o.cl.reduce((a, b) => a + b, 0) / o.cl.length : null; }
     const grid = { lat:json.latitude, lon:json.longitude, elev:json.elevation, km: distKm(place, { lat:json.latitude, lon:json.longitude }) };
     return { ...m, ok:true, usedId:json.usedId, meta, grid, s, shear, r24, pfall, sc, gust, rain1, rain24, pf, pmin, cape, stormBest:sb, daily,
       lv: { gust: lvOf(gust.v, CFG.thr.gust), rain: Math.max(lvOf(rain1.v, CFG.thr.rain1), lvOf(rain24.v, CFG.thr.rain24)),
@@ -874,7 +1126,8 @@ function analyze(results){
     const s = { gust: cons(ok.map(m => m.sc.gust[j])) ?? 0, rain: cons(ok.map(m => m.sc.rain[j])) ?? 0, storm: cons(ok.map(m => m.sc.storm[j])) ?? 0, cyclone: cons(ok.map(m => m.sc.cyclone[j])) ?? 0 };
     const lv = { gust: lvOfScore(s.gust), rain: lvOfScore(s.rain), storm: lvOfScore(s.storm), cyclone: lvOfScore(s.cyclone) };
     const per = ok.map(m => ({ name:m.name, gust:m.s.wind_gusts_10m[i], rain1:m.s.precipitation[i], r24:m.r24[i], cape:m.s.cape[i], shear:m.shear[i],
-      lv:{ gust:lvOfScore(m.sc.gust[j]), rain:lvOfScore(m.sc.rain[j]), storm:lvOfScore(m.sc.storm[j]), cyclone:lvOfScore(m.sc.cyclone[j]) }, pfall:m.pfall[i] }));
+      lv:{ gust:lvOfScore(m.sc.gust[j]), rain:lvOfScore(m.sc.rain[j]), storm:lvOfScore(m.sc.storm[j]), cyclone:lvOfScore(m.sc.cyclone[j]), thunder:THUNDER.includes(m.s.weather_code?.[i]) ? 1 : 0 }, pfall:m.pfall[i] }));
+    lv.thunder = per.filter(p => p.lv.thunder).length >= 2 ? 1 : 0;
     return { t: times[i], i, j, s, lv, per, l: Math.max(lv.gust, lv.rain, lv.storm),
       v: { gust: cons(ok.map(m => m.s.wind_gusts_10m[i])), rain1: cons(ok.map(m => m.s.precipitation[i])), rain24: cons(ok.map(m => m.r24[i])),
            cape: sp2.cape ?? null, shear: sp2.shear ?? null, pres: mid(ok.map(m => m.s.pressure_msl[i]), FLOOR.pres),
@@ -883,7 +1136,9 @@ function analyze(results){
   const days = [...new Set(times.map(t => t.slice(0,10)))].filter(d => ok.some(m => m.daily[d]?.n >= 20));
   const dayStats = Object.fromEntries(days.map(d => [d, {
     tmin: mid(ok.map(m => m.daily[d]?.tmin), FLOOR.temp), tmax: mid(ok.map(m => m.daily[d]?.tmax), FLOOR.temp),
-    gmax: mid(ok.map(m => m.daily[d]?.gmax), FLOOR.gust), rain: mid(ok.map(m => m.daily[d]?.rain), FLOOR.rain24), rainH: mid(ok.map(m => m.daily[d]?.rainH), 4) }]));
+    gmax: mid(ok.map(m => m.daily[d]?.gmax), FLOOR.gust), rain: mid(ok.map(m => m.daily[d]?.rain), FLOOR.rain24), rainH: mid(ok.map(m => m.daily[d]?.rainH), 4),
+    cloud: mid(ok.map(m => m.daily[d]?.cloud), 30), n: ok.filter(m => m.daily[d]?.n >= 20).length,
+    wet: ok.filter(m => m.daily[d]?.n >= 20 && (m.daily[d].rain ?? 0) >= 1).length, storm: ok.filter(m => m.daily[d]?.th > 0).length }]));
   // pico do consenso: o maior valor que pelo menos 2 modelos atingem na mesma hora (é o que decide o nível)
   const peakOf = k => { let v = null, t = null; for (const h of timeline) if (h.v[k] != null && (v == null || h.v[k] > v)) { v = h.v[k]; t = h.t; } return { v, t }; };
   const peak = { gust:peakOf("gust"), rain24:peakOf("rain24"), rain1:peakOf("rain1"), pfall:peakOf("pfall") };
@@ -897,10 +1152,14 @@ function analyze(results){
   // trovoada: quantos modelos preveem em cada uma das próximas 24 horas
   const thunder = idx.slice(0, 24).map(i => ({ t:times[i], n: ok.filter(m => THUNDER.includes(m.s.weather_code?.[i])).length, who: ok.filter(m => THUNDER.includes(m.s.weather_code?.[i])).map(m => m.name) }));
   const cur = { temp: mid(ok.map(m => m.s.temperature_2m[i0]), FLOOR.temp), gust: mid(ok.map(m => m.s.wind_gusts_10m[i0]), FLOOR.gust),
-    wind: mid(ok.map(m => m.s.wind_speed_10m[i0]), FLOOR.wind), pres: mid(ok.map(m => m.s.pressure_msl[i0]), FLOOR.pres) };
+    wind: mid(ok.map(m => m.s.wind_speed_10m[i0]), FLOOR.wind), pres: mid(ok.map(m => m.s.pressure_msl[i0]), FLOOR.pres),
+    cloud: mid(ok.map(m => m.s.cloud_cover?.[i0]), 30), rain: mid(ok.map(m => m.s.precipitation[i0]), FLOOR.mm),
+    day: (() => { const v = ok.map(m => m.s.is_day?.[i0]).filter(x => x != null); return v.length ? v.filter(Boolean).length * 2 >= v.length : null; })(),
+    dir: (() => { let x = 0, y = 0, n = 0; ok.forEach(m => { const d = m.s.wind_direction_10m[i0]; if (d != null){ x += Math.sin(d * Math.PI / 180); y += Math.cos(d * Math.PI / 180); n++; } }); return n ? (Math.atan2(x, y) * 180 / Math.PI + 360) % 360 : null; })(),
+    thunder: ok.filter(m => [0, 1, 2].some(k => THUNDER.includes(m.s.weather_code?.[i0 + k]))).length >= 2 };
   return { times, idx, i0, models, ok, timeline, cur, days, dayStats, thunder, peak, spread,
     // nível de cada risco = pior hora em que pelo menos 2 modelos concordam (na mesma hora)
-    levels: Object.fromEntries(["gust","rain","storm","cyclone"].map(k => [k, Math.max(0, ...timeline.map(h => h.lv[k]))])) };
+    levels: Object.fromEntries(["gust","rain","storm","cyclone","thunder"].map(k => [k, Math.max(0, ...timeline.map(h => h.lv[k]))])) };
 }
 function analyzeEnsemble(ens, A){
   const h = ens.hourly; if (!h) return null; const times = h.time;
@@ -908,7 +1167,14 @@ function analyzeEnsemble(ens, A){
   const end = Math.min(times.length, start + CFG.horizon);
   const gk = Object.keys(h).filter(k => k.startsWith("wind_gusts_10m")), pk = Object.keys(h).filter(k => k.startsWith("precipitation"));
   const hit = (keys, test) => keys.length ? keys.filter(k => { for (let i = start; i < end; i++) if (test(h[k], i)) return true; return false; }).length / keys.length : null;
-  return { pctGust: hit(gk, (a,i) => (a[i] ?? 0) >= CFG.ensProb.gust), pctRain: hit(pk, (a,i) => (rolling(a, i, 24) ?? 0) >= CFG.ensProb.rain24), n: Math.max(gk.length, pk.length) };
+  // chance de chuva: fração dos 31 cenários com pelo menos 1 mm no dia, e com pelo menos 0,2 mm em cada hora
+  const dayP = {}, hourP = {};
+  if (pk.length){ const dates = [...new Set(times.map(t => t.slice(0, 10)))];
+    for (const d of dates){ const ix = times.map((t, i) => t.startsWith(d) ? i : -1).filter(i => i >= 0);
+      const sums = pk.map(k => { let s = 0, n = 0; ix.forEach(i => { if (h[k][i] != null){ s += h[k][i]; n++; } }); return n >= 20 ? s : null; }).filter(v => v != null);
+      if (sums.length) dayP[d] = sums.filter(v => v >= 1).length / sums.length;
+      hourP[d] = ix.map(i => { const v = pk.map(k => h[k][i]).filter(x => x != null); return v.length ? v.filter(x => x >= 0.2).length / v.length : null; }); } }
+  return { pctGust: hit(gk, (a,i) => (a[i] ?? 0) >= CFG.ensProb.gust), pctRain: hit(pk, (a,i) => (rolling(a, i, 24) ?? 0) >= CFG.ensProb.rain24), n: Math.max(gk.length, pk.length), dayP, hourP };
 }
 
 /* ====================== fontes e concordância ====================== */
@@ -950,7 +1216,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") hidePop(); }
 addEventListener("resize", hidePop);
 const GMETA = {   // ícone, tema e onde o termo aparece no painel
   rajada:["💨","Vento","#gauges"], acumulado:["🌧","Chuva","#gauges"], cape:["🔥","Tempestade","#c-storm"], shear:["🌀","Tempestade","#c-storm"],
-  supercelula:["⛈","Tempestade","#gauges"], pressao:["🧭","Pressão","#c-pres"], ciclone:["🌪","Pressão","#gauges"], niveis:["🚦","Níveis","#gauges"],
+  supercelula:["⛈","Tempestade","#gauges"], pressao:["🧭","Pressão","#hora-a-hora"], ciclone:["🌪","Pressão","#gauges"], niveis:["🚦","Níveis","#gauges"],
   modelo:["🖥","Modelos","#modelos"], consenso:["🤝","Modelos","#gauges"], ensemble:["🎲","Modelos","#gauges"], rodada:["⏱","Modelos","#modelos"],
 };
 let gTheme = "Todos";
@@ -1125,64 +1391,378 @@ function bucketsHTML(mm){
     <div class="bk-cap"><b>${nf(filled, 1)}</b> de ${total} baldes · cada balde = 10 mm (10 litros por m²)</div></div>`;
 }
 
+/* ====================== hoje e 10 dias ====================== */
+// chance de chuva no dia: metade vem dos 31 cenários do GFS, metade da fração dos 5 modelos com 1 mm ou mais (só os modelos quando não há cenários)
+function rainChance(A, d){ const e = lastE?.dayP?.[d], ds = A.dayStats[d], m = ds?.n ? ds.wet / ds.n : null;
+  return e != null && m != null ? (e + m) / 2 : e ?? m; }
+const pct = p => p == null ? "" : `${Math.round(p * 10) * 10}%`;
+// chuva em cada hora do dia: quantos modelos preveem chuva (0,2 mm ou mais) e quanto chove nos que preveem
+function dayRainAgree(d){ const A = lastA; return Array.from({ length:24 }, (_, h) => { const i = A.times.indexOf(`${d}T${String(h).padStart(2,"0")}:00`);
+  if (i < 0) return { n:0, k:0, mm:0 }; const v = A.ok.map(m => m.s.precipitation[i]).filter(x => x != null), w = v.filter(x => x >= 0.2);
+  return { n:v.length, k:w.length, mm:w.length ? median(w) : 0 }; }); }
+// cor da coluna: mais forte quando mais modelos concordam
+// cor por número de modelos: cinza = só um (sem acordo); azul cada vez mais forte de 2 a 5
+const agreeCol = (k, n) => k ? `var(--ag${clamp(Math.round(k / Math.max(1, n) * 5), 1, 5)})` : "transparent";
+const agreeKey = () => `<span class="akey" title="quantos dos 5 modelos preveem chuva na hora"><span>modelos que preveem chuva na hora:</span><i style="background:var(--ag1)"></i><b>1 (sem acordo)</b>${[2,3,4,5].map(k => `<i style="background:var(--ag${k})"></i><b>${k}</b>`).join("")}</span>`;
+function rainCols(d, hMax, nowH){ return dayRainAgree(d).map((x, h) => `<i class="${nowH != null && h < nowH ? "past" : ""}${nowH === h ? " now" : ""}" style="height:${x.k ? Math.max(10, x.mm / hMax * 100) : 0}%;background:${agreeCol(x.k, x.n)}" title="${String(h).padStart(2, "0")}:00 · ${x.k} de ${x.n} modelos com chuva${x.k ? ` · ${nf(x.mm, 1)} mm` : ""}"></i>`).join(""); }
+// nascer e pôr do sol (equação do nascer do sol; precisão de 1 a 2 minutos)
+function sunTimes(date, lat, lon){
+  const r = Math.PI / 180, jd = Date.parse(date + "T12:00:00Z") / 864e5 + 2440587.5;
+  const n = Math.round(jd - 2451545.0 + 0.0008), Js = n - lon / 360;
+  const M = (357.5291 + 0.98560028 * Js) % 360, C = 1.9148 * Math.sin(M * r) + 0.02 * Math.sin(2 * M * r) + 0.0003 * Math.sin(3 * M * r);
+  const L = (M + C + 180 + 102.9372) % 360, Jt = 2451545 + Js + 0.0053 * Math.sin(M * r) - 0.0069 * Math.sin(2 * L * r);
+  const sd = Math.sin(L * r) * Math.sin(23.4397 * r), cd = Math.cos(Math.asin(sd));
+  const cw = (Math.sin(-0.833 * r) - Math.sin(lat * r) * sd) / (Math.cos(lat * r) * cd); if (cw < -1 || cw > 1) return null;
+  const w = Math.acos(cw) / r / 360, toD = J => new Date((J - 2440587.5) * 864e5);
+  return { rise: toD(Jt - w), set: toD(Jt + w) };
+}
+const clock = d => d.toLocaleTimeString("pt-BR", { timeZone:TZ, hour:"2-digit", minute:"2-digit" });
+// tipo de tempo a partir de nuvens, chuva e trovoada
+function wxKind({ cloud, rain = 0, thunder = false, day = true, code = null, daily = false }){
+  if (thunder) return "thunder";
+  if (rain >= (daily ? 5 : 1)) return "rain";
+  if (rain >= (daily ? 1 : 0.15)) return "drizzle";
+  if (code === 45 || code === 48) return "fog";
+  let c = cloud; if (c == null) c = code == null ? 50 : code <= 1 ? 10 : code === 2 ? 50 : 90;
+  return c < 25 ? (day ? "sun" : "moon") : c < 70 ? (day ? "partly" : "partly-night") : "cloud";
+}
+const WXNAME = { thunder:"Trovoada", rain:"Chuva", drizzle:"Chuvisco", fog:"Neblina", sun:"Céu limpo", moon:"Céu limpo", partly:"Poucas nuvens", "partly-night":"Poucas nuvens", cloud:"Nublado" };
+// ícones desenhados (SVG); as cores vêm dos gradientes definidos uma vez no início do corpo da página
+function wxIcon(k, size = 40){
+  const cloud = (dx = 0, dy = 0, s = 1, fill = "url(#g-cloud)") => `<path transform="translate(${dx} ${dy}) scale(${s})" d="M19 48h28a11 11 0 0 0 1-22a15 15 0 0 0-29-4a12 12 0 0 0 0 26z" fill="${fill}"/>`;
+  const sun = (cx, cy, rr) => `<g stroke="#f7c64a" stroke-width="${rr / 4}" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a => { const t = a * Math.PI / 180; return `<line x1="${(cx + Math.cos(t) * rr * 1.45).toFixed(1)}" y1="${(cy + Math.sin(t) * rr * 1.45).toFixed(1)}" x2="${(cx + Math.cos(t) * rr * 1.9).toFixed(1)}" y2="${(cy + Math.sin(t) * rr * 1.9).toFixed(1)}"/>`; }).join("")}</g><circle cx="${cx}" cy="${cy}" r="${rr}" fill="url(#g-sun)"/>`;
+  const moon = (cx, cy, rr) => `<path d="M${cx + rr * .35} ${cy - rr}a${rr} ${rr} 0 1 0 ${rr * .65} ${rr * 1.62}a${rr * .82} ${rr * .82} 0 1 1 -${rr * .65} -${rr * 1.62}z" fill="url(#g-moon)"/>`;
+  const drops = (n, col = "#5aa9ff") => `<g stroke="${col}" stroke-width="3.2" stroke-linecap="round">${Array.from({ length:n }, (_, i) => { const x = 22 + i * (22 / Math.max(1, n - 1)); return `<line x1="${x}" y1="50" x2="${x - 3}" y2="58"/>`; }).join("")}</g>`;
+  const body = {
+    sun: sun(32, 32, 11), moon: moon(30, 32, 14),
+    partly: sun(24, 22, 8) + cloud(4, 6, .92), "partly-night": moon(22, 20, 9) + cloud(4, 6, .92),
+    cloud: cloud(-4, 0, 1, "url(#g-cloud2)") + cloud(4, 6, .92),
+    drizzle: cloud(2, -6) + drops(2), rain: cloud(2, -6, 1, "url(#g-cloud2)") + drops(4),
+    thunder: cloud(2, -8, 1, "url(#g-cloud3)") + `<path d="M34 40l-8 12h7l-4 10l12-15h-7l4-7z" fill="#ffcc33"/>`,
+    fog: cloud(2, -8) + `<g stroke="#b9c6d2" stroke-width="3.2" stroke-linecap="round"><line x1="14" y1="48" x2="50" y2="48"/><line x1="20" y1="55" x2="46" y2="55"/></g>`,
+  }[k] || "";
+  return `<svg class="wx" viewBox="0 0 64 64" width="${size}" height="${size}" role="img" aria-label="${esc(WXNAME[k] || "")}">${body}</svg>`;
+}
+const CARD8 = ["norte","nordeste","leste","sudeste","sul","sudoeste","oeste","noroeste"];
+const dirWord = d => d == null ? "" : CARD8[Math.round(d / 45) % 8];
+// cor da temperatura (frio azul → quente vermelho)
+function tempCol(t){ const st = [[0,"#6a8cff"],[10,"#5aa9ff"],[17,"#5fd0b0"],[23,"#f2c14e"],[29,"#f39147"],[35,"#ef5d5d"]];
+  if (t <= st[0][0]) return st[0][1]; for (let i = 1; i < st.length; i++) if (t <= st[i][0]) return st[i - 1][1]; return st[st.length - 1][1]; }
+function tempGrad(a, b){ const n = 6, cs = Array.from({ length:n }, (_, i) => tempCol(a + (b - a) * i / (n - 1))); return `linear-gradient(90deg,${cs.join(",")})`; }
+
+// título: "agora" no canto do céu
+function renderHeroNow(A){
+  const c = A.cur, today = A.times[A.i0].slice(0, 10), ds = A.dayStats[today] || {};
+  const k = wxKind({ cloud:c.cloud, rain:c.rain ?? 0, thunder:c.thunder, day:c.day ?? true });
+  $("#hero-now").innerHTML = `${wxIcon(k, 54)}<div><div class="hn-t">${nf(c.temp)}°</div><div class="hn-w">${WXNAME[k]}</div>
+    <div class="hn-r"><span>máx ${nf(ds.tmax)}°</span><span>mín ${nf(ds.tmin)}°</span></div></div>`;
+  return { cloud:(c.cloud ?? 50) / 100, rain:c.rain ?? 0, thunder:c.thunder, day:c.day ?? true, wind:c.wind ?? 10, kind:k };
+}
+
+// HOJE: quatro cartões visuais
+function renderToday(A){
+  const today = A.times[A.i0].slice(0, 10), ds = A.dayStats[today]; if (!ds) { $("#today").innerHTML = ""; return; }
+  const nowH = +A.times[A.i0].slice(11, 13), c = A.cur;
+  // temperatura
+  const lo = Math.floor(ds.tmin ?? 0), hi = Math.ceil(ds.tmax ?? 1), span = Math.max(1, hi - lo), pos = clamp(((c.temp ?? lo) - lo) / span * 100, 0, 100);
+  const tTemp = `<div class="tt"><div class="tt-k">temperatura</div>
+    <div class="tt-big"><b>${nf(ds.tmax)}°</b><span>mín ${nf(ds.tmin)}°</span></div>
+    <div class="tbar"><i style="background:${tempGrad(ds.tmin ?? 0, ds.tmax ?? 1)}"></i><b style="left:${pos}%"></b></div>
+    <div class="tt-s">agora ${nf(c.temp)}°</div></div>`;
+  // chuva: 24 colunas, uma por hora
+  const hr = dayHourly(today, "precipitation"), mx = Math.max(1, ...hr.filter(v => v != null)), tot = hr.reduce((a, v) => a + (v ?? 0), 0);
+  const wet = hr.map((v, h) => (v ?? 0) >= 0.2 ? h : -1).filter(h => h >= 0);
+  const hMaxT = Math.max(1, ...dayRainAgree(today).map(x => x.mm)), cols = rainCols(today, hMaxT, nowH);
+  const tRain = `<div class="tt"><div class="tt-k">chuva</div>
+    <div class="tt-big"><b>${nf(tot, tot < 10 ? 1 : 0)}</b><small>mm</small>${rainChance(A, today) != null ? `<em class="pchip" title="chance de chover pelo menos 1 mm hoje">${pct(rainChance(A, today))}</em>` : ""}</div>
+    <div class="rcols">${cols}</div><div class="rax"><span>06:00</span><span>12:00</span><span>18:00</span></div>${agreeKey()}
+    <div class="tt-s">${!wet.length ? "sem chuva" : wet[wet.length - 1] - wet[0] + 1 === wet.length ? `das ${String(wet[0]).padStart(2, "0")}:00 às ${String(wet[wet.length - 1] + 1).padStart(2, "0")}:00` : `em ${wet.length} ${wet.length === 1 ? "hora" : "horas"} do dia`}</div></div>`;
+  // vento: bússola com a seta para onde o vento vai
+  const lvG = lvOf(ds.gmax, CFG.thr.gust), rot = ((c.dir ?? 0) + 180) % 360;
+  const ticks = Array.from({ length:36 }, (_, i) => { const a = i * 10 * Math.PI / 180, r1 = i % 9 ? 41 : 37; return `<line x1="${(50 + Math.sin(a) * r1).toFixed(1)}" y1="${(50 - Math.cos(a) * r1).toFixed(1)}" x2="${(50 + Math.sin(a) * 45).toFixed(1)}" y2="${(50 - Math.cos(a) * 45).toFixed(1)}"/>`; }).join("");
+  const tWind = `<div class="tt tt-wind"><div class="tt-k">vento</div>
+    <svg class="compass" viewBox="0 0 100 100" aria-hidden="true"><g class="ct">${ticks}</g>
+      <text x="50" y="13">N</text><text x="91" y="53">L</text><text x="50" y="94">S</text><text x="9" y="53">O</text>
+      ${c.dir != null ? `<g transform="rotate(${rot.toFixed(0)} 50 50)"><path d="M50 18l7 13h-4v22h-6V31h-4z" class="arr"/><circle cx="50" cy="78" r="3.5" class="arr"/></g>` : ""}
+      <circle cx="50" cy="50" r="17" class="cc"/></svg>
+    <div class="cw"><b data-lv="${lvG}">${nf(ds.gmax)}</b><small>km/h</small></div>
+    <div class="tt-s">rajada máxima${c.dir != null ? ` · vento de ${dirWord(c.dir)}` : ""}</div></div>`;
+  // sol: arco do nascer ao pôr
+  const st = sunTimes(today, place.lat, place.lon);
+  let tSun = "";
+  if (st){ const now = Date.now(), f = clamp((now - st.rise) / (st.set - st.rise), 0, 1), up = now > st.rise && now < st.set;
+    const ang = Math.PI * (1 - f), sx = 50 + Math.cos(ang) * 40, sy = 52 - Math.sin(ang) * 40;
+    tSun = `<div class="tt"><div class="tt-k">sol</div>
+      <svg class="sunarc" viewBox="0 0 100 62" aria-hidden="true"><path d="M10 52A40 40 0 0 1 90 52" class="sa-bg"/>
+        <path d="M10 52A40 40 0 0 1 90 52" class="sa-fg" pathLength="100" stroke-dasharray="${(f * 100).toFixed(1)} 100"/>
+        <line x1="4" y1="52" x2="96" y2="52" class="sa-hz"/>
+        ${up ? `<circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="6" class="sa-sun"/>` : ""}</svg>
+      <div class="sun-t"><span><small>nascer</small><b>${clock(st.rise)}</b></span><span><small>pôr</small><b>${clock(st.set)}</b></span></div></div>`; }
+  $("#today").innerHTML = tTemp + tRain + tWind + tSun;
+}
+
+// PRÓXIMOS 10 DIAS
+const TEN = { mode:"temp" };
+function renderTen(A){
+  const today = A.times[A.i0].slice(0, 10), list = A.days.filter(d => d >= today).slice(0, 10).map(d => ({ d, ...A.dayStats[d] })).filter(x => x.tmin != null);
+  if (!list.length) { $("#ten").innerHTML = ""; return; }
+  const gLo = Math.min(...list.map(x => x.tmin)), gHi = Math.max(...list.map(x => x.tmax)), gs = Math.max(1, gHi - gLo);
+  const wMax = Math.max(CFG.thr.gust[2] + 10, ...list.map(x => x.gmax ?? 0));
+  const hMax = Math.max(2, ...list.flatMap(x => dayRainAgree(x.d).map(y => y.mm)));
+  const temps = Object.fromEntries(list.map(x => [x.d, dayHourly(x.d, "temperature_2m")]));
+  const name = d => d === today ? "Hoje" : cap1(rel(d + "T12:00") === "amanhã" ? "amanhã" : weekday(d + "T12:00"));
+  const nowH = +A.times[A.i0].slice(11, 13);
+  const rows = list.map(x => {
+    const ch = rainChance(A, x.d), k = wxKind({ cloud:x.cloud, rain:x.rain ?? 0, thunder:x.storm >= 2, day:true, daily:true });
+    const icon = `<span class="ic">${wxIcon(k, 30)}${ch != null && ch >= 0.1 ? `<em class="pp">${pct(ch)}</em>` : ""}</span>`;
+    let viz;
+    if (TEN.mode === "temp"){
+      // curva da temperatura ao longo do dia; altura e cor dizem a temperatura (mesma escala para os 10 dias)
+      const tv = temps[x.d], Y = t => 92 - (t - gLo) / gs * 84, pts = tv.map((t, h) => t == null ? null : [h / 23 * 100, Y(t)]).filter(Boolean);
+      const line = pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(" ");
+      const iMin = tv.reduce((a, v, i) => v != null && v < (tv[a] ?? 1e9) ? i : a, 0), iMax = tv.reduce((a, v, i) => v != null && v > (tv[a] ?? -1e9) ? i : a, 0);
+      const dot = (h, cls) => tv[h] == null ? "" : `<b class="${cls}" style="left:${h / 23 * 100}%;top:${Y(tv[h])}%" title="${String(h).padStart(2, "0")}:00 · ${nf(tv[h])}°"></b>`;
+      const nowDot = x.d === today && tv[nowH] != null ? dot(nowH, "now") : "";
+      viz = `<span class="tv-l" style="color:var(--tmin)">${nf(x.tmin)}°</span><span class="tcurve"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="${line} L100 100 L0 100Z" fill="url(#t-area)"/><path d="${line}" fill="none" stroke="var(--ink)" stroke-width="2.4" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>${dot(iMin, "mn")}${dot(iMax, "mx")}${nowDot}</span><span class="tv-r" style="color:var(--tmax);font-weight:600">${nf(x.tmax)}°</span>`;
+    } else if (TEN.mode === "rain"){
+      viz = `<span class="rtl" title="chuva hora a hora">${rainCols(x.d, hMax, x.d === today ? nowH : null)}</span><span class="tv-r">${nf(x.rain ?? 0, (x.rain ?? 0) < 10 ? 1 : 0)}<small>mm</small></span>`;
+    } else {
+      const w = clamp((x.gmax ?? 0) / wMax * 100, 0, 100), lv = lvOf(x.gmax, CFG.thr.gust);
+      const marks = CFG.thr.gust.map((t, i) => `<em style="left:${t / wMax * 100}%" data-lv="${i + 1}"></em>`).join("");
+      viz = `<span class="tbar wind">${marks}<i style="left:0;width:${w}%" data-lv="${lv}"></i></span><span class="tv-r">${nf(x.gmax)}<small>km/h</small></span>`;
+    }
+    return `<div class="trow${x.d === today ? " today" : ""}"><span class="td">${esc(name(x.d))}</span>${icon}${viz}</div>`;
+  }).join("");
+  const rax = `<span class="rax"><span>06:00</span><span>12:00</span><span>18:00</span></span>`;
+  const head = TEN.mode === "rain" ? `<div class="trow thead" aria-hidden="true"><span></span><span></span>${rax}<span></span></div>`
+    : TEN.mode === "temp" ? `<div class="trow thead" aria-hidden="true"><span></span><span></span><span></span>${rax}<span></span></div>` : "";
+  const tStops = Array.from({ length:7 }, (_, i) => { const t = gHi - (gHi - gLo) * i / 6, y = (92 - (t - gLo) / gs * 84); return `<stop offset="${y.toFixed(1)}%" stop-color="${tempCol(t)}"/>`; }).join("") + `<stop offset="100%" stop-color="${tempCol(gLo)}"/>`;
+  const defs = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="t-line" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">${tStops}</linearGradient>
+    <linearGradient id="t-area" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">${tStops.replace(/"\/>/g, '" stop-opacity=".75"/>')}</linearGradient></defs></svg>`;
+  const scale = TEN.mode === "temp" ? `<div class="tscale"><span>cor = temperatura</span><span class="tsb"><i style="background:${tempGrad(0, 35)}"></i><span class="ts-n"><b>0°</b><b>7°</b><b>14°</b><b>21°</b><b>28°</b><b>35°</b></span></span><span class="ts-k"><b class="mn"></b> mínima <b class="mx"></b> máxima${A.cur.temp != null ? ' <b class="now"></b> agora' : ""}</span></div>` : "";
+  const key = scale + (TEN.mode === "rain" ? agreeKey() : "") + `<p class="ten-key"><em class="pp">40%</em> chance de chover pelo menos 1 mm no dia${lastE?.dayP && Object.keys(lastE.dayP).length ? " (5 modelos e 31 cenários do GFS)" : " (5 modelos)"}${TEN.mode === "rain" ? " · colunas: chuva em cada hora do dia" : TEN.mode === "wind" ? ` · marcas em ${CFG.thr.gust.join(", ")} km/h` : ""}</p>`;
+  $("#ten").className = "ten m-" + TEN.mode; $("#ten").innerHTML = defs + head + rows + key;
+}
+document.querySelectorAll("#dez .seg button").forEach(b => b.onclick = () => {
+  TEN.mode = b.dataset.m; document.querySelectorAll("#dez .seg button").forEach(x => x.setAttribute("aria-pressed", x === b)); if (lastA) renderTen(lastA); });
+
+/* ====================== neste dia, desde 1940 (o que aconteceu: reanálise ERA5) ====================== */
+// ERA5 = reconstrução do tempo passado feita com observações (estações, satélites, balões, navios) + modelo. Não é previsão.
+const HIST = { key:null, data:null, busy:false };
+async function fetchHistory(p){
+  const end = new Date(Date.now() - 6 * 864e5).toISOString().slice(0, 10);
+  const vars = ["temperature_2m_max","temperature_2m_min","precipitation_sum","sunshine_duration","daylight_duration","wind_gusts_10m_max"];
+  const tries = [{ models:"era5" }, {}];
+  for (const extra of tries){
+    const u = new URL("https://archive-api.open-meteo.com/v1/archive");
+    u.search = new URLSearchParams({ latitude:p.lat, longitude:p.lon, start_date:"1940-01-01", end_date:end, daily:vars.join(","), timezone:TZ, ...extra });
+    try { const r = await fetch(u); if (r.ok){ const j = await r.json(); if (j.daily?.time?.length) return j.daily; } } catch {}
+  }
+  return null;
+}
+// resume um dia do ano: tipo de dia numa janela de ±3 dias (mais amostras) e recordes na data exata
+function histStats(d, mmdd){
+  const idx = new Map(d.time.map((t, i) => [t, i])), years = [...new Set(d.time.map(t => +t.slice(0, 4)))];
+  const kinds = { sol:0, parcial:0, nublado:0, chuva:0 }; let n = 0; const normT = [];
+  const perYear = [];
+  for (const y of years){
+    const base = Date.parse(`${y}-${mmdd}T12:00:00Z`); if (isNaN(base)) continue;
+    for (let k = -3; k <= 3; k++){ const t = new Date(base + k * 864e5).toISOString().slice(0, 10), i = idx.get(t); if (i == null) continue;
+      if (y >= 1991 && y <= 2020 && d.temperature_2m_max?.[i] != null) normT.push(d.temperature_2m_max[i]);
+      const pr = d.precipitation_sum?.[i], su = d.sunshine_duration?.[i], dl = d.daylight_duration?.[i]; if (pr == null) continue; n++;
+      if (pr >= 1) kinds.chuva++; else if (su != null && dl) { const r = su / dl; kinds[r >= 0.6 ? "sol" : r >= 0.3 ? "parcial" : "nublado"]++; } else kinds.parcial++; }
+    const i = idx.get(`${y}-${mmdd}`); if (i != null && d.temperature_2m_max?.[i] != null)
+      perYear.push({ y, tmax:d.temperature_2m_max[i], tmin:d.temperature_2m_min?.[i], rain:d.precipitation_sum?.[i], gust:d.wind_gusts_10m_max?.[i] });
+  }
+  if (!perYear.length) return null;
+  const by = (k, f) => perYear.filter(x => x[k] != null).reduce((a, b) => f(b[k], a[k]) ? b : a);
+  const hi = (a, b) => a > b, lo = (a, b) => a < b, med = k => median(perYear.map(x => x[k]));
+  const first = perYear.filter(x => x.y < 1970), last = perYear.filter(x => x.y >= perYear[perYear.length - 1].y - 29);
+  const mean = (a, k) => a.length ? a.reduce((s, x) => s + (x[k] ?? 0), 0) / a.length : null;
+  return { n, kinds, perYear, y0:perYear[0].y, y1:perYear[perYear.length - 1].y,
+    tmaxRec:by("tmax", hi), tminRec:by("tmin", lo), rainRec:by("rain", hi), gustRec:perYear.some(x => x.gust != null) ? by("gust", hi) : null,
+    tmaxMed: normT.length >= 60 ? median(normT) : med("tmax"), normOk: normT.length >= 60, tminMed:med("tmin"), wetYears:perYear.filter(x => (x.rain ?? 0) >= 1).length,
+    trend: first.length >= 10 && last.length >= 10 ? mean(last, "tmax") - mean(first, "tmax") : null, firstSpan:first.length ? `${first[0].y} a ${first[first.length - 1].y}` : "", lastSpan:last.length ? `${last[0].y} a ${last[last.length - 1].y}` : "" };
+}
+async function loadHistory(){
+  const p = place, today = nowKey().slice(0, 10), mmdd = today.slice(5), key = `${p.lat.toFixed(2)},${p.lon.toFixed(2)}|${today}`;
+  if (HIST.key === key && HIST.data) return renderHistory();
+  const cached = store.get("sentinela.hist2"); if (cached?.key === key) { HIST.key = key; HIST.data = cached.data; return renderHistory(); }
+  if (HIST.busy) return; HIST.busy = true; $("#hist").innerHTML = `<p class="status">Buscando ${new Date().getFullYear() - 1940} anos de registros…</p>`;
+  const d = await fetchHistory(p); HIST.busy = false;
+  if (!d){ $("#hist").innerHTML = `<p class="status">Não consegui carregar o histórico agora. O resto do painel não depende dele.</p>`; return; }
+  HIST.key = key; HIST.data = histStats(d, mmdd); store.set("sentinela.hist2", { key, data:HIST.data }); renderHistory();
+}
+function renderHistory(){
+  const H = HIST.data, A = lastA; if (!H){ $("#hist").innerHTML = `<p class="status">Sem dados históricos para este ponto.</p>`; return; }
+  const today = nowKey().slice(0, 10), dayTxt = new Date(today + "T12:00:00-03:00").toLocaleDateString("pt-BR", { timeZone:TZ, day:"numeric", month:"long" });
+  $("#hist-title").textContent = `${cap1(dayTxt)}, desde ${H.y0}`;
+  // tipo de dia
+  const K = [["sol","sun","Sol"],["parcial","partly","Sol entre nuvens"],["nublado","cloud","Nublado, sem chuva"],["chuva","rain","Chuva (1 mm ou mais)"]];
+  const pc = k => H.n ? H.kinds[k] / H.n * 100 : 0;
+  const stack = `<div class="hk-bar">${K.map(([k]) => `<i class="hk-${k}" style="width:${pc(k)}%"></i>`).join("")}</div>
+    <div class="hk-leg">${K.map(([k, ic, nm]) => `<span>${wxIcon(ic, 28)}<b>${Math.round(pc(k))}%</b><small>${nm}</small></span>`).join("")}</div>`;
+  // máximas de cada ano + previsão de hoje
+  const ys = H.perYear, lo = Math.min(...ys.map(x => x.tmax)), hiV = Math.max(...ys.map(x => x.tmax)), fc = A?.dayStats?.[today]?.tmax;
+  const top = Math.max(hiV, fc ?? -99) + 1, bot = Math.min(lo, fc ?? 99) - 1, Yp = v => (v - bot) / (top - bot) * 100;
+  const bars = ys.map(x => `<i style="height:${Yp(x.tmax)}%;background:${tempCol(x.tmax)}" title="${x.y}: máxima de ${nf(x.tmax, 1)}°"></i>`).join("");
+  const fLine = fc != null ? `<div class="hy-fc" style="bottom:${Yp(fc)}%"><span>previsão de hoje · ${nf(fc)}°</span></div>` : "";
+  const mLine = `<div class="hy-med" style="bottom:${Yp(H.tmaxMed)}%"><span>${H.normOk ? "normal 1991 a 2020" : "máxima típica"} · ${nf(H.tmaxMed)}°</span></div>`;
+  const diff = fc != null ? fc - H.tmaxMed : null;
+  $("#hist").innerHTML = `
+    <div class="hc"><div class="hc-k">como costuma ser este dia <small>(${H.y0} a ${H.y1}, 3 dias antes e depois)</small></div>${stack}</div>
+    <div class="hc hc-wide"><div class="hc-k">temperatura máxima neste dia, ano a ano</div>
+      <div class="hy">${mLine}${fLine}<div class="hy-bars">${bars}</div></div>
+      <div class="hy-ax"><span>${H.y0}</span><span>${Math.round((H.y0 + H.y1) / 2)}</span><span>${H.y1}</span></div>
+      <div class="hc-facts">
+        <span><small>recorde de calor</small><b style="color:${tempCol(H.tmaxRec.tmax)}">${nf(H.tmaxRec.tmax, 1)}°</b><em>${H.tmaxRec.y}</em></span>
+        <span><small>recorde de frio</small><b style="color:${tempCol(H.tminRec.tmin)}">${nf(H.tminRec.tmin, 1)}°</b><em>${H.tminRec.y}</em></span>
+        ${H.trend != null ? `<span><small>máximas recentes × antigas</small><b>${H.trend >= 0 ? "+" : "−"}${nf(Math.abs(H.trend), 1)}°</b><em>${H.lastSpan} contra ${H.firstSpan}</em></span>` : ""}
+        ${diff != null ? `<span class="fcx"><small>previsão de hoje</small><b>${diff >= 0 ? "+" : "−"}${nf(Math.abs(diff))}°</b><em>em relação à ${H.normOk ? "normal de 1991 a 2020" : "máxima típica"}</em></span>` : ""}
+      </div></div>
+    <div class="hc"><div class="hc-k">chuva e vento neste dia</div>
+      <div class="hc-facts">
+        <span><small>anos com chuva neste dia</small><b>${H.wetYears}</b><em>de ${ys.length}</em></span>
+        <span><small>maior chuva</small><b>${nf(H.rainRec.rain, 1)} mm</b><em>${H.rainRec.y}</em></span>
+        ${H.gustRec ? `<span><small>maior rajada</small><b>${nf(H.gustRec.gust)} km/h</b><em>${H.gustRec.y}</em></span>` : ""}
+      </div></div>`;
+}
+/* ====================== avisos oficiais do INMET ====================== */
+// lista RSS dos avisos vigentes -> cada aviso em formato CAP (com o polígono da área) -> o ponto está dentro?
+const OFF = { key:null, list:null, err:false, busy:false };
+const SEV = { Minor:[1,"Perigo potencial"], Moderate:[1,"Perigo potencial"], Severe:[2,"Perigo"], Extreme:[3,"Grande perigo"] };
+function inPoly(lat, lon, ring){ let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++){ const [yi, xi] = ring[i], [yj, xj] = ring[j];
+    if (((yi > lat) !== (yj > lat)) && (lon < (xj - xi) * (lat - yi) / (yj - yi) + xi)) inside = !inside; }
+  return inside; }
+async function fetchText(u, ms = 9000){ const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
+  try { const r = await fetch(u, { signal:c.signal }); if (!r.ok) throw new Error(r.status); return await r.text(); } finally { clearTimeout(t); } }
+async function loadOfficial(){
+  const p = place, key = `${p.lat.toFixed(3)},${p.lon.toFixed(3)}|${nowKey()}`;
+  if (OFF.key === key || OFF.busy) return renderOfficial();
+  OFF.busy = true;
+  try {
+    const rss = new DOMParser().parseFromString(await fetchText("https://apiprevmet3.inmet.gov.br/avisos/rss"), "text/xml");
+    const links = [...rss.querySelectorAll("item > link")].map(l => l.textContent.trim()).filter(Boolean).slice(0, 60);
+    const now = Date.now(), hits = [];
+    await Promise.all(links.map(async u => { try {
+      const x = new DOMParser().parseFromString(await fetchText(u), "text/xml");
+      const info = x.querySelector("info"); if (!info) return;
+      const g = sel => info.querySelector(sel)?.textContent?.trim() || "";
+      const exp = Date.parse(g("expires")); if (exp && exp < now) return;
+      const polys = [...info.querySelectorAll("area polygon")].map(pg => pg.textContent.trim().split(/\s+/).map(pt => pt.split(",").map(Number)).filter(a => a.length === 2 && a.every(isFinite)));
+      if (!polys.some(r => r.length > 2 && inPoly(p.lat, p.lon, r))) return;
+      const sv = SEV[g("severity")] || [1, g("severity") || "Aviso"];
+      hits.push({ lv:sv[0], sev:sv[1], event:g("event") || g("headline"), onset:Date.parse(g("onset")), expires:exp, desc:g("description"), url:u });
+    } catch {} }));
+    OFF.list = hits.sort((a, b) => b.lv - a.lv || a.onset - b.onset); OFF.err = false;
+  } catch { OFF.list = null; OFF.err = true; }
+  OFF.key = key; OFF.busy = false; renderOfficial();
+}
+// junta avisos do mesmo tipo e gravidade com horários que se encostam ou se sobrepõem
+function mergedOfficial(){ if (!OFF.list?.length) return [];
+  const out = []; [...OFF.list].sort((a, b) => b.lv - a.lv || a.event.localeCompare(b.event) || a.onset - b.onset).forEach(a => {
+    const m = out.find(x => x.lv === a.lv && x.event === a.event && a.onset <= x.expires + 6e4 && a.expires >= x.onset - 6e4);
+    if (m){ m.onset = Math.min(m.onset, a.onset); m.expires = Math.max(m.expires, a.expires); m.n++; } else out.push({ ...a, n:1 }); });
+  return out.sort((a, b) => a.onset - b.onset || b.lv - a.lv); }
+// nível do INMET numa hora (para a linha da matriz)
+const officialAt = ms => (OFF.list || []).reduce((v, a) => (a.onset || 0) <= ms && ms < (a.expires || Infinity) ? Math.max(v, a.lv) : v, 0);
+function renderOfficial(){
+  if (lastA && $("#band-src").innerHTML) renderBand(lastA, place);   // atualiza a linha do INMET na matriz
+  const box = $("#band-off"); if (!box) return;
+  const map = `<a href="https://alertas2.inmet.gov.br/" target="_blank" rel="noopener">mapa de avisos do INMET ↗</a>`;
+  const t = d => isNaN(d) ? "" : whenLong(new Date(d).toLocaleString("sv-SE", { timeZone:TZ }).slice(0, 16).replace(" ", "T"));
+  if (OFF.err){ box.innerHTML = `<span class="off-none">não consegui consultar o INMET daqui · veja o ${map}</span>`; return; }
+  if (!OFF.list){ box.innerHTML = ""; return; }
+  if (!OFF.list.length){ box.innerHTML = `<span class="k">nível acima: aviso oficial do INMET</span><span class="off-none">${map}</span>`; return; }
+  const M = mergedOfficial();
+  const main = `<span class="k">nível acima: aviso oficial do INMET</span>`;
+  const list = M.map(a => `<li><a class="off" data-lv="${a.lv}" href="${esc(a.url)}" target="_blank" rel="noopener" title="${esc(a.desc)}"><i></i><b>${esc(a.sev)}</b> · ${esc(a.event)}</a> <span class="off-t">de ${esc(t(a.onset))} até ${esc(t(a.expires))}</span></li>`).join("");
+  box.innerHTML = `${main}<details class="off-all"><summary>${M.length === 1 ? "ver o aviso" : `ver os ${M.length} avisos`} · linha INMET na matriz</summary><ul>${list}</ul><p>${map}</p></details>`;
+}
 /* ====================== faixa ====================== */
 const BAND = { key:null };
-const CATNAME = { gust:"vento", rain:"chuva", storm:"tempestade", cyclone:"ciclone" };
+const CATNAME = { gust:"vento", rain:"chuva", storm:"tempestade", cyclone:"ciclone", thunder:"raios" };
 function bandMatrix(A, key){
   const tl = A.timeline, n = tl.length, names = A.ok.map(m => m.name);
-  const perLv = (h, mi) => h.per[mi]?.lv[key] ?? 0;
+  const perLv = (h, mi) => h.per[mi]?.lv[key] ?? 0, TH = key === "thunder";
+  // o que acende a célula, em cada aba (a matriz mostra nível de risco, não "se chove")
+  const CRIT = { storm:`instabilidade (CAPE) de ${nf(CFG.thr.cape[0])} J/kg ou mais e vento em altura de ${CFG.thr.shear[0]} m/s ou mais, juntos`, thunder:"o modelo prevê trovoada na hora",
+    gust:`rajada de ${CFG.thr.gust[0]} km/h ou mais`, rain:`chuva de ${CFG.thr.rain24[0]} mm ou mais nas 24 horas anteriores, ou ${CFG.thr.rain1[0]} mm ou mais em 1 hora`, cyclone:`pressão caindo ${CFG.thr.pfall[0]} hPa ou mais em 24 horas` };
+  const isoVal = m => !m ? "" : key === "gust" ? `${nf(m.gust.v)} km/h` : key === "rain" ? `${nf(m.rain24.v)} mm em 24 horas` : key === "storm" ? `${nf(m.stormBest.cape)} J/kg` : key === "cyclone" ? `queda de ${nf(m.pf.v, 1)} hPa` : "";
+  const at = v => TH && v ? "t" : v, nm = v => TH ? (v ? "trovoada" : "sem trovoada") : LEVEL_NAMES[v], col = v => TH ? "#b18cff" : `var(--lv${v})`;
   const cons = tl.map(h => h.lv[key]);
   let a = cons.findIndex(v => v >= 1), b = a; if (a >= 0) while (b + 1 < n && cons[b + 1] >= 1) b++;
   const inWin = (mi) => a >= 0 && tl.slice(a, b + 1).some(h => perLv(h, mi) >= 1);
-  const rows = names.map((nm, mi) => `<div class="mx-row" style="--n:${n}">${tl.map(h => `<i data-lv="${perLv(h, mi)}" title="${esc(nm)} · ${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${LEVEL_NAMES[perLv(h, mi)]}"></i>`).join("")}</div>`);
+  const rows = names.map((nmd, mi) => `<div class="mx-row" style="--n:${n}">${tl.map(h => `<i data-lv="${at(perLv(h, mi))}" title="${esc(nmd)} · ${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${nm(perLv(h, mi))}"></i>`).join("")}</div>`);
   const consRow = `<div class="mx-row cons" style="--n:${n}">${tl.map((h, j) => { const c = h.per.filter((_, mi) => perLv(h, mi) >= Math.max(1, cons[j])).length;
-    return `<i data-lv="${cons[j]}" title="${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${LEVEL_NAMES[cons[j]]}${cons[j] ? ` · ${c} modelos concordam` : ""}"></i>`; }).join("")}</div>`;
+    return `<i data-lv="${at(cons[j])}" title="${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${nm(cons[j])}${cons[j] ? ` · ${c} modelos concordam` : ""}"></i>`; }).join("")}</div>`;
+  const offOn = !!OFF.list?.length;
+  const offRow = offOn ? `<div class="mx-row offr" style="--n:${n}">${tl.map(h => { const v = officialAt(tDate(h.t).getTime()); return `<i data-o="${v}" title="INMET · ${esc(cap1(weekday(h.t)))} ${hourOf(h.t)} · ${v ? ["", "perigo potencial", "perigo", "grande perigo"][v] : "sem aviso"}"></i>`; }).join("")}</div>` : "";
   const days = tl.map((h, j) => j && h.t.slice(11,13) === "00" ? `<span class="day" style="left:${j / n * 100}%"></span>` : "").join("");
   const axis = tl.map((h, j) => j === 0 || h.t.slice(11,13) === "00" ? `<span style="left:${j / n * 100}%">${j === 0 ? "agora" : esc(rel(h.t) || weekday(h.t).slice(0, 3))}</span>` : "").join("");
   const win = a >= 0 ? `<div class="mx-win" style="left:calc(${a / n * 100}% - 3px);width:calc(${(b - a + 1) / n * 100}% + 5px)"><span>${b - a + 1} h</span></div>` : "";
   const ends = names.map((nm, mi) => { const on = inWin(mi), mx = Math.max(...tl.map(h => perLv(h, mi)));
-    return `<span class="${on ? "on" : ""}" style="--c:var(--lv${Math.max(1, mx)})" title="${on ? "concorda com a janela de risco" : mx ? "prevê risco, mas em outras horas" : "não prevê risco"}">${on ? "✓" : mx ? "◦" : "·"}</span>`; });
+    return `<span class="${on ? "on" : ""}" style="--c:${col(Math.max(1, mx))}" title="${on ? "concorda com a janela de risco" : mx ? "prevê risco, mas em outras horas" : "não prevê risco"}">${on ? "✓" : mx ? "◦" : "·"}</span>`; });
   const agreeN = a >= 0 ? names.filter((_, mi) => inWin(mi)).length : 0;
   // riscos isolados (um modelo só): mostra como etiquetas quando não há consenso
-  const iso = a >= 0 ? [] : names.map((nm, mi) => { const j = tl.findIndex(h => perLv(h, mi) >= 1); if (j < 0) return null; const mx = Math.max(...tl.map(h => perLv(h, mi)));
-    return `<span class="tag" style="--c:var(--lv${mx})"><i></i>${esc(nm)} · ${esc(j === 0 ? "agora" : `${weekday(tl[j].t).slice(0,3)} ${hourOf(tl[j].t)}`)} · ${LEVEL_NAMES[mx].toLowerCase()}</span>`; }).filter(Boolean);
+  const iso = a >= 0 ? [] : names.map((nmd, mi) => { const j = tl.findIndex(h => perLv(h, mi) >= 1); if (j < 0) return null; const mx = Math.max(...tl.map(h => perLv(h, mi)));
+    return `<span class="tag" style="--c:${col(mx)}"><i></i>${esc(nmd)} · ${esc(j === 0 ? "agora" : `${weekday(tl[j].t)} ${hourOf(tl[j].t)}`)} · ${nm(mx).toLowerCase()}${isoVal(A.ok[mi]) ? ` <small>(${isoVal(A.ok[mi])})</small>` : ""}</span>`; }).filter(Boolean);
   return { html:`<div class="mx">
-      <div class="mx-lab">${names.map((nm, mi) => `<span class="${inWin(mi) ? "hot" : ""}">${nm}</span>`).join("")}<span class="cons">≥2</span></div>
-      <div class="mx-cells">${days}${rows.join("")}${consRow}${win}<span class="mx-now" title="agora"></span></div>
-      <div class="mx-end">${ends.join("")}<span class="cons">${agreeN || ""}</span></div>
+      <div class="mx-lab">${offOn ? `<span class="offl">INMET</span>` : ""}${names.map((nm, mi) => `<span class="${inWin(mi) ? "hot" : ""}">${nm}</span>`).join("")}<span class="cons">≥2</span></div>
+      <div class="mx-cells">${days}${offRow}${rows.join("")}${consRow}${win}<span class="mx-now" title="agora"></span></div>
+      <div class="mx-end">${offOn ? "<span></span>" : ""}${ends.join("")}<span class="cons">${agreeN || ""}</span></div>
       <div></div><div class="mx-axis">${axis}</div><div></div>
     </div>
-    ${iso.length ? `<div class="mx-iso">só um modelo, sem acordo: ${iso.join("")}</div>` : ""}
+    <div class="mx-iso">só um modelo, sem acordo: ${iso.length ? iso.join("") : `<span class="none">${a >= 0 ? "há acordo entre modelos (janela marcada acima)" : "nenhum"}</span>`}</div>
+    <div class="mx-crit"><b>acende quando:</b> ${CRIT[key]}${key === "rain" ? " · a chuva hora a hora (em Hoje e nos 10 dias) mostra qualquer chuva, mesmo fraca" : ""}</div>
     <div class="mx-legend"><span>linha = um modelo · última linha = consenso (≥2 na mesma hora) · ✓ concorda · ◦ risco em outra hora</span></div>
-    <div class="lv-key"><span class="k">cores</span><span><i style="background:#3fcf8e"></i>sem risco</span><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span></div>`, a, b, agreeN, iso:iso.length };
+    <div class="lv-key"><span class="k">cores</span>${TH ? `<span><i style="background:#b18cff"></i>trovoada prevista pelo modelo</span><span><i style="background:rgb(63 207 142 / .4)"></i>sem trovoada</span>` : `<span><i style="background:#3fcf8e"></i>sem risco</span><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span>`}</div>`, a, b, agreeN, iso:iso.length };
 }
 function renderBand(A, place){
-  const L = A.levels, ok = A.ok; const lv = Math.max(L.gust, L.rain, L.storm, L.cyclone);
+  const L = A.levels, ok = A.ok; const lv = Math.max(L.gust, L.rain, L.storm, L.cyclone, L.thunder ? 1 : 0);   // trovoada com acordo = atenção (como o aviso amarelo do INMET)
   const parts = [];
   if (L.gust) parts.push(`rajadas de até ${nf(A.peak.gust.v)} km/h`);
   if (L.rain) parts.push(`até ${nf(A.peak.rain24.v)} mm de chuva em 24 horas`);
   if (L.storm) parts.push("condições para tempestades fortes com granizo");
   if (L.cyclone) parts.push("pressão caindo rápido, sinal de ciclone");
-  $("#band").dataset.lv = lv;
+  if (L.thunder && !L.storm) parts.push("trovoadas previstas");
   const elev = median(ok.map(m => m.grid?.elev));
   $("#band-place").textContent = `${place.name} · ${place.lat.toFixed(4)}, ${place.lon.toFixed(4)}${elev != null ? ` · ${nf(elev)} m` : ""} · ${hourOf(nowKey() + ":00")}`;
-  $("#band-lv").textContent = LEVEL_NAMES[lv];
-  $("#band-title").textContent = lv ? cap1(parts.join(" · ")) : "Nada relevante nas próximas 72 horas";
-  $("#band-detail").textContent = "";
+  // nível do topo = aviso oficial do INMET (mesmos critérios deles); os modelos ficam logo abaixo, para análise própria
+  const modelTxt = lv ? cap1(parts.join(" · ")) : "nada relevante nas próximas 72 horas";
+  const tt = d => whenLong(new Date(d).toLocaleString("sv-SE", { timeZone:TZ }).slice(0, 16).replace(" ", "T"));
+  if (OFF.list && !OFF.err){
+    const now = Date.now(), M = mergedOfficial().filter(a => a.expires > now && a.onset < now + 72 * 36e5);
+    const top = [...M].sort((a, b) => b.lv - a.lv || a.onset - b.onset)[0], olv = top ? top.lv : 0;
+    $("#band").dataset.lv = olv;
+    $("#band-lv").textContent = ["Sem aviso", "Perigo potencial", "Perigo", "Grande perigo"][olv];
+    $("#band-title").textContent = top ? `${top.event} · ${top.onset <= now ? `até ${tt(top.expires)}` : `de ${tt(top.onset)} até ${tt(top.expires)}`}` : "Nenhum aviso do INMET nas próximas 72 horas";
+  } else {
+    $("#band").dataset.lv = lv; $("#band-lv").textContent = LEVEL_NAMES[lv];
+    $("#band-title").textContent = OFF.err ? cap1(modelTxt) : "Consultando os avisos do INMET…";
+  }
+  $("#band-detail").innerHTML = `<span class="k">o que os modelos mostram</span><span class="pill" data-lv="${lv}">${LEVEL_NAMES[lv]}</span><span>${esc(modelTxt)}</span>${OFF.err ? `<span class="muted">· INMET indisponível agora: o nível acima é o dos modelos</span>` : ""}`;
   const c = A.cur;
-  $("#now").innerHTML = `<div>temp <b>${nf(c.temp,1)}</b><small>°C</small></div><div>vento <b>${nf(c.wind)}</b><small>km/h · raj ${nf(c.gust)}</small></div><div>pressão <b>${nf(c.pres,0)}</b><small>hPa</small></div>`;
-  const keys = ["storm","gust","rain","cyclone"];
-  if (!BAND.key || !keys.includes(BAND.key) || BAND.place !== place) { BAND.key = (keys.filter(k => L[k] === lv && lv)[0]) || "storm"; BAND.place = place; }
+
+  const keys = ["storm","thunder","gust","rain","cyclone"];
+  if (!BAND.key || !keys.includes(BAND.key) || BAND.place !== place) { BAND.key = (keys.filter(k => k !== "thunder" && L[k] === lv && lv)[0]) || (L.thunder ? "thunder" : "storm"); BAND.place = place; }
   const M = bandMatrix(A, BAND.key), tl = A.timeline;
   const when = M.a < 0 ? (M.iso ? `<i style="--c:#8ea4b6">sem acordo</i>` : "—") : M.a >= 0 ? `${cap1(rel(tl[M.a].t) || weekday(tl[M.a].t))} ${hourOf(tl[M.a].t)} <i style="--c:#8ea4b6">→</i> ${tl[M.b].t.slice(0,10) !== tl[M.a].t.slice(0,10) ? cap1(rel(tl[M.b].t) || weekday(tl[M.b].t)) + " " : ""}${hourOf(tl[M.b].t)}` : "—";
   const dur = M.a >= 0 ? M.b - M.a + 1 : 0;
   $("#band-facts").innerHTML = `
-    <div class="b-fact"><span class="k">o quê</span><span class="b-cats">${["storm","gust","rain","cyclone"].map(k => `<span class="b-cat" data-lv="${L[k]}" title="${CATNAME[k]}: ${LEVEL_NAMES[L[k]]}">${CATNAME[k]} <small>${LEVEL_NAMES[L[k]].toLowerCase()}</small></span>`).join("")}</span></div>
+    <div class="b-fact"><span class="k">o quê</span><span class="b-cats">${["storm","thunder","gust","rain","cyclone"].map(k => k === "thunder" ? `<span class="b-cat" data-lv="${L.thunder ? "t" : 0}" title="raios: ${L.thunder ? "trovoada prevista por 2 ou mais modelos" : "sem trovoada com acordo"}">raios <small>${L.thunder ? "previstos" : "sem risco"}</small></span>` : `<span class="b-cat" data-lv="${L[k]}" title="${CATNAME[k]}: ${LEVEL_NAMES[L[k]]}">${CATNAME[k]} <small>${LEVEL_NAMES[L[k]].toLowerCase()}</small></span>`).join("")}</span></div>
     <div class="b-fact"><span class="k">quando · ${CATNAME[BAND.key]}</span><span class="v">${when}</span></div>
     <div class="b-fact"><span class="k">duração</span><span class="v">${dur ? `${dur} h` : "—"}</span></div>
     <div class="b-fact"><span class="k">modelos</span><span class="v"><i style="--c:var(--lv${Math.max(1, L[BAND.key] || 0)})">${M.agreeN}</i>/${ok.length} ${termBtn("consenso")}</span></div>`;
-  $("#band-src").innerHTML = `<div class="mx-tabs"><span class="k">ver por</span>${keys.map(k => `<button type="button" data-k="${k}" aria-pressed="${k === BAND.key}"><i data-lv="${L[k]}"></i>${CATNAME[k]}</button>`).join("")}</div>${M.html}`;
-  $("#band-src").querySelectorAll("[data-k]").forEach(b => b.onclick = () => { BAND.key = b.dataset.k; renderBand(A, place); });
+  const cur = BAND.key;
+  const srcHTML = key => `<div class="mx-tabs"><span class="k">ver por</span>${keys.map(k => `<button type="button" data-k="${k}" aria-pressed="${k === key}"><i data-lv="${k === "thunder" && L[k] ? "t" : L[k]}"></i>${CATNAME[k]}</button>`).join("")}</div>${key === cur ? M.html : bandMatrix(A, key).html}<p class="b-th" id="band-th" hidden></p>`;
+  const el = $("#band-src");
+  // mede a altura de todas as abas e reserva a maior: trocar de aba não empurra o resto da página
+  el.style.minHeight = ""; let mx = 0;
+  for (const k of keys){ BAND.key = k; el.innerHTML = srcHTML(k); renderThunder(A); mx = Math.max(mx, el.offsetHeight); }
+  BAND.key = cur; el.innerHTML = srcHTML(cur); renderThunder(A); el.style.minHeight = mx + "px";
+  el.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { BAND.key = b.dataset.k; renderBand(A, place); });
 }
 
 /* ====================== cartões de risco ====================== */
@@ -1219,58 +1799,32 @@ function renderGauges(A, E){
   const cMed = P.storm.cape, shMed = P.storm.shear;
   const pfMed = P.pfall.v == null ? null : Math.max(0, P.pfall.v), pminMed = SP.pmin.v;
   const dots = f => ok.map(m => ({ name:m.name, v:f(m) }));
-  const card = (k, title, term, lv, headline, body, equiv, ruler, agree, extra) => `
+  // cartão enxuto: medidor (com os pontos dos modelos), quando é o pico e, na chuva, os baldes
+  const CLOCK = `<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5V8l2.5 1.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+  const when = (t, lbl) => t ? `<div class="g-when">${CLOCK}<span>${lbl} <b>${esc(whenLong(t))}</b></span></div>` : "";
+  const card = (k, title, term, lv, extra) => `
     <article class="gauge" data-lv="${lv}">
       <div class="viz" id="viz-${k}"></div>
       <div class="body">
         <div class="topline"><h3>${title} ${termBtn(term)}</h3><span class="pill" data-lv="${lv}">${LEVEL_NAMES[lv]}</span></div>
-        ${headline ? `<div class="headline">${headline}</div>` : ""}
-        <p>${body}</p>
-        ${equiv ? `<div class="equiv">${equiv}</div>` : ""}
-        ${ruler}
-        ${agree}
-        ${extra ? `<p class="agree-txt muted">${extra}</p>` : ""}
-        <p class="src">${srcLine(A, "número = o que pelo menos 2 modelos preveem na mesma hora · pontos = pico de cada modelo")}</p>
+        ${extra}
       </div>
     </article>`;
+  $("#gsrc").innerHTML = srcLine(A, "número grande = o que pelo menos 2 modelos preveem na mesma hora · cada ponto sobre a barra = pico de um modelo");
   $("#gauges").innerHTML = [
-    card("gust", "Vento", "rajada", L.gust, "",
-      `${EFFECT.gust[L.gust]} Mais forte ${whenLong(wg.gust.t)} no pior caso (${wg.name}, ${nf(wg.gust.v)} km/h).`,
-      `<span>É ${carCompare(gMed ?? 0)}.</span>`,
-      "",
-      agreeHTML(ok.map((m, mi) => ({ name:m.name, lv:lvSameHour(A, "gust", mi, m.lv.gust), v:m.gust.v })), L.gust, v => nf(v)),
-      E?.pctGust != null ? `Em ${Math.round(E.pctGust*100)}% dos ${E.n} cenários do GFS ${termBtn("ensemble")} há rajada acima de ${CFG.ensProb.gust} km/h.` : ""),
-    card("rain", "Chuva", "acumulado", L.rain, "",
-      `${EFFECT.rain[L.rain]} No pior caso (${wr.name}), ${nf(wr.rain24.v)} milímetros até ${whenLong(wr.rain24.t)}. Hora mais forte: ${nf(r1Med,1)} mm.`,
-      `<span><b>${nf(rMed)} ${Math.round(rMed ?? 0) === 1 ? "litro" : "litros"}</b> em cada metro quadrado · <b>${nf((rMed ?? 0)*100)} litros</b> num telhado de 100 m² </span>${bucketsHTML(rMed)}`,
-      "",
-      agreeHTML(ok.map((m, mi) => ({ name:m.name, lv:lvSameHour(A, "rain", mi, m.lv.rain), v:m.rain24.v })), L.rain, v => nf(v) + " mm"),
-      E?.pctRain != null ? `Em ${Math.round(E.pctRain*100)}% dos ${E.n} cenários do GFS ${termBtn("ensemble")} chove mais de ${CFG.ensProb.rain24} milímetros em 24 horas.` : ""),
-    card("storm", "Tempestade e tornado", "supercelula", L.storm,
-      L.storm ? (L.storm >= 2 ? "Condições para tempestades fortes com granizo e tornado" : "Condições para tempestades fortes") : "Sem condições para tempestades severas",
-      L.storm ? `Pior momento: ${whenLong(st.stormBest.t)}, segundo o ${st.name}. Energia ${capeWord(st.stormBest.cape)} ${termBtn("cape")} e vento em altura ${shearWord(st.stormBest.shear)} ${termBtn("shear")} ao mesmo tempo. ${EFFECT.storm[L.storm]}`
-        : `${stormStory(A).html.replace(/<\/?b>/g, "")} ${termBtn("cape")}`,
-      `<span>As duas barras precisam subir juntas: energia (${nf(cMed)} J/kg) e cisalhamento (${nf(shMed)} m/s ${termBtn("shear")}). Só um deles alto não basta para tempestade severa.</span>`,
-      "",
-      agreeHTML(ok.map((m, mi) => ({ name:m.name, lv:lvSameHour(A, "storm", mi, m.lv.storm), v:m.stormBest.cape })), L.storm, v => nf(v)),
-      L.storm ? "Condições favoráveis não garantem que a tempestade vá acontecer. Acompanhe o radar e a PREVOTS." : ""),
-    card("cyclone", "Ciclone e pressão", "ciclone", L.cyclone,
-      "",
-      L.cyclone ? `${EFFECT.cyclone[L.cyclone]} Queda mais forte até ${whenLong(wp.pf.t)} no pior caso (${wp.name}). Mínima prevista: ${nf(pminMed,1)} hPa ${termBtn("pressao")}.`
-        : `A maior queda prevista é de ${nf(pfMed,1)} hPa em 24 horas, dentro do normal ${termBtn("pressao")}.`,
-      `<span>Pressão mínima ${nf(pminMed,1)} hPa. O normal é 1.013 hPa; ciclones fortes chegam abaixo de 990 hPa no centro.</span>`,
-      "",
-      agreeHTML(ok.map((m, mi) => ({ name:m.name, lv:lvSameHour(A, "cyclone", mi, m.lv.cyclone), v:m.pf.v })), L.cyclone, v => nf(v,1)),
-      ""),
+    card("gust", "Vento", "rajada", L.gust, when(P.gust.t, "pico")),
+    card("rain", "Chuva", "acumulado", L.rain, when(P.rain24.t, "mais chuva em 24 horas até") + bucketsHTML(rMed)),
+    card("storm", "Tempestade e tornado", "supercelula", L.storm, L.storm ? when(P.storm.t, "pior momento") : ""),
+    card("cyclone", "Ciclone e pressão", "ciclone", L.cyclone, when(P.pfall.t, "maior queda até") + `<div class="g-when">${termBtn("pressao")}<span>pressão mínima <b>${nf(pminMed, 1)} hPa</b> · normal 1.013 hPa</span></div>`),
   ].join("");
   for (const k in G3) dropStage(G3[k]);
   const meaningOf = (rows, v) => { let m = rows[0][1]; rows.forEach(r => { if (v != null && v >= r[0]) m = r[1]; }); return m; };
   $("#viz-gust").innerHTML = hzGauge({ value:gMed, max:REF.gust.max, thr:CFG.thr.gust, unit:"km/h", lv:L.gust, meaning:meaningOf(REF.gust.rows, gMed), label:"rajada máxima", dots:dots(m => m.gust.v), sp:SP.gust });
   $("#viz-rain").innerHTML = hzGauge({ value:rMed, max:REF.rain.max, thr:CFG.thr.rain24, unit:"mm", lv:L.rain, meaning:meaningOf(REF.rain.rows, rMed), label:"chuva em 24 horas", dots:dots(m => m.rain24.v), sp:SP.rain24 });
   const okE = (cMed ?? 0) >= CFG.thr.cape[0], okS = (shMed ?? 0) >= CFG.thr.shear[0];
-  const verdict = okE && okS ? ["os dois altos: tempestade severa possível", 3] : okS ? ["falta energia: sem tempestade severa", 0] : okE ? ["falta vento em altura: pancadas curtas", 1] : ["os dois baixos", 0];
+  const verdict = okE && okS ? ["os dois altos: tempestade severa possível", 3] : okS ? ["ar pouco instável: sem tempestade severa", 0] : okE ? ["vento em altura fraco: pancadas curtas", 1] : ["os dois baixos", 0];
   $("#viz-storm").innerHTML = `<div class="hz dual">
-    ${hzGauge({ value:cMed, max:3000, thr:CFG.thr.cape, unit:"J/kg", lv:lvOf(cMed, CFG.thr.cape), label:"energia", compact:true, dots:dots(m => m.stormBest.cape), sp:SP.cape })}
+    ${hzGauge({ value:cMed, max:3000, thr:CFG.thr.cape, unit:"J/kg", lv:lvOf(cMed, CFG.thr.cape), label:"instabilidade (CAPE)", compact:true, dots:dots(m => m.stormBest.cape), sp:SP.cape })}
     ${hzGauge({ value:shMed, max:35, thr:CFG.thr.shear, unit:"m/s", lv:lvOf(shMed, CFG.thr.shear), label:"vento em altura", compact:true, dots:dots(m => m.stormBest.shear), sp:SP.shear })}
     <div class="hz-verdict" data-lv="${verdict[1]}">${verdict[0]}</div></div>`;
   $("#viz-cyclone").innerHTML = hzGauge({ value:pfMed, max:REF.cyclone.max, thr:CFG.thr.pfall, unit:"hPa", lv:L.cyclone, meaning:meaningOf(REF.cyclone.rows, pfMed), label:"queda em 24 horas", dec:1, dots:dots(m => m.pf.v), sp:SP.pfall });
@@ -1356,7 +1910,7 @@ function sceneGauge(S, o){
     const L2 = label(S, `<b>${nf(D2.value)}</b><small>${D2.unit}</small>`, "gcall sm", new THREE.Vector3(-2.75, base + H + 0.5, 0)); L2.el.style.setProperty("--c", "#" + (D2.lv ? LV[D2.lv] : LV[0]).getHexString());
     D2.thr.forEach((v, i) => { const L = label(S, `<b>${nf(v)}</b>`, "gtick", new THREE.Vector3(-2.75 - 0.45, Y2(v), 0), "right"); L.el.style.setProperty("--c", "#" + LV[i + 1].getHexString()); });
     const okE = (o.value ?? 0) >= o.thr[0], okS = (D2.value ?? 0) >= D2.thr[0];
-    const v = okE && okS ? ["os dois altos: tempestade severa possível", LV[3]] : okS ? ["cisalhamento alto, falta energia", LV[0]] : okE ? ["energia alta, falta cisalhamento", LV[1]] : ["os dois baixos", LV[0]];
+    const v = okE && okS ? ["os dois altos: tempestade severa possível", LV[3]] : okS ? ["vento em altura forte, ar pouco instável", LV[0]] : okE ? ["ar instável, vento em altura fraco", LV[1]] : ["os dois baixos", LV[0]];
     const LV3 = label(S, v[0], "gverdict", new THREE.Vector3(-1.85, -0.55, 0.6)); LV3.el.style.setProperty("--c", "#" + v[1].getHexString());
   }
   S.target.set(o.dual ? -0.6 : -0.75, o.dual ? 2.8 : 2.45, 0);
@@ -1365,34 +1919,53 @@ function sceneGauge(S, o){
 }
 
 /* --- título: nuvens, chuva e relâmpagos --- */
-function sceneHero(S){
-  if (!S) return; const g = resetStage(S);
+// W = tempo agora { cloud 0–1, rain mm/h, thunder, day, wind km/h }. Sem W (carregando) = céu de tempestade noturno.
+function sceneHero(S, W){
+  if (!S) return; const g = resetStage(S); S.w = W || null;
   S.scene.fog = null;
+  const storm = !W || W.thunder, day = W ? W.day : false, cl = W ? clamp(W.cloud, 0, 1) : 1;
+  const wet = W ? clamp(W.rain / 3, 0, 1) : 0.6, dark = W ? Math.max(cl * 0.7, wet, storm ? 1 : 0) : 1;
+  const mix = (a, b, t) => "#" + new THREE.Color(a).lerp(new THREE.Color(b), t).getHexString();
+  const sky = day ? [mix("#1d63b8", "#3b4754", dark), mix("#4b93d8", "#5a6775", dark), mix("#a9d0f0", "#7d8994", dark)]
+                  : [mix("#020511", "#03060a", dark), mix("#0b1630", "#0d1722", dark), mix("#1a2a4a", "#1b2836", dark)];
+  $("#hero").classList.toggle("day", !!day);
   { const c = document.createElement("canvas"); c.width = 4; c.height = 256; const x = c.getContext("2d"), gr = x.createLinearGradient(0, 0, 0, 256);
-    gr.addColorStop(0, "#03060a"); gr.addColorStop(0.55, "#0d1722"); gr.addColorStop(1, "#1b2836"); x.fillStyle = gr; x.fillRect(0, 0, 4, 256);
+    gr.addColorStop(0, sky[0]); gr.addColorStop(0.55, sky[1]); gr.addColorStop(1, sky[2]); x.fillStyle = gr; x.fillRect(0, 0, 4, 256);
     S.scene.background?.dispose?.(); S.scene.background = new THREE.CanvasTexture(c); S.scene.background.colorSpace = THREE.SRGBColorSpace; }
-  if (S.bloom){ S.bloom.strength = 0.9; S.bloom.threshold = 0.7; S.bloom.radius = 0.6; }
-  g.add(new THREE.AmbientLight(0x6f86a0, 0.6));
+  if (S.bloom){ S.bloom.strength = day ? 0.45 : 0.9; S.bloom.threshold = day ? 0.9 : 0.7; S.bloom.radius = 0.6; }
+  g.add(new THREE.AmbientLight(day ? 0xdfe9f3 : 0x6f86a0, day ? 1.1 : 0.6));
   const rnd = (() => { let x = 3; return () => (x = (x * 16807) % 2147483647) / 2147483647; })();
-  // camadas de nuvem: sprites macios que deslizam devagar
-  const layers = [];
+  // estrelas (noite sem muitas nuvens) e sol ou lua
+  if (!day && cl < 0.85){ const NS = 260, sp = new Float32Array(NS * 3); for (let i = 0; i < NS; i++){ sp[i*3] = -30 + rnd() * 60; sp[i*3+1] = -1 + rnd() * 9; sp[i*3+2] = -12; }
+    const sg = new THREE.BufferGeometry(); sg.setAttribute("position", new THREE.BufferAttribute(sp, 3));
+    g.add(new THREE.Points(sg, new THREE.PointsMaterial({ size:0.07, color:0xffffff, transparent:true, opacity:0.85 * (1 - cl), depthWrite:false }))); }
+  let orb = null;
+  if (W && cl < 0.9 && !storm){ orb = new THREE.Sprite(new THREE.SpriteMaterial({ map:softTex(), color:day ? hdr("#ffe08a", 2.2) : hdr("#e8eef8", 1.4), transparent:true, opacity:1 - cl * 0.8, depthWrite:false }));
+    orb.position.set(11, 4.2, -6); orb.scale.setScalar(day ? 5.5 : 3.2); g.add(orb);
+    const core = new THREE.Mesh(new THREE.CircleGeometry(day ? 0.75 : 0.6, 40), new THREE.MeshBasicMaterial({ color:day ? hdr("#fff3c4", 3) : hdr("#f4f7fc", 1.6), transparent:true, opacity:1 - cl * 0.7 }));
+    core.position.set(11, 4.2, -5.9); g.add(core); }
+  // camadas de nuvem: mais nuvens quanto maior a cobertura; claras de dia, escuras com chuva
+  const layers = [], cols = day ? [mix("#ffffff", "#8a96a3", dark), mix("#e6edf3", "#6e7b88", dark), mix("#c9d4de", "#56636f", dark)] : ["#5a6d80", "#3c4c5e", "#26333f"];
+  const nP = Math.round(42 * (W ? Math.max(0.12, cl) : 1));
   for (let L = 0; L < 3; L++){
     const grp = new THREE.Group(); grp.position.z = -L * 4; g.add(grp);
-    const m = new THREE.SpriteMaterial({ map:softTex(), color:new THREE.Color(["#5a6d80","#3c4c5e","#26333f"][L]), transparent:true, opacity:[0.6,0.75,0.9][L], depthWrite:false });
+    const m = new THREE.SpriteMaterial({ map:softTex(), color:new THREE.Color(cols[L]), transparent:true, opacity:(day ? [0.85,0.8,0.75] : [0.6,0.75,0.9])[L] * (W ? 0.55 + cl * 0.45 : 1), depthWrite:false });
     const puffs = [];
-    for (let i = 0; i < 42; i++){ const sp = new THREE.Sprite(m); const x = -26 + rnd() * 52, y = 2.2 + rnd() * 3.6 - L * 0.4; sp.position.set(x, y, rnd()); sp.scale.setScalar(3.2 + rnd() * 4 + L); grp.add(sp); puffs.push(sp); }
-    layers.push({ grp, puffs, mat:m, speed:0.12 + (2 - L) * 0.08, base:m.color.clone() });
+    for (let i = 0; i < nP; i++){ const sp = new THREE.Sprite(m); const x = -26 + rnd() * 52, y = 2.2 + rnd() * 3.6 - L * 0.4; sp.position.set(x, y, rnd()); sp.scale.setScalar(3.2 + rnd() * 4 + L); grp.add(sp); puffs.push(sp); }
+    layers.push({ grp, puffs, mat:m, speed:(0.12 + (2 - L) * 0.08) * (W ? clamp(W.wind / 15, 0.4, 3) : 1), base:m.color.clone() });
   }
-  // chuva fina
-  const NR = 700, rp = new Float32Array(NR * 3); for (let i = 0; i < NR; i++){ rp[i*3] = -24 + rnd() * 48; rp[i*3+1] = -6 + rnd() * 12; rp[i*3+2] = 2 - rnd() * 6; }
-  const rg = new THREE.BufferGeometry(); rg.setAttribute("position", new THREE.BufferAttribute(rp, 3));
-  const rain = new THREE.Points(rg, new THREE.PointsMaterial({ size:0.05, color:new THREE.Color("#9fc4ff"), transparent:true, opacity:0.45, depthWrite:false })); g.add(rain);
-  // relâmpago
+  // chuva: quantidade conforme a chuva desta hora, inclinada pelo vento
+  const NR = Math.round(700 * (W ? (W.rain < 0.1 ? 0 : 0.25 + wet * 0.75) : 1)), slant = W ? clamp(W.wind / 120, 0.02, 0.18) : 0.04;
+  let rain = null;
+  if (NR){ const rp = new Float32Array(NR * 3); for (let i = 0; i < NR; i++){ rp[i*3] = -24 + rnd() * 48; rp[i*3+1] = -6 + rnd() * 12; rp[i*3+2] = 2 - rnd() * 6; }
+    const rg = new THREE.BufferGeometry(); rg.setAttribute("position", new THREE.BufferAttribute(rp, 3));
+    rain = new THREE.Points(rg, new THREE.PointsMaterial({ size:0.05, color:new THREE.Color(day ? "#dbe9ff" : "#9fc4ff"), transparent:true, opacity:0.45, depthWrite:false })); g.add(rain); }
+  // relâmpago: só com trovoada prevista (ou enquanto carrega)
   const boltM = new THREE.MeshBasicMaterial({ color:hdr("#eef4ff", 7) }); let bolt = null;
   const newBolt = () => { if (bolt){ g.remove(bolt); bolt.geometry.dispose(); }
     const pts = []; let x = 4 + rnd() * 14, y = 3.2; while (y > -7){ pts.push(new THREE.Vector3(x, y, -1)); y -= 0.5 + rnd() * 0.7; x += (rnd() - 0.5) * 1.4; }
     bolt = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.05), 60, 0.05, 5, false), boltM); bolt.visible = false; g.add(bolt); return x; };
-  let boltX = newBolt();
+  let boltX = storm ? newBolt() : 0;
   const flash = new THREE.PointLight(0xcfe0ff, 0, 40); flash.position.set(boltX, 3, 2); g.add(flash);
   const hero = $("#hero"); let next = 1.5, last = -9;
   S.camera.fov = 50; S.camera.updateProjectionMatrix(); S.target.set(0, 0, 0); S.dist = 14; S.el = 0.02; S.az = 0;
@@ -1401,22 +1974,25 @@ function sceneHero(S){
   S.frame = (t) => {
     const rm = reduceMotion ? 0 : 1;
     layers.forEach(Ly => Ly.puffs.forEach(p => { p.position.x += Ly.speed * 0.016 * rm; if (p.position.x > 28) p.position.x = -28; }));
-    if (rm){ const a = rain.geometry.attributes.position; for (let i = 0; i < NR; i++){ let y = a.getY(i) - 0.22, x = a.getX(i) - 0.04; if (y < -6){ y = 6; x = -24 + Math.random() * 48; } a.setY(i, y); a.setX(i, x); } a.needsUpdate = true; }
+    if (rm && rain){ const a = rain.geometry.attributes.position; for (let i = 0; i < NR; i++){ let y = a.getY(i) - 0.22, x = a.getX(i) - slant; if (y < -6){ y = 6; x = -24 + Math.random() * 48; } a.setY(i, y); a.setX(i, x); } a.needsUpdate = true; }
+    if (orb && rm) orb.material.rotation = t * 0.05;
+    if (!storm) return;
     if (rm && t > next){ last = t; next = t + 3 + Math.random() * 5; boltX = newBolt(); flash.position.x = boltX; }
     const dt = t - last, on = rm && (dt < 0.07 || (dt > 0.13 && dt < 0.2) || (dt > 0.28 && dt < 0.33));
     if (bolt) bolt.visible = on; flash.intensity = on ? 160 : 0;
     layers.forEach((Ly, i) => Ly.mat.color.copy(Ly.base).multiplyScalar(on ? 2.6 - i * 0.4 : 1));
     hero.classList.toggle("flash", on);
   };
+  if (!storm) hero.classList.remove("flash");
 }
 
 /* ====================== hora a hora (degraus) ====================== */
-const V = { mode: innerWidth < 640 ? 24 : 72, sel: null };
+const V = { mode: innerWidth < 640 ? 24 : 72, sel: null, models: false };
 const LANES = [
-  { key:"gust", name:"Vento", unit:"km/h", sub:"rajada", val:h => h.v.gust, thr:() => CFG.thr.gust, min:40 },
-  { key:"rain", name:"Chuva", unit:"mm", sub:"em 24 horas", val:h => h.v.rain24, thr:() => CFG.thr.rain24, min:20 },
-  { key:"storm", name:"Tempestade", unit:"J/kg", sub:"energia", val:h => h.v.cape, thr:() => CFG.thr.cape, min:1200 },
-  { key:"cyclone", name:"Pressão", unit:"hPa", sub:"queda em 24 horas", val:h => Math.max(0, h.v.pfall ?? 0), thr:() => CFG.thr.pfall, min:4, dec:1 },
+  { key:"gust", name:"Vento", unit:"km/h", sub:"rajada", val:h => h.v.gust, per:p => p.gust, thr:() => CFG.thr.gust, min:40 },
+  { key:"rain", name:"Chuva", unit:"mm", sub:"em 24 horas", val:h => h.v.rain24, per:p => p.r24, thr:() => CFG.thr.rain24, min:20 },
+  { key:"storm", name:"Tempestade", unit:"J/kg", sub:"instabilidade", val:h => h.v.cape, per:p => p.cape, thr:() => CFG.thr.cape, min:1200 },
+  { key:"cyclone", name:"Pressão", unit:"hPa", sub:"queda em 24 horas", val:h => Math.max(0, h.v.pfall ?? 0), per:p => p.pfall == null ? null : Math.max(0, p.pfall), thr:() => CFG.thr.pfall, min:4, dec:1 },
 ];
 function tlView(){ return lastA ? lastA.timeline.slice(0, V.mode) : []; }
 function defaultSel(tl){ let best = 0, bs = -1; tl.forEach((h,j) => { const m = Math.max(h.s.gust, h.s.rain, h.s.storm); if (m >= 1 && m > bs){ bs = m; best = j; } }); return best; }
@@ -1435,7 +2011,7 @@ function initHourly(){
 }
 function showHourTip(e, j){
   const tip = $("#htip"), h = tlView()[j]; if (!h){ tip.hidden = true; return; }
-  tip.innerHTML = `<b>${esc(cap1(weekday(h.t)))}, ${hourOf(h.t)}</b> · ${LEVEL_NAMES[h.l]}<br>Rajada ${nf(h.v.gust)} km/h · chuva ${nf(h.v.rain1,1)} mm<br>Energia ${nf(h.v.cape)} J/kg · vento em altura ${nf(h.v.shear)} m/s`;
+  tip.innerHTML = `<b>${esc(cap1(weekday(h.t)))}, ${hourOf(h.t)}</b> · ${LEVEL_NAMES[h.l]}<br>Rajada ${nf(h.v.gust)} km/h · chuva ${nf(h.v.rain1,1)} mm<br>Instabilidade ${nf(h.v.cape)} J/kg · vento em altura ${nf(h.v.shear)} m/s`;
   tip.hidden = false; const r = $("#hstage").getBoundingClientRect();
   let x = e.clientX - r.left + 14, y = e.clientY - r.top + 14;
   if (x + tip.offsetWidth > r.width - 8) x = e.clientX - r.left - tip.offsetWidth - 14; if (y + tip.offsetHeight > r.height - 8) y = e.clientY - r.top - tip.offsetHeight - 14;
@@ -1465,7 +2041,9 @@ function drawHourly(){
   if (hov >= 0 && hov !== sel){ ctx.fillStyle = "rgba(255,255,255,.04)"; ctx.fillRect(x0 + hov * bw, top - 6, bw, Hh - top - bottom + 8); }
   LANES.forEach((L, k) => {
     const y0 = top + k * (laneH + gap), yb = y0 + laneH, thr = L.thr();
-    const vals = tl.map(h => { const v = L.val(h); return v == null ? null : Math.max(0, v); }), dmax = Math.max(0, ...vals.filter(v => v != null));
+    const vals = tl.map(h => { const v = L.val(h); return v == null ? null : Math.max(0, v); });
+    const pm = V.models ? lastA.ok.map((m, mi) => tl.map(h => { const v = L.per(h.per[mi] || {}); return v == null ? null : Math.max(0, v); })) : [];
+    const dmax = Math.max(0, ...vals.filter(v => v != null), ...pm.flat().filter(v => v != null));
     const raw = Math.max(dmax * 1.2, thr[0] * 1.15, L.min * 0.25);
     const mag = Math.pow(10, Math.floor(Math.log10(raw))), vmax = Math.ceil(raw / (mag / 2)) * (mag / 2);
     const Y = v => yb - clamp((v ?? 0) / vmax, 0, 1) * (laneH - 6);
@@ -1491,8 +2069,12 @@ function drawHourly(){
     if (pts.length > 1){
       const path = () => { ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let q = 1; q < pts.length; q++){ const [xa, ya] = pts[q - 1], [xb, yb2] = pts[q]; const xm = (xa + xb) / 2; ctx.bezierCurveTo(xm, ya, xm, yb2, xb, yb2); } };
       path(); ctx.lineTo(pts[pts.length - 1][0], yb); ctx.lineTo(pts[0][0], yb); ctx.closePath(); ctx.fillStyle = grad(0.24, 0.02); ctx.fill();
-      path(); ctx.strokeStyle = grad(0.9, 0.9); ctx.lineWidth = 1.8; ctx.stroke(); ctx.lineWidth = 1;
+      path(); ctx.strokeStyle = grad(0.9, 0.9); ctx.lineWidth = V.models ? 3 : 1.8; ctx.stroke(); ctx.lineWidth = 1;
     }
+    // cada modelo: linha fina na cor do modelo
+    pm.forEach((arr, mi) => { const q = arr.map((v, j) => v == null ? null : [X(j), Y(v)]).filter(Boolean); if (q.length < 2) return;
+      ctx.beginPath(); ctx.moveTo(q[0][0], q[0][1]); for (let t = 1; t < q.length; t++){ const [xa, ya] = q[t - 1], [xb, yb2] = q[t]; const xm = (xa + xb) / 2; ctx.bezierCurveTo(xm, ya, xm, yb2, xb, yb2); }
+      ctx.strokeStyle = hexA(lastA.ok[mi].color, 0.85); ctx.lineWidth = 1.2; ctx.setLineDash([]); ctx.stroke(); ctx.lineWidth = 1; });
     // base
     ctx.strokeStyle = "rgba(160,190,210,.16)"; ctx.beginPath(); ctx.moveTo(x0, yb + 0.5); ctx.lineTo(x1, yb + 0.5); ctx.stroke();
     // ponto da hora escolhida
@@ -1543,7 +2125,7 @@ function renderHourDetail(){
     </div>
     <div class="hrow" data-lv="${h.lv.storm}">
       <div class="k"><b>Tempestade ${termBtn("supercelula")}</b><span class="label">${LEVEL_NAMES[h.lv.storm]}</span></div>
-      <p>Energia ${capeWord(v.cape)} (${nf(v.cape)} J/kg) ${termBtn("cape")} e vento em altura ${shearWord(v.shear)} (${nf(v.shear)} m/s) ${termBtn("shear")}, no mesmo modelo e na mesma hora.</p>
+      <p>Instabilidade ${capeWord(v.cape)} (${nf(v.cape)} J/kg) ${termBtn("cape")} e vento em altura ${shearWord(v.shear)} (${nf(v.shear)} m/s) ${termBtn("shear")}, no mesmo modelo e na mesma hora.</p>
       <p class="eff">${EFFECT.storm[h.lv.storm]}</p>
       ${chips("storm", x => `${nf(x.cape)} · ${nf(x.shear)} m/s`, p => p)}
     </div>
@@ -1565,6 +2147,8 @@ document.querySelectorAll("[data-jump]").forEach(b => b.onclick = () => {
   if (k === "now") selectHour(0); else if (k === "worst") selectHour(defaultSel(tl)); else selectHour(V.sel + (+k));
 });
 $("#m24").onclick = () => { V.mode = 24; V.sel = null; renderHourly(); };
+$("#hmodels").onclick = () => { V.models = !V.models; $("#hmodels").setAttribute("aria-pressed", V.models);
+  $("#hmleg").hidden = !V.models; $("#hmleg").innerHTML = V.models && lastA ? `<span>linha grossa = consenso (2 ou mais modelos)</span>` + lastA.ok.map(m => `<span><i style="background:${m.color}"></i>${esc(m.name)}</span>`).join("") : ""; drawHourly(); };
 $("#m72").onclick = () => { V.mode = 72; V.sel = null; renderHourly(); };
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => drawHourly());
 
@@ -1584,22 +2168,24 @@ function renderDays(){
   const today = dayKey(new Date());
   if (!D.center || !A.days.includes(D.center)) D.center = A.days.includes(today) ? today : A.days[1];
   const trio = trioDays();
-  $("#days-nav").innerHTML = A.days.slice(1, -1).map(d => `<button type="button" data-d="${d}" aria-pressed="${d === D.center}">${esc(dayName(d))}</button>`).join("");
+  $("#days-nav").innerHTML = A.days.slice(1, 8).map(d => `<button type="button" data-d="${d}" aria-pressed="${d === D.center}">${esc(dayName(d))}</button>`).join("");
   $("#days-nav").querySelectorAll("button").forEach(b => b.onclick = () => { D.center = b.dataset.d; D.pin = null; renderDays(); });
   const st = trio.map(d => A.dayStats[d]); const mid = st[1];
   const delta = (v, ref, unit, d, words) => {
     if (v == null || ref == null) return ""; const x = v - ref; if (Math.abs(x) < (d ? 0.5 : 1)) return `<span class="delta eq">igual</span>`;
     return `<span class="delta ${x > 0 ? "up" : "down"}">${x > 0 ? "▲" : "▼"} ${nf(Math.abs(x), d)} ${unit} ${x > 0 ? words[0] : words[1]}</span>`; };
-  const roles = ["Dia anterior", "Dia escolhido", "Dia seguinte"];
-  $("#trio").innerHTML = trio.map((d, k) => { const s = st[k]; const isMid = k === 1;
-    const dd = (v, refv, u, dec, w) => isMid ? "" : delta(v, refv, u, dec, w);
-    return `<div class="dcard ${isMid ? "mid" : ""}">
-      <div><div class="label">${roles[k]}${d < today ? " · simulação" : ""}</div><div class="dname">${esc(dayTitle(d))}</div></div>
-      <div class="drow"><span class="label">Temperatura</span><span><span class="num">${nf(s.tmin)}° a ${nf(s.tmax)}°</span>${dd(s.tmax, mid.tmax, "°C", 1, ["mais quente","mais frio"])}</span></div>
-      <div class="drow"><span class="label">Rajada máxima</span><span><span class="num">${nf(s.gmax)} km/h</span>${dd(s.gmax, mid.gmax, "km/h", 0, ["a mais","a menos"])}</span></div>
-      <div class="drow"><span class="label">Chuva</span><span><span class="num">${nf(s.rain,1)} mm</span>${dd(s.rain, mid.rain, "mm", 1, ["a mais","a menos"])}<br><span class="muted" style="font-size:.82rem">${nf(s.rainH)} ${Math.round(s.rainH ?? 0) === 1 ? "hora" : "horas"} com chuva · ${nf(s.rain)} ${Math.round(s.rain ?? 0) === 1 ? "litro" : "litros"} por m²</span></span></div>
-      ${bucketsHTML(s.rain)}
-    </div>`; }).join("");
+  // comparação visual: um bloco por grandeza, uma barra por dia (na cor do dia), mesma escala para os três
+  const vis = st.map((x, k) => x && !D.hide[k]);
+  const lab = (d, k) => `<span class="dc-d"><i style="background:${DAYCOL[k]}"></i>${esc(dayName(d))}${d < today ? ' <small>simulação</small>' : ""}</span>`;
+  const tLo = Math.min(...st.filter(Boolean).map(x => x.tmin)), tHi = Math.max(...st.filter(Boolean).map(x => x.tmax)), tS = Math.max(1, tHi - tLo);
+  const gMx = Math.max(CFG.thr.gust[1], ...st.filter(Boolean).map(x => x.gmax ?? 0)) * 1.08, rMx = Math.max(10, ...st.filter(Boolean).map(x => x.rain ?? 0)) * 1.08;
+  const ticks = (thr, mx) => thr.filter(t => t < mx).map((t, i) => `<em style="left:${t / mx * 100}%" data-lv="${i + 1}" title="${["atenção","alerta","severo"][i]}: ${nf(t)}"></em>`).join("");
+  const block = (title, unit, row) => `<div class="dc-b"><div class="dc-t">${title}</div>${trio.map((d, k) => st[k] ? `<div class="dc-r${k === 1 ? " mid" : ""}${vis[k] ? "" : " off"}">${lab(d, k)}${row(st[k], k)}</div>` : "").join("")}</div>`;
+  $("#trio").innerHTML = `<div class="dcomp">
+    ${block("Temperatura", "°", (x, k) => `<span class="dc-bar"><i style="left:${(x.tmin - tLo) / tS * 100}%;width:${Math.max(2, (x.tmax - x.tmin) / tS * 100)}%;background:${DAYCOL[k]}"></i></span><span class="dc-v">${nf(x.tmin)}° a ${nf(x.tmax)}°</span>${k === 1 ? "<span></span>" : delta(x.tmax, mid.tmax, "°", 0, ["máxima mais alta", "máxima mais baixa"])}`)}
+    ${block("Rajada máxima", " km/h", (x, k) => `<span class="dc-bar">${ticks(CFG.thr.gust, gMx)}<i style="left:0;width:${(x.gmax ?? 0) / gMx * 100}%;background:${DAYCOL[k]}"></i></span><span class="dc-v">${nf(x.gmax)} km/h</span>${k === 1 ? "<span></span>" : delta(x.gmax, mid.gmax, "km/h", 0, ["a mais", "a menos"])}`)}
+    ${block("Chuva no dia", " mm", (x, k) => `<span class="dc-bar">${ticks(CFG.thr.rain24, rMx)}<i style="left:0;width:${(x.rain ?? 0) / rMx * 100}%;background:${DAYCOL[k]}"></i></span><span class="dc-v">${nf(x.rain, 1)} mm<small>${nf(x.rainH)} ${Math.round(x.rainH ?? 0) === 1 ? "hora" : "horas"} com chuva</small></span>${k === 1 ? "<span></span>" : delta(x.rain, mid.rain, "mm", 1, ["a mais", "a menos"])}`)}
+  </div><p class="dc-k">Comparação com o dia escolhido (${esc(dayName(trio[1]))}) · marcas nas barras = atenção, alerta e severo · 1 mm de chuva = 1 litro por metro quadrado</p>`;
   $("#dsrc").innerHTML = srcLine(A, "cada valor = mediana dos modelos naquela hora, sem o modelo que destoar muito dos outros; dias passados são simulação, não medição");
   $("#dlegend").innerHTML = trio.map((d, k) => `<button type="button" data-k="${k}" aria-pressed="${!D.hide[k]}" style="--dc:${DAYCOL[k]}"><i class="sw"></i>${esc(dayName(d))} <span class="muted">${["anterior","escolhido","seguinte"][k]}</span></button>`).join("");
   $("#dlegend").querySelectorAll("button").forEach(b => b.onclick = () => { const k = +b.dataset.k; D.hide[k] = !D.hide[k]; if (D.hide.every(Boolean)) D.hide[k] = false; renderDays(); });
@@ -1739,7 +2325,40 @@ $("details.flat").addEventListener("toggle", e => { if (e.target.open && lastA) 
 
 /* ====================== modelos ====================== */
 let MS = null;
+// O que cada modelo prevê: uma régua por grandeza, um ponto por modelo, e o valor que pelo menos 2 modelos atingem
+function renderModelViz(A){
+  const ok = A.ok; if (!ok.length) return;
+  const shAt = m => { const ic = m.cape.t ? A.times.indexOf(m.cape.t) : -1; return ic >= 0 ? m.shear[ic] : null; };
+  const MET = [
+    { k:"gust", name:"Rajada máxima", unit:"km/h", f:m => m.gust.v, thr:CFG.thr.gust },
+    { k:"rain24", name:"Chuva em 24 horas", unit:"mm", f:m => m.rain24.v, thr:CFG.thr.rain24 },
+    { k:"rain1", name:"Chuva na hora mais forte", unit:"mm", f:m => m.rain1.v, thr:CFG.thr.rain1, dec:1 },
+    { k:"cape", name:"Instabilidade do ar (CAPE)", unit:"J/kg", f:m => m.cape.v, thr:CFG.thr.cape, ing:true },
+    { k:"shear", name:"Vento em altura na mesma hora", unit:"m/s", f:shAt, thr:CFG.thr.shear, ing:true },
+    { k:"pfall", name:"Queda de pressão em 24 horas", unit:"hPa", f:m => m.pf.v == null ? null : Math.max(0, m.pf.v), thr:CFG.thr.pfall, dec:1 },
+  ];
+  const rows = MET.map(M => {
+    const vals = ok.map(m => M.f(m)), mx = Math.max(M.thr[2] * 1.12, ...vals.filter(v => v != null).map(v => v * 1.08)), pc = v => clamp((v ?? 0) / mx * 100, 0, 100);
+    const sp = A.spread[M.k], outI = new Set((sp?.out || []).map(o => o.i)), cs = cons(vals), lv = M.ing ? 0 : lvOf(cs, M.thr);
+    const zones = [[0, M.thr[0]], [M.thr[0], M.thr[1]], [M.thr[1], M.thr[2]], [M.thr[2], mx]].map(([a, b], i) => `<span class="mz" data-lv="${i}" style="left:${pc(a)}%;width:${pc(b) - pc(a)}%"></span>`).join("");
+    const ticks = M.thr.map((t, i) => `<span class="mt" data-lv="${i + 1}" style="left:${pc(t)}%">${nf(t)}</span>`).join("");
+    // rótulos: alternam em cima e embaixo quando os pontos ficam perto
+    const order = ok.map((m, i) => ({ i, x:pc(vals[i]) })).filter(o => vals[o.i] != null).sort((a, b) => a.x - b.x);
+    const lanes = [["up",0],["dn",0],["up",1],["dn",1],["up",2],["dn",2]], last = lanes.map(() => -99);
+    order.forEach(o => { let k = lanes.findIndex((_, i) => o.x - last[i] >= 13); if (k < 0) k = last.indexOf(Math.min(...last)); last[k] = o.x; o.up = lanes[k][0] === "up"; o.lvl = lanes[k][1]; });
+    const dots = order.map(o => { const m = ok[o.i];
+      return `<span class="md${outI.has(o.i) ? " out" : ""}" style="left:${o.x}%;--mc:${m.color}" title="${esc(m.name)}: ${nf(vals[o.i], M.dec || 0)} ${M.unit}${outI.has(o.i) ? " · destoa dos outros" : ""}"><i></i><em class="${o.up ? "up" : "dn"}${o.x < 12 ? " l" : o.x > 88 ? " r" : ""}" style="--l:${o.lvl}">${esc(m.name)} <b>${nf(vals[o.i], M.dec || 0)}</b></em></span>`; }).join("");
+    return `<div class="mrow"><div class="mname">${M.name}<small>${M.unit}${M.ing ? " · ingrediente de tempestade" : ""}</small></div>
+      <div class="mstrip" style="padding-top:${22 + 14 * Math.max(0, ...order.filter(o => o.up).map(o => o.lvl))}px;padding-bottom:${14 * Math.max(0, ...order.filter(o => !o.up).map(o => o.lvl + 1))}px"><div class="mtrack">${zones}${dots}</div><div class="mticks">${ticks}</div></div>
+      <div class="mcons"${M.ing ? "" : ` data-lv="${lv}"`}><small>2 ou mais modelos</small><b>${nf(cs, M.dec || 0)}</b><span>${M.ing ? "sozinho não é risco" : LEVEL_NAMES[lv].toLowerCase()}</span></div></div>`;
+  }).join("");
+  const why = m => m.lv.storm ? LEVEL_NAMES[m.lv.storm] : (m.cape.v ?? 0) >= CFG.thr.cape[0] && (shAt(m) ?? 0) < CFG.thr.shear[0] ? "sem risco · vento em altura fraco" : (shAt(m) ?? 0) >= CFG.thr.shear[0] && (m.cape.v ?? 0) < CFG.thr.cape[0] ? "sem risco · ar pouco instável" : (m.cape.v ?? 0) >= CFG.thr.cape[0] ? "sem risco · não na mesma hora" : "sem risco";
+  const storm = `<div class="mrow mstorm"><div class="mname">Tempestade<small>instabilidade e vento em altura juntos</small></div>
+    <div class="mchips">${ok.map(m => `<span class="mchip" data-lv="${m.lv.storm}" style="--mc:${m.color}"><i></i><b>${esc(m.name)}</b> ${esc(why(m))}</span>`).join("")}</div><div></div></div>`;
+  $("#mviz").innerHTML = `<div class="mleg2">${ok.map(m => `<span><i style="background:${m.color}"></i>${esc(m.name)}</span>`).join("")}<span class="mk">cada ponto = pico do modelo nas próximas 72 horas · contorno rosa = destoa dos outros</span></div>${rows}${storm}`;
+}
 function renderModels(A, E){
+  renderModelViz(A);
   $("#mgrid").innerHTML = A.models.map(m => {
     const run = runTxt(m.meta?.last_run_initialisation_time);
     return `<article class="mcard" style="--mc:${m.color}">
@@ -1757,23 +2376,29 @@ function renderModels(A, E){
       <p>${esc(m.note)}</p>
       <a href="${esc(m.url)}" target="_blank" rel="noopener">Site do ${esc(m.name)} ↗</a>
     </article>`; }).join("");
+  // barra de fundo em cada número: tamanho em relação ao maior valor da coluna; rosa = modelo que destoa
+  const colV = { gust:m => m.gust.v, rain24:m => m.rain24.v, rain1:m => m.rain1.v, cape:m => m.cape.v, pfall:m => m.pf.v,
+    shear:m => { const ic = m.cape.t ? A.times.indexOf(m.cape.t) : -1; return ic >= 0 ? m.shear[ic] : null; } };
+  const colMax = Object.fromEntries(Object.entries(colV).map(([k, f]) => [k, Math.max(1e-9, ...A.ok.map(f).filter(v => v != null && v > 0))]));
+  const bw = (v, key) => key && v != null && v > 0 ? clamp(v / colMax[key] * 100, 0, 100).toFixed(0) : 0;
+  const outN = key => new Set(((key && A.spread[key === "rain1" ? "" : key]?.out) || []).map(o => A.ok[o.i]?.name));
   const rows = A.models.map(m => {
     if (!m.ok) return `<tr><td>${esc(m.name)}</td><td colspan="9" class="muted" style="text-align:left">sem dados para este ponto agora</td></tr>`;
     // cor = nível de risco, só nas colunas que já são risco por si (bolinha + número, sem fundo pintado)
-    const c = (v, l, d=0) => `<td class="num"><span class="tv" data-lv="${l}">${nf(v,d)}</span></td>`;
+    const c = (v, l, d=0, key) => `<td class="num${outN(key).has(m.name) ? " dz" : ""}" style="--w:${bw(v, key)}%"${outN(key).has(m.name) ? ' title="destoa dos outros modelos: fica fora do número do painel"' : ""}><span class="tv" data-lv="${l}">${nf(v,d)}</span></td>`;
     // ingredientes (energia, vento em altura): sem cor de risco; "▲" quando passam do mínimo para tempestade
-    const ing = (v, thr, d=0) => `<td class="num"><span class="ti${v != null && v >= thr ? " hi" : ""}">${nf(v,d)}</span></td>`;
+    const ing = (v, thr, d=0, key) => `<td class="num${key && outN(key).has(m.name) ? " dz" : ""}" style="--w:${bw(v, key)}%"><span class="ti${v != null && v >= thr ? " hi" : ""}">${nf(v,d)}</span></td>`;
     const ic = m.cape.t ? A.times.indexOf(m.cape.t) : -1, shAtCape = ic >= 0 ? m.shear[ic] : null;   // vento em altura na hora de maior energia
-    const why = m.lv.storm ? "" : (m.cape.v ?? 0) >= CFG.thr.cape[0] && (shAtCape ?? 0) < CFG.thr.shear[0] ? "falta vento em altura" : (shAtCape ?? 0) >= CFG.thr.shear[0] && (m.cape.v ?? 0) < CFG.thr.cape[0] ? "falta energia" : (m.cape.v ?? 0) >= CFG.thr.cape[0] ? "não na mesma hora" : "";
+    const why = m.lv.storm ? "" : (m.cape.v ?? 0) >= CFG.thr.cape[0] && (shAtCape ?? 0) < CFG.thr.shear[0] ? "vento em altura fraco" : (shAtCape ?? 0) >= CFG.thr.shear[0] && (m.cape.v ?? 0) < CFG.thr.cape[0] ? "ar pouco instável" : (m.cape.v ?? 0) >= CFG.thr.cape[0] ? "não na mesma hora" : "";
     return `<tr><td><b style="color:${m.color}">●</b> <b>${esc(m.name)}</b></td>
-      ${c(m.gust.v, m.lv.gust)}<td class="muted">${m.gust.t ? `${weekday(m.gust.t)}, ${hourOf(m.gust.t)}` : "—"}</td>
-      ${c(m.rain24.v, lvOf(m.rain24.v, CFG.thr.rain24))}${c(m.rain1.v, lvOf(m.rain1.v, CFG.thr.rain1),1)}
-      ${ing(m.cape.v, CFG.thr.cape[0])}${ing(shAtCape, CFG.thr.shear[0])}
+      ${c(m.gust.v, m.lv.gust, 0, "gust")}<td class="muted">${m.gust.t ? `${weekday(m.gust.t)}, ${hourOf(m.gust.t)}` : "—"}</td>
+      ${c(m.rain24.v, lvOf(m.rain24.v, CFG.thr.rain24), 0, "rain24")}${c(m.rain1.v, lvOf(m.rain1.v, CFG.thr.rain1), 1, "rain1")}
+      ${ing(m.cape.v, CFG.thr.cape[0], 0, "cape")}${ing(shAtCape, CFG.thr.shear[0], 0, "shear")}
       <td class="lvtxt"><span class="tv" data-lv="${m.lv.storm}">${LEVEL_NAMES[m.lv.storm]}</span>${why ? `<small>${why}</small>` : ""}</td>
-      <td class="num">${nf(m.pmin.v, 1)}</td>${c(m.pf.v, m.lv.cyclone, 1)}</tr>`;
+      <td class="num">${nf(m.pmin.v, 1)}</td>${c(m.pf.v, m.lv.cyclone, 1, "pfall")}</tr>`;
   }).join("");
   const spread = (k, d=0) => { const v = A.ok.map(m => m[k].v).filter(x => x != null); return v.length > 1 ? nf(Math.max(...v) - Math.min(...v), d) : "—"; };
-  $("#models-table").innerHTML = `<thead><tr><th>Modelo</th><th>Rajada máxima (km/h)</th><th>Quando</th><th>Chuva em 24 horas (mm)</th><th>Chuva na pior hora (mm)</th><th class="ing">Energia CAPE (J/kg)</th><th class="ing">Vento em altura nessa hora (m/s)</th><th>Tempestade</th><th>Pressão mínima (hPa)</th><th>Queda em 24 horas (hPa)</th></tr></thead><tbody>${rows}
+  $("#models-table").innerHTML = `<thead><tr><th>Modelo</th><th>Rajada máxima (km/h)</th><th>Quando</th><th>Chuva em 24 horas (mm)</th><th>Chuva na pior hora (mm)</th><th class="ing">Instabilidade CAPE (J/kg)</th><th class="ing">Vento em altura nessa hora (m/s)</th><th>Tempestade</th><th>Pressão mínima (hPa)</th><th>Queda em 24 horas (hPa)</th></tr></thead><tbody>${rows}
     <tr><td class="muted">Diferença entre o maior e o menor</td><td class="num muted">${spread("gust")}</td><td></td><td class="num muted">${spread("rain24")}</td><td class="num muted">${spread("rain1",1)}</td><td class="num muted">${spread("cape")}</td><td></td><td></td><td class="num muted">${spread("pmin",1)}</td><td class="num muted">${spread("pf",1)}</td></tr></tbody>`;
   $("#ens-status").innerHTML = (E ? `Nos ${E.n} cenários do GFS ${termBtn("ensemble")}: ${E.pctGust != null ? Math.round(E.pctGust*100) + "% têm rajada acima de " + CFG.ensProb.gust + " km/h" : "rajada indisponível"} e ${E.pctRain != null ? Math.round(E.pctRain*100) + "% têm mais de " + CFG.ensProb.rain24 + " milímetros em 24 horas" : "chuva indisponível"}. ` : "")
     + "Quanto maior a diferença entre os modelos, maior a incerteza: olhe de novo depois da próxima rodada.";
@@ -1847,7 +2472,7 @@ const comboPlugin = { id:"combo", afterDatasetsDraw(chart, _a, o){
   ctx.save(); k.forEach((v, i) => { if (!col[v]) return; ctx.fillStyle = col[v]; ctx.globalAlpha = v === "both" ? 0.95 : 0.7; ctx.fillRect(x.getPixelForValue(i) - w/2, top, w + 0.5, 9); });
   ctx.globalAlpha = 1; ctx.restore(); } };
 if (window.Chart) Chart.register(bandsPlugin, comboPlugin);
-// classifica cada hora: energia suficiente? cisalhamento suficiente? os dois?
+// classifica cada hora: instabilidade suficiente? cisalhamento suficiente? os dois?
 function stormKinds(A){
   const capeOk = CFG.thr.cape[0], shearOk = CFG.thr.shear[0];
   return A.idx.map((i, j) => { const c = A.timeline[j].v.cape, sh = A.timeline[j].v.shear;
@@ -1858,14 +2483,14 @@ function stormStory(A){
   const both = K.filter(x => x.k === "both"), maxC = Math.max(...K.map(x => x.c ?? 0)), maxS = Math.max(...K.map(x => x.sh ?? 0));
   const capeOk = CFG.thr.cape[0], shearOk = CFG.thr.shear[0];
   if (both.length){ const pk = both.reduce((a,b) => (b.c ?? 0) > (a.c ?? 0) ? b : a);
-    return { k:"both", kinds:K.map(x => x.k), html:`<b>Os dois ingredientes aparecem juntos em ${both.length} ${both.length === 1 ? "hora" : "horas"}</b>, com o pico ${whenLong(pk.t)} (energia ${nf(pk.c)} J/kg e cisalhamento ${nf(pk.sh)} m/s). É nessas horas, marcadas em vermelho no topo, que uma tempestade pode virar supercélula, com granizo, ventania ou tornado.` }; }
+    return { k:"both", kinds:K.map(x => x.k), html:`<b>Os dois ingredientes aparecem juntos em ${both.length} ${both.length === 1 ? "hora" : "horas"}</b>, com o pico ${whenLong(pk.t)} (instabilidade ${nf(pk.c)} J/kg e cisalhamento ${nf(pk.sh)} m/s). É nessas horas, marcadas em vermelho no topo, que uma tempestade pode virar supercélula, com granizo, ventania ou tornado.` }; }
   if (maxS >= shearOk && maxC < capeOk)
-    return { k:"shear", kinds:K.map(x => x.k), html:`<b>Cisalhamento alto, mas pouca energia.</b> O vento em altura chega a ${nf(maxS)} m/s, forte o bastante para organizar uma tempestade, porém a energia não passa de ${nf(maxC)} J/kg (o mínimo seria ${nf(capeOk)}). Sem combustível, não se formam tempestades severas: pode chover e até trovejar, mas sem supercélulas. Atenção ao vento, que pode descer em rajadas com a chuva.` };
+    return { k:"shear", kinds:K.map(x => x.k), html:`<b>Vento em altura forte, mas ar pouco instável.</b> O vento em altura chega a ${nf(maxS)} m/s, forte o bastante para organizar uma tempestade, porém a instabilidade não passa de ${nf(maxC)} J/kg (o mínimo seria ${nf(capeOk)}). Sem ar instável, não se formam tempestades severas: pode chover e até trovejar, mas sem supercélulas. Atenção ao vento, que pode descer em rajadas com a chuva.` };
   if (maxC >= capeOk && maxS < shearOk)
-    return { k:"cape", kinds:K.map(x => x.k), html:`<b>Energia alta, mas pouco cisalhamento.</b> Há combustível (até ${nf(maxC)} J/kg), mas o vento em altura fica em ${nf(maxS)} m/s. As tempestades tendem a ser pancadas fortes e curtas, com raios, que se desmancham rápido.` };
+    return { k:"cape", kinds:K.map(x => x.k), html:`<b>Ar instável, mas vento em altura fraco.</b> Há instabilidade (até ${nf(maxC)} J/kg), mas o vento em altura fica em ${nf(maxS)} m/s. As tempestades tendem a ser pancadas fortes e curtas, com raios, que se desmancham rápido.` };
   if (maxC >= capeOk && maxS >= shearOk)
-    return { k:"cape", kinds:K.map(x => x.k), html:`<b>Os dois ingredientes aparecem, mas em horas diferentes.</b> Energia chega a ${nf(maxC)} J/kg e cisalhamento a ${nf(maxS)} m/s, só que nunca ao mesmo tempo. Sem a combinação, o risco de tempestade severa fica baixo.` };
-  return { k:"none", kinds:K.map(x => x.k), html:`<b>Nenhum ingrediente em nível de risco.</b> Energia máxima de ${nf(maxC)} J/kg e cisalhamento de até ${nf(maxS)} m/s.` };
+    return { k:"cape", kinds:K.map(x => x.k), html:`<b>Os dois ingredientes aparecem, mas em horas diferentes.</b> A instabilidade chega a ${nf(maxC)} J/kg e cisalhamento a ${nf(maxS)} m/s, só que nunca ao mesmo tempo. Sem a combinação, o risco de tempestade severa fica baixo.` };
+  return { k:"none", kinds:K.map(x => x.k), html:`<b>Nenhum ingrediente em nível de risco.</b> Instabilidade máxima de ${nf(maxC)} J/kg e cisalhamento de até ${nf(maxS)} m/s.` };
 }
 const bands = (thr, unit) => [ { from:thr[0], to:thr[1], color:css("--lv1"), text:`atenção ${nf(thr[0])} ${unit}` }, { from:thr[1], to:thr[2], color:css("--lv2"), text:`alerta ${nf(thr[1])} ${unit}` }, { from:thr[2], to:null, color:css("--lv3"), text:`severo ${nf(thr[2])} ${unit}` } ];
 function renderCharts(A){
@@ -1876,28 +2501,28 @@ function renderCharts(A){
   const line = (m, arr) => ({ label:m.name, data:A.idx.map(i => arr?.[i] ?? null), borderColor:m.color, backgroundColor:m.color, borderWidth:1.6, pointRadius:0, tension:.25, spanGaps:true });
   const tt = o => { o.plugins.tooltip.callbacks.title = items => whenTitle(A.times[A.idx[items[0].dataIndex]]); return o; };
   const go = tt(baseOpts("km/h")); go.plugins.bands = { list:bands(CFG.thr.gust, "km/h") }; go.scales.y.suggestedMax = CFG.thr.gust[0] + 8; go.scales.y.min = 0;
-  charts.gust = new Chart($("#c-gust"), { type:"line", options: go, data:{ labels, datasets: A.ok.map(m => line(m, m.s.wind_gusts_10m)) } });
+  if ($("#c-gust")) charts.gust = new Chart($("#c-gust"), { type:"line", options: go, data:{ labels, datasets: A.ok.map(m => line(m, m.s.wind_gusts_10m)) } });
   const med = A.timeline.map(h => h.v.rain1);
   const cum = A.ok.map(m => { let a = 0; return A.idx.map(i => (a += m.s.precipitation[i] ?? 0)); });
   const mx = A.idx.map(i => { const v = A.ok.map(m => m.s.precipitation[i]).filter(x => x != null); return v.length ? Math.max(...v) : null; });
   const accum = A.idx.map((_, j) => cons(cum.map(c => c[j])));
   const ro = tt(baseOpts("mm por hora")); ro.scales.y2 = { position:"right", title:{display:true, text:"acumulado mm", color:css("--muted")}, ticks:{color:css("--muted"), font:{family:"IBM Plex Mono", size:10}}, grid:{drawOnChartArea:false}, suggestedMax:CFG.thr.rain24[0] + 6, min:0 };
   ro.plugins.bands = { list:bands(CFG.thr.rain24, "mm em 24 h"), axis:"y2" };
-  charts.rain = new Chart($("#c-rain"), { data:{ labels, datasets:[
+  if ($("#c-rain")) charts.rain = new Chart($("#c-rain"), { data:{ labels, datasets:[
     { type:"bar", label:"consenso (≥2 modelos)", data:med, backgroundColor:css("--water"), order:2, grouped:false },
     { type:"bar", label:"modelo mais chuvoso", data:mx, backgroundColor:css("--line"), order:3, grouped:false },
     { type:"line", label:"acumulado", data:accum, yAxisID:"y2", borderColor:css("--lv2"), borderWidth:1.6, pointRadius:0, order:1 } ] }, options: ro });
-  charts.pres = new Chart($("#c-pres"), { type:"line", options: tt(baseOpts("hPa")), data:{ labels, datasets: A.ok.map(m => line(m, m.s.pressure_msl)) } });
-  const so = tt(baseOpts("energia J/kg")); so.scales.y2 = { position:"right", title:{display:true, text:"cisalhamento m/s", color:css("--muted")}, ticks:{color:css("--muted"), font:{family:"IBM Plex Mono", size:10}}, grid:{drawOnChartArea:false}, min:0 };
+  if ($("#c-pres")) charts.pres = new Chart($("#c-pres"), { type:"line", options: tt(baseOpts("hPa")), data:{ labels, datasets: A.ok.map(m => line(m, m.s.pressure_msl)) } });
+  const so = tt(baseOpts("instabilidade J/kg")); so.scales.y2 = { position:"right", title:{display:true, text:"cisalhamento m/s", color:css("--muted")}, ticks:{color:css("--muted"), font:{family:"IBM Plex Mono", size:10}}, grid:{drawOnChartArea:false}, min:0 };
   so.scales.y.min = 0; so.scales.y.suggestedMax = CFG.thr.cape[0] + 250; so.scales.y2.suggestedMax = CFG.thr.shear[2] + 3;
-  so.plugins.bands = { list:[ { from:CFG.thr.cape[0], to:CFG.thr.cape[0], color:css("--lv2"), text:`energia suficiente ${nf(CFG.thr.cape[0])} J/kg` } ] };
+  so.plugins.bands = { list:[ { from:CFG.thr.cape[0], to:CFG.thr.cape[0], color:css("--lv2"), text:`instabilidade suficiente ${nf(CFG.thr.cape[0])} J/kg` } ] };
   const SS = stormStory(A); so.plugins.combo = { kinds:SS.kinds }; so.layout = { padding:{ top:4 } };
   $("#storm-story").innerHTML = SS.html; $("#storm-story").dataset.k = SS.k;
   charts.storm = new Chart($("#c-storm"), { type:"line", options: so, data:{ labels, datasets:[
-    { label:"energia (CAPE)", data:A.timeline.map(h => h.v.cape), spanGaps:true, borderColor:css("--lv2"), backgroundColor:css("--lv2-bg"), fill:true, borderWidth:1.6, pointRadius:0, tension:.25 },
+    { label:"instabilidade (CAPE)", data:A.timeline.map(h => h.v.cape), spanGaps:true, borderColor:css("--lv2"), backgroundColor:css("--lv2-bg"), fill:true, borderWidth:1.6, pointRadius:0, tension:.25 },
     { label:"cisalhamento", data:A.timeline.map(h => h.v.shear), spanGaps:true, yAxisID:"y2", borderColor:css("--cold"), borderWidth:2, pointRadius:0, tension:.25 },
     { label:`cisalhamento suficiente ${CFG.thr.shear[0]} m/s`, data:A.idx.map(() => CFG.thr.shear[0]), yAxisID:"y2", borderColor:css("--cold"), borderDash:[5,4], borderWidth:1.2, pointRadius:0 } ] } });
-  document.querySelectorAll(".charts [data-src]").forEach((p, k) => p.innerHTML = srcLine(A, k === 1 || k === 3 ? "linha e barras = consenso: o que pelo menos 2 modelos preveem na mesma hora" : "uma linha por modelo"));
+  document.querySelectorAll(".charts [data-src]").forEach(p => p.innerHTML = srcLine(A, "linhas = consenso: o que pelo menos 2 modelos preveem na mesma hora"));
 }
 
 function renderLinks(p){
@@ -1917,7 +2542,7 @@ function renderLinks(p){
     ]],
     ["⛈", "Tempo severo", "Para dias de tempestade, granizo e tornado.", [
       ["PREVOTS", "https://prevots.org/", "Meteorologistas brasileiros: previsões de tempo severo e registro de tornados.", false],
-      ["Ventusky · energia (CAPE)", `https://www.ventusky.com/?p=${lat};${lon};7&l=cape`, "Mapa do “combustível” para tempestades.", true],
+      ["Ventusky · instabilidade (CAPE)", `https://www.ventusky.com/?p=${lat};${lon};7&l=cape`, "Mapa da instabilidade do ar, o que alimenta as tempestades.", true],
     ]],
     ["🚨", "Avisos oficiais", "Quem decide alerta, evacuação e abrigo.", [
       ["Defesa Civil", "https://www.gov.br/mdr/pt-br/assuntos/protecao-e-defesa-civil", "Alertas e orientações nacionais; procure também a do seu estado.", false],
@@ -1948,8 +2573,8 @@ function renderThunder(A){
     const hrs = solo.map(h => hourOf(h.t)); const first = solo[0];
     txt = `Só ${who.length === 1 ? "o" : "os modelos"} <b>${joinPt(who)}</b> ${who.length === 1 ? "prevê" : "preveem"} trovoada, ${whenLong(first.t)}${hrs.length > 1 ? ` e em mais ${hrs.length - 1} ${hrs.length - 1 === 1 ? "hora" : "horas"} (${hrs.slice(1).join(", ")})` : ""}. Os outros ${others} modelos não. Como não há acordo, o risco é baixo, mas vale olhar de novo depois da próxima rodada.`;
   } else txt = "Nenhum dos 5 modelos prevê trovoada nas próximas 24 horas.";
-  $("#thunder").innerHTML = `<div class="thstrip" role="img" aria-label="Trovoada prevista nas próximas 24 horas">${cells}</div><div class="thlabels">${labels}</div><p class="story" data-k="${W ? "both" : "none"}" style="margin-top:8px">${txt}</p>`;
-  $("#tsrc").innerHTML = `${srcLine(A, "cor = quantos modelos preveem trovoada na hora")} Cada modelo calcula, hora a hora, se o tempo será de trovoada (códigos 95 a 99 da Organização Meteorológica Mundial). Isto é previsão, não detecção: para ver raios caindo agora, use o <a href="https://www.lightningmaps.org/" target="_blank" rel="noopener">LightningMaps ↗</a>.`;
+  const th = $("#band-th"); th.hidden = BAND.key !== "thunder";
+  th.innerHTML = `${txt} <span class="muted">Previsão dos modelos, não detecção: raios caindo agora no <a href="https://www.lightningmaps.org/" target="_blank" rel="noopener">LightningMaps ↗</a>.</span>`;
 }
 // avisos do navegador: funcionam com a página aberta (pode ficar em segundo plano)
 const notifOn = () => store.get("sentinela.notify") === true && "Notification" in window && Notification.permission === "granted";
@@ -2027,6 +2652,8 @@ async function load(){
     if (!A.ok.length) throw new Error("nenhum modelo retornou dados para este ponto");
     lastA = A; lastE = ens ? analyzeEnsemble(ens, A) : null; V.sel = null;
     renderAll(); checkAlerts(A);
+    setTimeout(() => loadHistory().catch(() => {}), 50);
+    loadOfficial().catch(() => {});   // avisos oficiais do INMET para o ponto   // histórico vem depois, sem atrasar o painel
     $("#updated").textContent = `Dados buscados ${whenLong(nowKey() + ":00")}. Próxima busca automática em ${CFG.refreshMin} minutos.`;
   } catch (e){
     $("#band").dataset.lv = "";
@@ -2036,7 +2663,8 @@ async function load(){
 }
 function renderAll(){
   if (!lastA) return;
-  renderBand(lastA, place); renderThunder(lastA); renderGauges(lastA, lastE); renderHourly(); renderDays(); renderModels(lastA, lastE); renderCharts(lastA);
+  renderBand(lastA, place); renderToday(lastA); if (HIST.data && HIST.key?.startsWith(`${place.lat.toFixed(2)},${place.lon.toFixed(2)}|`)) renderHistory(); renderTen(lastA); { const W = renderHeroNow(lastA); if (HERO && (!HERO.w || HERO.w.kind !== W.kind || Math.abs(HERO.w.rain - W.rain) > 0.5)) sceneHero(HERO, W); }
+  renderThunder(lastA); renderGauges(lastA, lastE); renderHourly(); renderDays(); renderModels(lastA, lastE); renderCharts(lastA);
 }
 let obsDone = null;
 function setPlace(p){ place = p; store.set("sentinela.place", p); syncSelect(); load(); }
