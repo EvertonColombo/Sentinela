@@ -1,6 +1,6 @@
 # Sentinela do Tempo
 
-Painel web de tempo severo para qualquer ponto do Brasil: vento, chuva, raios, tempestades e ciclones.
+Painel web de tempo severo para qualquer ponto do Brasil: vento, chuva, raios, tempestades, ciclones e nevoeiro.
 Gratuito, código aberto, sem cadastro e sem chave de API. Os dados vêm do [Open-Meteo](https://open-meteo.com).
 
 **✨ Vibe coded com Claude Opus 5.5.** Todo o código foi escrito em conversa com a IA da Anthropic, a partir de ideias, testes e ajustes meus.
@@ -37,6 +37,8 @@ O nível do topo da faixa é o **aviso oficial do INMET**. Abaixo dele, o painel
 - **amarelo, laranja e vermelho** são atenção, alerta e severo, os mesmos degraus do INMET;
 - **violeta** é trovoada.
 
+Na matriz, cada linha de modelo mostra um **ponto** quando aquele modelo prevê o fenômeno, mas ainda abaixo do limite (chuva a partir de 0,2 mm na hora, rajada a partir de 30 km/h, instabilidade a partir de 500 J/kg, queda de pressão a partir de 4 hPa). A célula fica **cheia na cor do nível** quando passa do limite. Na linha **"quantos"**, a altura é o número de modelos que preveem o fenômeno ou já estão em risco naquela hora. Nas abas de raios e nevoeiro, a célula é preenchida na cor do fenômeno, violeta ou cinza-azulado.
+
 Níveis: **sem risco**, **atenção**, **alerta** e **severo**.
 
 | Categoria | Atenção | Alerta | Severo |
@@ -56,18 +58,20 @@ A página tem três camadas, de cima para baixo.
 
 **1. Para todo mundo**
 - **Céu do título com o tempo de agora:** sol, nuvens, chuva, noite estrelada e relâmpagos só quando há trovoada prevista, com a temperatura e a condição no canto.
-- **Faixa do topo:** o **aviso oficial do INMET** para o ponto (perigo potencial, perigo ou grande perigo), com tipo e horário, e uma linha com o que os modelos mostram. Se o INMET não puder ser consultado, vale o nível dos modelos, com aviso. O botão de aviso de trovoada no navegador fica aqui.
+- **Faixa do topo:** o **aviso oficial do INMET** para o ponto (perigo potencial, perigo ou grande perigo), com tipo e horário, e uma linha com o que os modelos mostram. Se o INMET não puder ser consultado, vale o nível dos modelos, com aviso.
 - **Hoje:** temperatura; chuva, com o total do dia, a chance e as horas com chuva prevista por 2 ou mais modelos; vento em bússola; arco do sol com nascer e pôr.
 - **Próximos 10 dias:** ícone e chance de chuva de cada dia, e três visões: temperatura (curva do dia), chuva (24 colunas por dia) e vento (rajada máxima com as marcas de atenção, alerta e severo).
 
 **2. Riscos nas próximas 72 horas**
 
-Uma seção com uma aba por risco: **tempestade, raios, vento, chuva e ciclone**. Cada aba mostra, sempre na mesma ordem:
-- quando, por quanto tempo e quantos modelos concordam;
-- a **matriz**: uma linha por modelo e uma coluna por hora, com a linha do INMET no topo e a linha "quantos" embaixo, mais uma explicação em linguagem simples;
+Uma seção com uma aba por risco: **tempestade, raios, vento, chuva, ciclone e nevoeiro**. Cada aba mostra, sempre na mesma ordem:
+- quando, por quanto tempo e quantos modelos concordam; se houver mais de um período com acordo, aparece o primeiro, quantos vêm depois e a duração total;
+- a **matriz**: uma linha por modelo e uma coluna por hora, com a linha do INMET no topo e a linha "quantos" embaixo. Todos os períodos com acordo ficam contornados. O eixo mostra 06:00, 12:00 e 18:00 e os dias por extenso, e ao passar o dedo ou o mouse um cursor mostra a hora exata. Embaixo vem uma explicação em linguagem simples;
 - o **medidor** do pico, com um ponto por modelo e o modelo que destoa em rosa;
 - o **hora a hora** daquele risco, com a opção de ver a linha de cada modelo, e o **detalhe da hora** escolhida;
 - na aba tempestade, o gráfico de **ingredientes** (instabilidade e vento em altura).
+
+A aba **nevoeiro** considera nevoeiro ou cerração quando o modelo prevê o código de nevoeiro, visibilidade abaixo de 1 km, ou ar saturado (umidade de 97% ou mais) com vento fraco. Ela mostra quantos modelos concordam e a menor visibilidade prevista. É um aviso para quem vai pegar a estrada e não muda o nível de risco do painel.
 
 **3. Contexto e referência**
 - **Neste dia, desde 1940:** como costuma ser a data no lugar escolhido, com dados da **reanálise ERA5**, ou seja, o que aconteceu, e não previsão. Mostra a máxima de cada ano, a normal de 1991 a 2020, recordes e tendência. Carrega depois do resto e fica guardado no navegador até o dia seguinte.
