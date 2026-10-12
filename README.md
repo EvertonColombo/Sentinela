@@ -30,12 +30,13 @@ O nível do topo da faixa é o **aviso oficial do INMET**. Abaixo dele, o painel
 - **Tempestade:** energia (CAPE) e vento em altura (cisalhamento) vêm sempre do mesmo modelo e da mesma hora. Só há risco quando os dois aparecem juntos.
 - **Modelo que destoa:** nos medidores, cada modelo é um ponto. O que se afasta muito dos outros aparece em rosa e fica fora da conta.
 
-**Uma regra de cores em toda a página** (matriz, Hoje e 10 dias):
-- nas colunas de chuva dos 10 dias, cada coluna mostra o que pelo menos 2 modelos preveem naquela hora, e a altura é a quantidade de chuva; um toquinho cinza quer dizer que só um modelo prevê chuva ali; amarelo a partir de 20 mm na hora, laranja a partir de 30 e vermelho a partir de 60;
+**Uma regra de cores em toda a página** (riscos, matriz, Hoje e dia aberto):
+- nas colunas de chuva do hora a hora, cada coluna mostra o que pelo menos 2 modelos preveem naquela hora, e a altura é a quantidade de chuva; uma coluna cinza quer dizer que só um modelo prevê chuva ali; amarelo a partir de 20 mm na hora, laranja a partir de 30 e vermelho a partir de 60;
 - **azul** é previsto por 2 ou mais modelos;
 - **cinza** é previsto por um modelo só (sem acordo);
 - **amarelo, laranja e vermelho** são atenção, alerta e severo, os mesmos degraus do INMET;
-- **violeta** é trovoada.
+- **violeta** é trovoada;
+- **cinza-azulado** é nevoeiro.
 
 Na matriz, cada linha de modelo mostra um **ponto** quando aquele modelo prevê o fenômeno, mas ainda abaixo do limite (chuva a partir de 0,2 mm na hora, rajada a partir de 30 km/h, instabilidade a partir de 500 J/kg, queda de pressão a partir de 4 hPa). A célula fica **cheia na cor do nível** quando passa do limite. Na linha **"quantos"**, a altura é o número de modelos que preveem o fenômeno ou já estão em risco naquela hora. Nas abas de raios e nevoeiro, a célula é preenchida na cor do fenômeno, violeta ou cinza-azulado.
 
@@ -54,26 +55,39 @@ Vento e chuva seguem os mesmos degraus dos avisos do INMET (amarelo = perigo pot
 
 ## O que tem na página
 
-A página tem três camadas, de cima para baixo.
+A página tem quatro partes, de cima para baixo.
 
 **1. Para todo mundo**
 - **Céu do título com o tempo de agora:** sol, nuvens, chuva, noite estrelada e relâmpagos só quando há trovoada prevista, com a temperatura e a condição no canto.
 - **Faixa do topo:** o **aviso oficial do INMET** para o ponto (perigo potencial, perigo ou grande perigo), com tipo e horário, e uma linha com o que os modelos mostram. Se o INMET não puder ser consultado, vale o nível dos modelos, com aviso.
 - **Hoje:** temperatura; chuva, com o total do dia, a chance e as horas com chuva prevista por 2 ou mais modelos; vento em bússola; arco do sol com nascer e pôr.
-- **Próximos 10 dias:** ícone e chance de chuva de cada dia, e três visões: temperatura (curva do dia), chuva (24 colunas por dia) e vento (rajada máxima com as marcas de atenção, alerta e severo).
 
-**2. Riscos nas próximas 72 horas**
+**2. Riscos nos próximos 10 dias**
 
-Uma seção com uma aba por risco: **tempestade, raios, vento, chuva, ciclone e nevoeiro**. Cada aba mostra, sempre na mesma ordem:
-- quando, por quanto tempo e quantos modelos concordam; se houver mais de um período com acordo, aparece o primeiro, quantos vêm depois e a duração total;
-- a **matriz**: uma linha por modelo e uma coluna por hora, com a linha do INMET no topo e a linha "quantos" embaixo. Todos os períodos com acordo ficam contornados. O eixo mostra 06:00, 12:00 e 18:00 e os dias por extenso, e ao passar o dedo ou o mouse um cursor mostra a hora exata. Embaixo vem uma explicação em linguagem simples;
-- o **medidor** do pico, com um ponto por modelo e o modelo que destoa em rosa;
-- o **hora a hora** daquele risco, com a opção de ver a linha de cada modelo, e o **detalhe da hora** escolhida;
+Um cartão por risco (tempestade, vento, chuva, raios, queda de pressão e nevoeiro), do mais grave para o mais leve. Cada cartão mostra:
+- o nível, o primeiro período com acordo entre modelos e quantos períodos vêm depois;
+- o pico (rajada, chuva em 24 horas, instabilidade, queda de pressão, visibilidade) e quantos modelos concordam;
+- uma faixa de agora até 10 dias, com uma marca por hora e uma linha nas 72 horas. Depois de 3 dias, o cartão leva a etiqueta **tendência**, porque os modelos erram mais.
+
+Quando só um modelo prevê o risco, o cartão aparece tracejado, como "sem acordo". Tocar no cartão, ou num ponto da faixa, abre o dia certo na aba certa.
+
+**3. Próximos 10 dias**
+
+Uma linha por dia: ícone, chance de chuva, mínima, curva da temperatura ao longo do dia e máxima. Embaixo do nome do dia aparecem um ponto para cada risco com acordo e a chuva prevista no dia.
+
+**Tocar num dia abre o dia ali mesmo**, com uma aba para cada assunto: **temperatura, chuva, vento, tempestade, raios, queda de pressão e nevoeiro**. Cada aba mostra, sempre na mesma ordem:
+- quando, por quanto tempo, quantos modelos concordam e um número do dia (chuva total, rajada máxima, menor visibilidade…);
+- a **matriz** daquele dia: uma linha por modelo e uma coluna por hora, com a linha do INMET no topo e a linha "quantos" embaixo. Os períodos com acordo ficam contornados, e ao passar o dedo ou o mouse um cursor mostra a hora. Embaixo vem uma explicação em linguagem simples. Na aba temperatura, no lugar da matriz, aparece a faixa de mínima a máxima de cada modelo, com o que destoa em rosa;
+- o **hora a hora** do dia (curva, ou colunas na chuva), com a opção de ver a linha de cada modelo, e o **detalhe da hora** escolhida;
 - na aba tempestade, o gráfico de **ingredientes** (instabilidade e vento em altura).
 
-A aba **nevoeiro** considera nevoeiro ou cerração quando o modelo prevê o código de nevoeiro, visibilidade abaixo de 1 km, ou ar saturado (umidade de 97% ou mais) com vento fraco. Ela mostra quantos modelos concordam e a menor visibilidade prevista. É um aviso para quem vai pegar a estrada e não muda o nível de risco do painel.
+A aba **queda de pressão** mostra quanto a pressão do ar cai em 24 horas. Queda pequena costuma ser só mudança de tempo, como uma frente fria; só uma queda forte pode indicar ciclone. Por isso o nome não fala em ciclone.
 
-**3. Contexto e referência**
+A aba **nevoeiro** considera nevoeiro ou cerração quando o modelo prevê o código de nevoeiro, visibilidade abaixo de 1 km, ou ar saturado (umidade de 97% ou mais) com vento fraco. É um aviso para quem vai pegar a estrada e não muda o nível de risco do painel.
+
+Ao abrir a página, já vem aberto o dia do risco mais grave das próximas 72 horas; se não houver risco, abre hoje.
+
+**4. Contexto e referência**
 - **Neste dia, desde 1940:** como costuma ser a data no lugar escolhido, com dados da **reanálise ERA5**, ou seja, o que aconteceu, e não previsão. Mostra a máxima de cada ano, a normal de 1991 a 2020, recordes e tendência. Carrega depois do resto e fica guardado no navegador até o dia seguinte.
 - **Comparar dias:** ontem, hoje e amanhã em 3D, hora a hora, e em barras com a diferença entre os dias.
 - **Os 5 modelos:** origem, tamanho do quadrado e última rodada de cada um, o que cada um prevê em réguas visuais (com a tabela recolhida) e o cartão **"E o INMET?"**, sobre o modelo COSMO que o INMET roda.
