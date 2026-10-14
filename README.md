@@ -47,11 +47,11 @@ Níveis: **sem risco**, **atenção**, **alerta** e **severo**.
 | Rajada (km/h) | 40 | 60 | 100 |
 | Chuva em 1 hora (mm) | 20 | 30 | 60 |
 | Chuva em 24 horas (mm) | 30 | 50 | 100 |
-| Queda de pressão em 24 horas (hPa) | 8 | 12 | 18 |
+| Queda de pressão em 24 horas (hPa), com a pressão em 1.012 hPa ou menos | 8 | 12 | 18 |
 | Tempestade (instabilidade CAPE J/kg + vento em altura m/s) | 1.000 + 15 | 1.500 + 20 | 2.500 + 25 |
 | Trovoada prevista (2 ou mais modelos na mesma hora) | sim | — | — |
 
-Vento e chuva seguem os mesmos degraus dos avisos do INMET (amarelo = perigo potencial, laranja = perigo, vermelho = grande perigo). Para 24 horas, o INMET fala em "até 50 mm" no amarelo; aqui a atenção começa em 30 mm. Os limites podem ser editados no bloco `CFG`, no início do `<script>` do `index.html`.
+Vento e chuva seguem os mesmos degraus dos avisos do INMET (amarelo = perigo potencial, laranja = perigo, vermelho = grande perigo). Para 24 horas, o INMET fala em "até 50 mm" no amarelo; aqui a atenção começa em 30 mm. A queda de pressão só vira risco quando a pressão já está abaixo do normal (1.012 hPa ou menos): uma queda a partir de pressão alta, como a de um anticiclone indo embora, é só mudança de tempo. Os limites podem ser editados no bloco `CFG`, no início do `<script>` do `index.html`.
 
 ## O que tem na página
 
@@ -60,7 +60,7 @@ A página tem quatro partes, de cima para baixo.
 **1. Para todo mundo**
 - **Céu do título com o tempo de agora:** sol, nuvens, chuva, noite estrelada e relâmpagos só quando há trovoada prevista, com a temperatura e a condição no canto.
 - **Faixa do topo:** o **aviso oficial do INMET** para o ponto (perigo potencial, perigo ou grande perigo), com tipo e horário, e uma linha com o que os modelos mostram. Se o INMET não puder ser consultado, vale o nível dos modelos, com aviso.
-- **Hoje:** temperatura; chuva, com o total do dia, a chance e as horas com chuva prevista por 2 ou mais modelos; vento em bússola; arco do sol com nascer e pôr.
+- **Hoje:** temperatura, com a sensação térmica quando ela difere mais de 3 °C; chuva, com o total do dia, a chance e as horas com chuva prevista por 2 ou mais modelos; vento em bússola, com a hora e a direção da rajada mais forte; arco do sol com nascer e pôr.
 
 **2. Riscos nos próximos 10 dias**
 
@@ -78,7 +78,7 @@ Uma linha por dia: ícone, chance de chuva, mínima, curva da temperatura ao lon
 **Tocar num dia abre o dia ali mesmo**, com uma aba para cada assunto: **temperatura, chuva, vento, tempestade, raios, queda de pressão e nevoeiro**. Cada aba mostra, sempre na mesma ordem:
 - quando, por quanto tempo, quantos modelos concordam e um número do dia (chuva total, rajada máxima, menor visibilidade…);
 - a **matriz** daquele dia: uma linha por modelo e uma coluna por hora, com a linha do INMET no topo e a linha "quantos" embaixo. Os períodos com acordo ficam contornados, e ao passar o dedo ou o mouse um cursor mostra a hora. Embaixo vem uma explicação em linguagem simples. Na aba temperatura, no lugar da matriz, aparece a faixa de mínima a máxima de cada modelo, com o que destoa em rosa;
-- o **hora a hora** do dia (curva, ou colunas na chuva), com a opção de ver a linha de cada modelo, e o **detalhe da hora** escolhida;
+- o **hora a hora** do dia (curva, ou colunas na chuva), com a opção de ver a linha de cada modelo, e o **detalhe da hora** escolhida (no vento, de que lado ele vem);
 - na aba tempestade, o gráfico de **ingredientes** (instabilidade e vento em altura).
 
 A aba **queda de pressão** mostra quanto a pressão do ar cai em 24 horas. Queda pequena costuma ser só mudança de tempo, como uma frente fria; só uma queda forte pode indicar ciclone. Por isso o nome não fala em ciclone.
@@ -90,14 +90,14 @@ Ao abrir a página, já vem aberto o dia do risco mais grave das próximas 72 ho
 **4. Contexto e referência**
 - **Neste dia, desde 1940:** como costuma ser a data no lugar escolhido, com dados da **reanálise ERA5**, ou seja, o que aconteceu, e não previsão. Mostra a máxima de cada ano, a normal de 1991 a 2020, recordes e tendência. Carrega depois do resto e fica guardado no navegador até o dia seguinte.
 - **Comparar dias:** ontem, hoje e amanhã em 3D, hora a hora, e em barras com a diferença entre os dias.
-- **Os 5 modelos:** origem, tamanho do quadrado e última rodada de cada um, o que cada um prevê em réguas visuais (com a tabela recolhida) e o cartão **"E o INMET?"**, sobre o modelo COSMO que o INMET roda.
+- **Os 5 modelos:** origem, tamanho do quadrado e última rodada de cada um, o que cada um prevê em réguas visuais (com a tabela recolhida) o cartão **"E o INMET?"**, sobre o modelo COSMO que o INMET roda, e o cartão **"E a inteligência artificial?"**, que compara dia a dia a temperatura e a chuva do **AIGFS** (modelo de IA da NOAA, feito a partir do GraphCast do Google DeepMind) com a mediana dos 5 modelos. Se o AIGFS não responder, o painel tenta o GraphCast experimental. Um gráfico compara também a queda de pressão em 24 horas, o sinal que o painel usa para ciclone. O modelo de IA vem de 6 em 6 horas, não traz rajadas nem instabilidade e fica fora da regra dos 2 modelos: é só uma segunda opinião. O cartão também leva ao **Weather Lab** do Google, com a geração mais nova (WeatherNext), que é experimental e pede login.
 - **Termos explicados** e **links úteis** (radar, raios ao vivo, satélite, avisos oficiais).
 
 ## Privacidade
 
 - Não há servidor, conta nem rastreamento. A página só busca previsões no Open-Meteo e nomes de cidades na busca.
 - **Meus lugares** ficam guardados apenas no navegador em que você salvou (localStorage). Em outro aparelho ou navegador, salve de novo.
-- **Sem inteligência artificial rodando:** a IA ajudou a escrever o código, mas a página em funcionamento não consulta nenhuma IA. Todos os números e textos saem de regras fixas em JavaScript, sempre com o mesmo resultado para os mesmos dados.
+- **Sem inteligência artificial rodando:** a IA ajudou a escrever o código, mas a página em funcionamento não consulta nenhuma IA. A previsão do AIGFS, que é um modelo de IA, chega pronta pelo Open-Meteo, como a dos outros modelos. Todos os números e textos saem de regras fixas em JavaScript, sempre com o mesmo resultado para os mesmos dados.
 
 ## Arquivos
 
@@ -118,4 +118,4 @@ Bibliotecas carregadas de CDN: [three.js](https://threejs.org) (cenas 3D) e [Cha
 
 ## Créditos
 
-Dados de previsão: [Open-Meteo](https://open-meteo.com) (licença CC BY 4.0), que reúne os modelos do ECMWF, NOAA (GFS), DWD (ICON), Environment Canada (GEM) e Met Office (UKMO).
+Dados de previsão: [Open-Meteo](https://open-meteo.com) (licença CC BY 4.0), que reúne os modelos do ECMWF, NOAA (GFS), DWD (ICON), Environment Canada (GEM) e Met Office (UKMO), além do AIGFS (NOAA, a partir do GraphCast do Google DeepMind).

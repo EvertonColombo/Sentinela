@@ -157,6 +157,30 @@ header{display:grid;gap:12px}
 .mx-iso{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;font:500 .62rem var(--f-mono);color:#6f8899;text-transform:uppercase;letter-spacing:.06em}
 .mx-iso .none{text-transform:none;letter-spacing:0;color:#8ea4b6}
 .mcard.cosmo{border-style:dashed;margin-top:12px;--mc:#e9d7a1}
+.mcard.ai{border-style:dashed;margin-top:12px;--mc:#36d6c3}
+.aiviz{display:grid;gap:4px;margin-top:4px}
+.ai-sum{margin:0 0 6px;font-size:.88rem} .ai-sum b{font-weight:600}
+.ai-row{display:grid;grid-template-columns:7.2em minmax(0,1.3fr) minmax(0,1fr);gap:12px;align-items:center;padding:4px 0;border-top:1px solid var(--line);font-size:.84rem}
+.ai-row.head{border-top:0;font:600 .66rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ai-t,.ai-r{position:relative;display:grid;gap:3px}
+.ai-tr{position:relative;height:8px;border-radius:99px;background:color-mix(in srgb,var(--line) 50%,transparent)}
+.ai-tr i{position:absolute;top:0;bottom:0;border-radius:99px}
+.ai-tr i.m{background:color-mix(in srgb,var(--muted) 55%,transparent)}
+.ai-tv{display:flex;justify-content:space-between;font:500 .72rem var(--f-mono);color:var(--muted)} .ai-tv b{font-weight:600;color:#36d6c3}
+.ai-rb{display:grid;grid-template-columns:1fr 3.6em;gap:6px;align-items:center;font:500 .72rem var(--f-mono)}
+.ai-rb span{height:6px;border-radius:3px;background:color-mix(in srgb,var(--line) 50%,transparent);position:relative;overflow:hidden}
+.ai-rb span i{position:absolute;inset:0 auto 0 0;border-radius:3px}
+.ai-key{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.76rem;color:var(--muted);margin-top:6px}
+.ai-key i{display:inline-block;width:14px;height:6px;border-radius:3px;margin-right:4px;vertical-align:1px}
+.ailinks{font-size:.82rem}
+.wdir{display:flex;align-items:center;gap:8px} .warr{color:var(--accent);flex:none}
+.feel.hot{color:var(--tmax)} .feel.cold{color:var(--tmin)}
+.ai-p{display:grid;gap:4px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+.ai-ph{font-size:.9rem} .ai-ph .muted{font-size:.8rem;margin-left:4px}
+.ai-pc{position:relative;height:110px;border-radius:6px;background:color-mix(in srgb,var(--line) 22%,transparent)}
+.ai-pc svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ai-pl span{position:absolute;right:4px;transform:translateY(-110%);font:600 .62rem var(--f-mono);background:var(--bg);padding:0 3px;border-radius:3px}
+@media (max-width:560px){.ai-row{grid-template-columns:6.4em minmax(0,1.2fr) minmax(0,1fr);gap:8px}.ai-row>span:first-child{white-space:nowrap;font-size:.8rem}}
 .mx-iso .tag{display:inline-flex;gap:6px;align-items:center;padding:3px 8px;border-radius:99px;border:1px dashed var(--c);color:#d6e2ea;text-transform:none;letter-spacing:0}
 .mx-iso .tag i{width:7px;height:7px;border-radius:50%;background:var(--c)}
 .mx-crit{margin-top:10px;font:500 .78rem var(--f-body);color:#c9d6e0}.mx-crit b{font:600 .62rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#6f8899;margin-right:4px}
@@ -254,10 +278,10 @@ header{display:grid;gap:12px}
 .rmark{position:absolute;top:-5px;width:3px;height:22px;background:var(--ink);border-radius:2px;transform:translateX(-50%);box-shadow:0 0 0 2px var(--panel)}
 .rmark::after{content:attr(data-v);position:absolute;top:-19px;left:50%;transform:translateX(-50%);font:600 .72rem var(--f-mono);white-space:nowrap;color:var(--ink)}
 .rbar-wrap{padding-top:16px;padding-inline:8px}
-.rlist{list-style:none;margin:0;padding:0;display:grid;gap:1px;font-size:.8rem}
-.rlist li{display:grid;grid-template-columns:3.4rem 1fr;gap:8px;padding:2px 6px;border-radius:4px;color:var(--muted)}
-.rlist li .num{text-align:right}
-.rlist li.here{background:var(--bg);color:var(--ink);font-weight:600;box-shadow:inset 3px 0 var(--ink)}
+.rulist{list-style:none;margin:0;padding:0;display:grid;gap:1px;font-size:.8rem}
+.rulist li{display:grid;grid-template-columns:3.4rem 1fr;gap:8px;padding:2px 6px;border-radius:4px;color:var(--muted)}
+.rulist li .num{text-align:right}
+.rulist li.here{background:var(--bg);color:var(--ink);font-weight:600;box-shadow:inset 3px 0 var(--ink)}
 .runit{font-size:.72rem;color:var(--muted)}
 
 /* cenas grandes */
@@ -424,7 +448,7 @@ header{display:grid;gap:12px}
 
 .ic{display:grid;justify-items:center;line-height:1}
 .pp{font:600 .7rem var(--f-mono);font-style:normal;color:#4fa8ff}
-.pchip{font:600 .78rem var(--f-mono);font-style:normal;color:#4fa8ff;background:color-mix(in srgb,#4fa8ff 14%,transparent);border-radius:99px;padding:2px 8px;margin-left:auto;align-self:center}
+.rchip{font:600 .78rem var(--f-mono);font-style:normal;color:#4fa8ff;background:color-mix(in srgb,#4fa8ff 14%,transparent);border-radius:99px;padding:2px 8px;margin-left:auto;align-self:center}
 .rax{position:relative;height:12px;font:500 .62rem/12px var(--f-mono);color:var(--muted);opacity:.85}
 .rax span{position:absolute;top:0;transform:translateX(-50%)}.rax span:nth-child(1){left:25%}.rax span:nth-child(2){left:50%}.rax span:nth-child(3){left:75%}
 .ten.m-rain .trow,.ten.m-wind .trow{grid-template-columns:minmax(7.5em,9.5em) 34px 1fr 4.6em}
@@ -914,7 +938,7 @@ footer p{margin:0;max-width:80ch}
 <section class="card rsum" id="riscos">
   <div class="card-head">
     <h2>Riscos nos próximos 10 dias</h2>
-    <span class="label">o que os 5 modelos mostram · toque para abrir o dia</span>
+    <span class="label">leitura dos 5 modelos, não é aviso oficial · toque para abrir o dia</span>
   </div>
   <div class="rlist" id="rlist"><p class="status">Calculando…</p></div>
 </section>
@@ -1006,6 +1030,14 @@ footer p{margin:0;max-width:80ch}
     <p>Em vez de calcular o planeta inteiro, como os 5 modelos acima, o COSMO calcula só uma região (no INMET, a América do Sul), e por isso consegue usar quadrados bem menores. Os dados dele não estão disponíveis no Open-Meteo. Os avisos oficiais são feitos por meteorologistas, que juntam o COSMO, outros modelos, radar, satélite e estações. Por isso o nível do topo da faixa é o aviso do INMET, e os 5 modelos ficam logo abaixo, para comparar.</p>
     <a href="https://portal.inmet.gov.br/servicos/previs%C3%A3o-num%C3%A9rica-modelo" target="_blank" rel="noopener">Sobre o COSMO no INMET ↗</a>
   </article>
+  <article class="mcard ai" id="aicard">
+    <h3>E a inteligência artificial? <span class="muted" style="font:500 .8rem var(--f-body)">AIGFS, da NOAA, feito a partir do GraphCast do Google DeepMind</span></h3>
+    <div class="org"><b>Roda na NOAA</b>, a agência de meteorologia dos Estados Unidos, desde o fim de 2025. A base é o GraphCast, do Google DeepMind, ajustado pela NOAA com os dados dela</div>
+    <dl><dt>Quadrado</dt><dd>cerca de 25 km</dd><dt>Prevê até</dt><dd>16 dias (aqui, 10)</dd><dt>Passo</dt><dd>de 6 em 6 horas</dd><dt>Aqui no painel</dt><dd>não entra nas contas</dd></dl>
+    <p>Os 5 modelos calculam a física da atmosfera. O AIGFS não: ele aprendeu com décadas de tempo passado e prevê reconhecendo padrões. Costuma acertar bem o caminho de frentes e ciclones, mas tende a suavizar extremos, como chuva forte e rajadas. Também não traz rajadas nem instabilidade. Por isso fica fora da regra dos 2 modelos e aparece aqui como segunda opinião. A previsão chega pronta pelo Open-Meteo; nenhuma IA roda nesta página.</p>
+    <div class="aiviz" id="aiviz"><p class="status">Buscando a previsão de inteligência artificial…</p></div>
+    <p class="ailinks"><a href="https://deepmind.google.com/science/weatherlab" target="_blank" rel="noopener">Weather Lab do Google ↗</a> <span class="muted">a geração mais nova (WeatherNext), em mapa; experimental e pede login com conta Google</span></p>
+  </article>
   <h3>O que cada modelo prevê para as próximas 72 horas</h3>
   <div class="mviz" id="mviz"></div>
   <details class="mtable"><summary>Ver os números em tabela</summary>
@@ -1059,6 +1091,7 @@ const CFG = {
   // limites [atenção, alerta, severo]
   thr: { gust:[40,60,100], rain1:[20,30,60], rain24:[30,50,100],   // vento e chuva: os mesmos degraus dos avisos do INMET (amarelo, laranja, vermelho)
          pfall:[8,12,18], cape:[1000,1500,2500], shear:[15,20,25] },
+  pceil: 1012,   // queda de pressão só vira risco se a pressão, naquela hora, estiver em 1012 hPa ou menos (abaixo do normal, perto de 1013)
   ensProb: { gust:60, rain24:50 },   // degraus de "perigo" (laranja) do INMET
 };
 // Fontes: cada modelo é buscado separadamente; se um identificador falhar, tenta o próximo.
@@ -1097,7 +1130,9 @@ const CITIES = [   // capitais, de norte a sul
 
 const LEVEL_NAMES = ["Sem risco","Atenção","Alerta","Severo"];
 const TZ = "America/Sao_Paulo";
-const HOURLY = ["precipitation","wind_speed_10m","wind_direction_10m","wind_gusts_10m","pressure_msl",
+// direção média (média de vetores, para 350° e 10° darem 0° e não 180°)
+function meanDir(a){ let x = 0, y = 0, n = 0; a.forEach(d => { if (d != null){ x += Math.sin(d * Math.PI / 180); y += Math.cos(d * Math.PI / 180); n++; } }); return n ? (Math.atan2(x, y) * 180 / Math.PI + 360) % 360 : null; }
+const HOURLY = ["apparent_temperature","precipitation","wind_speed_10m","wind_direction_10m","wind_gusts_10m","pressure_msl",
   "cape","wind_speed_500hPa","wind_direction_500hPa","temperature_2m","weather_code","cloud_cover","is_day","relative_humidity_2m","visibility"];
 const THUNDER = [95, 96, 99];
 // nevoeiro ou cerração: código de nevoeiro (45, 48), visibilidade abaixo de 1 km, ou ar saturado (umidade 97% ou mais) com vento fraco
@@ -1217,6 +1252,79 @@ async function fetchMeta(m){
   }
   return null;
 }
+// GraphCast (IA do Google DeepMind, rodada pela NOAA): só para comparar, fora da regra dos 2 modelos
+const AI = { key:null, data:null, err:false };
+// tenta o AIGFS (versão oficial da NOAA) e, se vier vazio, o GraphCast experimental
+const AI_IDS = [["ncep_aigfs025", "AIGFS"], ["gfs_graphcast025", "GraphCast"]];
+async function fetchAI(p){
+  for (const [id, name] of AI_IDS){
+    const u = new URL("https://api.open-meteo.com/v1/forecast");
+    u.search = new URLSearchParams({ latitude:p.lat, longitude:p.lon, hourly:"temperature_2m,precipitation,wind_speed_10m,pressure_msl", models:id,
+      timezone:TZ, past_days:1, forecast_days:10, wind_speed_unit:"kmh" });
+    try { const r = await fetch(u); if (!r.ok) continue; const j = await r.json();
+      if (j.hourly && (j.hourly.temperature_2m || []).filter(x => x != null).length >= 8) return { ...j, aiName:name }; } catch {}
+  }
+  throw new Error("sem dados de IA");
+}
+async function loadAI(){ const k = `${place.lat},${place.lon}`;
+  try { const j = await fetchAI(place); if (k !== `${place.lat},${place.lon}`) return; AI.key = k; AI.data = j; AI.err = false; }
+  catch { AI.key = k; AI.data = null; AI.err = true; }
+  if (lastA) renderAI(lastA); }
+function renderAI(A){
+  const box = $("#aiviz"); if (!box) return;
+  if (AI.key !== `${place.lat},${place.lon}`){ box.innerHTML = `<p class="status">Buscando a previsão de inteligência artificial…</p>`; return; }
+  if (AI.err || !AI.data){ box.innerHTML = `<p class="status">O AIGFS e o GraphCast não trouxeram dados agora pelo Open-Meteo. O resto do painel não depende deles.</p>`; return; }
+  const h = AI.data.hourly, NM = AI.data.aiName || "AIGFS", today = A.times[A.i0].slice(0, 10);
+  const days = A.days.filter(d => d >= today).slice(0, 10).map(d => {
+    const ix = h.time.map((t, i) => t.startsWith(d) ? i : -1).filter(i => i >= 0), v = k => ix.map(i => h[k]?.[i]).filter(x => x != null);
+    const tt = v("temperature_2m"), pr = v("precipitation"), g = v("wind_gusts_10m"), w = v("wind_speed_10m"), ds = A.dayStats[d] || {};
+    return { d, ds, n:tt.length, tmin:tt.length ? Math.min(...tt) : null, tmax:tt.length ? Math.max(...tt) : null, rain:pr.length ? pr.reduce((a, b) => a + b, 0) : null,
+      gust:g.length ? Math.max(...g) : null, wind:w.length ? Math.max(...w) : null }; }).filter(x => x.tmin != null);
+  if (!days.length){ box.innerHTML = `<p class="status">O ${NM} não trouxe dados para este ponto.</p>`; return; }
+  const lo = Math.floor(Math.min(...days.flatMap(x => [x.tmin, x.ds.tmin ?? x.tmin]))) - 1, hi = Math.ceil(Math.max(...days.flatMap(x => [x.tmax, x.ds.tmax ?? x.tmax]))) + 1, X = t => (t - lo) / (hi - lo) * 100;
+  const rMax = Math.max(5, ...days.flatMap(x => [x.rain ?? 0, x.ds.rain ?? 0]));
+  const name = d => d === today ? "Hoje" : cap1(rel(d + "T12:00") === "amanhã" ? "amanhã" : weekday(d + "T12:00"));
+  const rbar = (mm, col, who) => `<div class="ai-rb" title="${who}: ${nf(mm ?? 0, 1)} mm"><span><i style="width:${clamp((mm ?? 0) / rMax * 100, 0, 100)}%;${(mm ?? 0) > 0 ? `min-width:3px;` : ""}background:${col}"></i></span><b>${nf(mm ?? 0, (mm ?? 0) < 10 ? 1 : 0)} mm</b></div>`;
+  const rows = days.map(x => `<div class="ai-row"><span>${esc(name(x.d))}</span>
+    <span class="ai-t"><span class="ai-tr">${x.ds.tmin != null ? `<i class="m" style="left:${X(x.ds.tmin)}%;width:${X(x.ds.tmax) - X(x.ds.tmin)}%;top:2px;bottom:2px"></i>` : ""}<i style="left:${X(x.tmin)}%;width:${Math.max(1.5, X(x.tmax) - X(x.tmin))}%;background:${tempGrad(x.tmin, x.tmax)};box-shadow:0 0 0 1.5px #36d6c3;opacity:.9"></i></span>
+      <span class="ai-tv" title="mediana dos 5 modelos: ${nf(x.ds.tmin)}° a ${nf(x.ds.tmax)}°"><b>${nf(x.tmin)}°</b><b>${nf(x.tmax)}°</b></span></span>
+    <span class="ai-r">${rbar(x.rain, "#36d6c3", NM)}${rbar(x.ds.rain, "color-mix(in srgb,var(--muted) 55%,transparent)", "mediana dos 5 modelos")}</span></div>`).join("");
+  // resumo em uma frase: onde a IA concorda e onde diverge
+  const sumAI = days.reduce((a, x) => a + (x.rain ?? 0), 0), sum5 = days.reduce((a, x) => a + (x.ds.rain ?? 0), 0);
+  const dT = days.map(x => ({ d:x.d, v:(x.tmax ?? 0) - (x.ds.tmax ?? x.tmax) })).sort((a, b) => Math.abs(b.v) - Math.abs(a.v))[0];
+  const rainTxt = Math.abs(sumAI - sum5) <= Math.max(5, sum5 * 0.25) ? "parecida com a dos 5 modelos" : sumAI > sum5 ? "mais chuva que os 5 modelos" : "menos chuva que os 5 modelos";
+  const tTxt = Math.abs(Math.round(dT.v)) < 2 ? "As máximas ficam a menos de 2 graus da mediana em todos os dias." : `A maior diferença de máxima é ${name(dT.d).toLowerCase() === "hoje" ? "hoje" : name(dT.d).toLowerCase() === "amanhã" ? "amanhã" : "na " + name(dT.d).toLowerCase()}: ${nf(Math.abs(dT.v))} ${Math.abs(Math.round(dT.v)) === 1 ? "grau" : "graus"} ${dT.v > 0 ? "a mais" : "a menos"}.`;
+  const gTxt = days.some(x => x.wind != null) ? ` Vento médio máximo nos 10 dias: ${nf(Math.max(...days.map(x => x.wind ?? 0)))} km/h (ele não calcula rajadas).` : "";
+  // queda de pressão em 24 horas (o sinal que o painel usa para ciclone): IA × 5 modelos
+  const pIdx = new Map(h.time.map((t, i) => [t, i])), nowT = A.times[A.i0];
+  const aiDrop = h.time.map((t, i) => { if (t < nowT || h.pressure_msl?.[i] == null) return null;
+    const t0 = new Date(tDate(t).getTime() - 864e5).toLocaleString("sv-SE", { timeZone:TZ }).slice(0, 16).replace(" ", "T"), j = pIdx.get(t0);
+    return j != null && h.pressure_msl[j] != null ? { t, v:h.pressure_msl[j] - h.pressure_msl[i], p:h.pressure_msl[i] } : null; }).filter(Boolean);
+  const fut = A.tlAll.filter(x => x.i >= A.i0), n5 = fut.length;
+  let presHTML = "";
+  if (aiDrop.length >= 4 && n5){
+    const pos = t => { const k = fut.findIndex(x => x.t === t); return k < 0 ? null : k / Math.max(1, n5 - 1) * 100; };
+    const top = Math.max(CFG.thr.pfall[2] + 2, ...aiDrop.map(x => x.v), ...fut.map(x => x.v.pfall ?? 0)), Y = v => 100 - clamp(Math.max(0, v) / top, 0, 1) * 100;
+    const line = pts => pts.map((p, k) => `${k ? "L" : "M"}${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(" ");
+    const pAI = aiDrop.map(x => [pos(x.t), Y(x.v)]).filter(p => p[0] != null), p5 = fut.map((x, k) => x.v.pfall == null ? null : [k / Math.max(1, n5 - 1) * 100, Y(x.v.pfall)]).filter(Boolean);
+    const thr = CFG.thr.pfall.map((t, k) => t <= top ? `<line x1="0" x2="100" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--lv${k + 1})" stroke-dasharray="1.2 1.6" vector-effect="non-scaling-stroke" opacity=".8"/>` : "").join("");
+    const lbl = CFG.thr.pfall.map((t, k) => t <= top ? `<span style="top:${Y(t)}%;color:var(--lv${k + 1})">${t} hPa · ${["atenção","alerta","severo"][k]}</span>` : "").join("");
+    const seps = fut.map((x, k) => k && x.t.slice(11, 13) === "00" ? `<line x1="${k / (n5 - 1) * 100}" x2="${k / (n5 - 1) * 100}" y1="0" y2="100" stroke="var(--line)" vector-effect="non-scaling-stroke" opacity=".6"/>` : "").join("");
+    const mxAI = aiDrop.reduce((a, b) => b.v > a.v ? b : a), mx5 = fut.reduce((a, b) => (b.v.pfall ?? -99) > (a.v.pfall ?? -99) ? b : a, fut[0]);
+    const lvW = (v, p) => v >= CFG.thr.pfall[0] && p > CFG.pceil ? `queda grande, mas com a pressão ainda alta (${nf(p)} hPa): mudança de tempo, não ciclone` : v >= CFG.thr.pfall[2] ? "queda muito forte, típica de ciclone intenso" : v >= CFG.thr.pfall[1] ? "queda forte, que pode indicar ciclone se formando" : v >= CFG.thr.pfall[0] ? "queda de atenção, sinal de baixa pressão se aprofundando" : "sem queda importante: no máximo, mudança de tempo";
+    const whenD = t => { const r = rel(t); return r ? r : weekday(t); };
+    presHTML = `<div class="ai-p"><div class="ai-ph"><b>Queda de pressão em 24 horas</b> <span class="muted">o sinal que o painel usa para ciclone</span></div>
+      <p class="ai-sum">O ${NM} chega a <b>${nf(Math.max(0, mxAI.v), 1)} hPa</b> (${esc(whenD(mxAI.t))}): ${lvW(mxAI.v, mxAI.p)}. ${(mx5.v.pfall ?? 0) < 1 ? "Os 5 modelos não mostram queda importante, com 2 ou mais na mesma hora." : `Os 5 modelos chegam a <b>${nf(mx5.v.pfall, 1)} hPa</b> (${esc(whenD(mx5.t))}).`}</p>
+      <div class="ai-pc"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${seps}${thr}
+        <path d="${line(p5)}" fill="none" stroke="color-mix(in srgb,var(--muted) 70%,transparent)" stroke-width="2" vector-effect="non-scaling-stroke"/>
+        <path d="${line(pAI)}" fill="none" stroke="#36d6c3" stroke-width="2.4" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg><div class="ai-pl">${lbl}</div></div>
+      <div class="r10ax"><span>agora</span><span class="r">10 dias</span></div>
+      <div class="ai-key"><span><i style="background:#36d6c3"></i>${NM}</span><span><i style="background:color-mix(in srgb,var(--muted) 70%,transparent)"></i>5 modelos (2 ou mais na mesma hora)</span><span>linha no chão = pressão estável ou subindo</span></div></div>`;
+  }
+  box.innerHTML = `<p class="ai-sum">Nos próximos 10 dias, o ${NM}${NM === "GraphCast" ? " (versão experimental)" : ""} prevê <b>${nf(sumAI)} mm</b> de chuva, ${rainTxt} (<b>${nf(sum5)} mm</b>). ${tTxt}${gTxt}</p>
+    <div class="ai-row head"><span>dia</span><span>temperatura</span><span>chuva no dia</span></div>${rows}
+    <div class="ai-key"><span><i style="background:linear-gradient(90deg,var(--tmin),var(--tmax));box-shadow:0 0 0 1.5px #36d6c3"></i>${NM}</span><span><i style="background:color-mix(in srgb,var(--muted) 55%,transparent)"></i>mediana dos 5 modelos</span><span>números = ${NM} (a mediana dos 5 modelos aparece ao passar o mouse)</span></div>${presHTML}`;
+}
 async function fetchEnsemble(p){
   const u = new URL("https://ensemble-api.open-meteo.com/v1/ensemble");
   u.search = new URLSearchParams({ latitude:p.lat, longitude:p.lon, hourly:"wind_gusts_10m,precipitation", models:"gfs025", timezone:TZ, past_days:2, forecast_days:10 });
@@ -1248,7 +1356,7 @@ function analyze(results){
     const sc = { gust: times.map((_, i) => score(s.wind_gusts_10m[i], CFG.thr.gust)),
       rain: times.map((_, i) => Math.max(score(s.precipitation[i], CFG.thr.rain1), score(r24[i], CFG.thr.rain24))),
       storm: times.map((_, i) => stormScore(s.cape[i], shear[i])),
-      cyclone: times.map((_, i) => score(pfall[i], CFG.thr.pfall)) };
+      cyclone: times.map((_, i) => s.pressure_msl[i] != null && s.pressure_msl[i] <= CFG.pceil ? score(pfall[i], CFG.thr.pfall) : 0) };
     let sb = { s:-1, cape:null, shear:null, t:null };
     idx.forEach(i => { if (sc.storm[i] > sb.s) sb = { s:sc.storm[i], cape:s.cape[i], shear:shear[i], t:times[i] }; });
     const gust = maxOf(s.wind_gusts_10m), rain1 = maxOf(s.precipitation), rain24 = maxOf(r24);
@@ -1263,7 +1371,7 @@ function analyze(results){
     const grid = { lat:json.latitude, lon:json.longitude, elev:json.elevation, km: distKm(place, { lat:json.latitude, lon:json.longitude }) };
     return { ...m, ok:true, usedId:json.usedId, meta, grid, s, shear, r24, pfall, sc, gust, rain1, rain24, pf, pmin, cape, stormBest:sb, daily,
       lv: { gust: lvOf(gust.v, CFG.thr.gust), rain: Math.max(lvOf(rain1.v, CFG.thr.rain1), lvOf(rain24.v, CFG.thr.rain24)),
-            storm: lvOfScore(Math.max(0, sb.s)), cyclone: lvOf(pf.v, CFG.thr.pfall) } };
+            storm: lvOfScore(Math.max(0, sb.s)), cyclone: lvOfScore(Math.max(0, ...idx.map(i => sc.cyclone[i]))) } };
   });
   const ok = models.filter(m => m.ok);
 
@@ -1277,14 +1385,15 @@ function analyze(results){
   const tlAll = allIdx.map((i, j) => { const sp2 = stormPair(i);
     const s = { gust: cons(ok.map(m => m.sc.gust[i])) ?? 0, rain: cons(ok.map(m => m.sc.rain[i])) ?? 0, storm: cons(ok.map(m => m.sc.storm[i])) ?? 0, cyclone: cons(ok.map(m => m.sc.cyclone[i])) ?? 0 };
     const lv = { gust: lvOfScore(s.gust), rain: lvOfScore(s.rain), storm: lvOfScore(s.storm), cyclone: lvOfScore(s.cyclone) };
-    const per = ok.map(m => ({ name:m.name, gust:m.s.wind_gusts_10m[i], rain1:m.s.precipitation[i], r24:m.r24[i], cape:m.s.cape[i], shear:m.shear[i], temp:m.s.temperature_2m[i],
+    const per = ok.map(m => ({ name:m.name, gust:m.s.wind_gusts_10m[i], rain1:m.s.precipitation[i], r24:m.r24[i], cape:m.s.cape[i], shear:m.shear[i], temp:m.s.temperature_2m[i], feel:m.s.apparent_temperature?.[i] ?? null, dir:m.s.wind_direction_10m[i],
       lv:{ gust:lvOfScore(m.sc.gust[i]), rain:lvOfScore(m.sc.rain[i]), storm:lvOfScore(m.sc.storm[i]), cyclone:lvOfScore(m.sc.cyclone[i]), thunder:THUNDER.includes(m.s.weather_code?.[i]) ? 1 : 0, fog:isFog(m.s, i) ? 1 : 0 }, pfall:m.pfall[i], vis:m.s.visibility?.[i] ?? null, rh:m.s.relative_humidity_2m?.[i] ?? null }));
     lv.thunder = per.filter(p => p.lv.thunder).length >= 2 ? 1 : 0;
     lv.fog = per.filter(p => p.lv.fog).length >= 2 ? 1 : 0;
     return { t: times[i], i, j, s, lv, per, l: Math.max(lv.gust, lv.rain, lv.storm),
       v: { gust: cons(ok.map(m => m.s.wind_gusts_10m[i])), rain1: cons(ok.map(m => m.s.precipitation[i])), rain24: cons(ok.map(m => m.r24[i])),
            cape: sp2.cape ?? null, shear: sp2.shear ?? null, pres: mid(ok.map(m => m.s.pressure_msl[i]), FLOOR.pres),
-           pfall: cons(ok.map(m => m.pfall[i])), temp: mid(ok.map(m => m.s.temperature_2m[i]), FLOOR.temp) } };
+           pfall: cons(ok.map(m => m.pfall[i])), temp: mid(ok.map(m => m.s.temperature_2m[i]), FLOOR.temp),
+           feel: mid(ok.map(m => m.s.apparent_temperature?.[i]), FLOOR.temp), wind: mid(ok.map(m => m.s.wind_speed_10m[i]), FLOOR.wind), dir: meanDir(ok.map(m => m.s.wind_direction_10m[i])) } };
   });
   const timeline = tlAll.filter(h => h.i >= i0 && h.i < i1);
   const days = [...new Set(times.map(t => t.slice(0,10)))].filter(d => ok.some(m => m.daily[d]?.n >= 20));
@@ -1307,7 +1416,7 @@ function analyze(results){
   const thunder = idx.slice(0, 24).map(i => ({ t:times[i], n: ok.filter(m => THUNDER.includes(m.s.weather_code?.[i])).length, who: ok.filter(m => THUNDER.includes(m.s.weather_code?.[i])).map(m => m.name) }));
   const cur = { temp: mid(ok.map(m => m.s.temperature_2m[i0]), FLOOR.temp), gust: mid(ok.map(m => m.s.wind_gusts_10m[i0]), FLOOR.gust),
     wind: mid(ok.map(m => m.s.wind_speed_10m[i0]), FLOOR.wind), pres: mid(ok.map(m => m.s.pressure_msl[i0]), FLOOR.pres),
-    cloud: mid(ok.map(m => m.s.cloud_cover?.[i0]), 30), rain: mid(ok.map(m => m.s.precipitation[i0]), FLOOR.mm),
+    cloud: mid(ok.map(m => m.s.cloud_cover?.[i0]), 30), feel: mid(ok.map(m => m.s.apparent_temperature?.[i0]), FLOOR.temp), rain: mid(ok.map(m => m.s.precipitation[i0]), FLOOR.mm),
     day: (() => { const v = ok.map(m => m.s.is_day?.[i0]).filter(x => x != null); return v.length ? v.filter(Boolean).length * 2 >= v.length : null; })(),
     dir: (() => { let x = 0, y = 0, n = 0; ok.forEach(m => { const d = m.s.wind_direction_10m[i0]; if (d != null){ x += Math.sin(d * Math.PI / 180); y += Math.cos(d * Math.PI / 180); n++; } }); return n ? (Math.atan2(x, y) * 180 / Math.PI + 360) % 360 : null; })(),
     thunder: ok.filter(m => [0, 1, 2].some(k => THUNDER.includes(m.s.weather_code?.[i0 + k]))).length >= 2 };
@@ -1531,7 +1640,7 @@ function rulerHTML(kind, value, thr){
   const rows = R.rows.map((r,i) => `<li class="${i === here ? "here" : ""}"><span class="num">${nf(r[0])}</span><span>${i === here ? "▶ " : ""}${esc(r[1])}</span></li>`).join("");
   return `<div class="ruler"><div class="rbar-wrap"><div class="rbar">${bar}${value != null ? `<span class="rmark" style="left:${pct(value)}%" data-v="${nf(value)}"></span>` : ""}</div></div>
     <span class="runit">Régua em ${esc(R.unit)}. A linha marca a previsão.</span>
-    <ul class="rlist">${rows}</ul></div>`;
+    <ul class="rulist">${rows}</ul></div>`;
 }
 // escala de baldes: cada balde = 10 litros por m² (10 mm); mostra todos até 160 mm, com o contorno na cor da faixa
 function bucketsHTML(mm){
@@ -1602,6 +1711,11 @@ function wxIcon(k, size = 40){
 }
 const CARD8 = ["norte","nordeste","leste","sudeste","sul","sudoeste","oeste","noroeste"];
 const dirWord = d => d == null ? "" : CARD8[Math.round(d / 45) % 8];
+// seta para onde o vento vai (a direção informada é de onde ele vem)
+const windArrow = (d, size = 16) => d == null ? "" : `<svg class="warr" viewBox="0 0 16 16" width="${size}" height="${size}" aria-hidden="true" style="transform:rotate(${Math.round((d + 180) % 360)}deg)"><path d="M8 1l4.5 7H9.4v7H6.6V8H3.5z" fill="currentColor"/></svg>`;
+// sensação térmica: só comenta quando difere mais de 3 °C da temperatura
+function feelTxt(t, f){ if (t == null || f == null || Math.abs(f - t) <= 3) return "";
+  return ` · sensação de <b class="feel ${f > t ? "hot" : "cold"}">${nf(f)}°</b> ${f > t ? "(abafado)" : "(com o vento)"}`; }
 // cor da temperatura (frio azul → quente vermelho)
 function tempCol(t){ const st = [[0,"#6a8cff"],[10,"#5aa9ff"],[17,"#5fd0b0"],[23,"#f2c14e"],[29,"#f39147"],[35,"#ef5d5d"]];
   if (t <= st[0][0]) return st[0][1]; for (let i = 1; i < st.length; i++) if (t <= st[i][0]) return st[i - 1][1]; return st[st.length - 1][1]; }
@@ -1625,14 +1739,14 @@ function renderToday(A){
   const tTemp = `<div class="tt"><div class="tt-k">temperatura</div>
     <div class="tt-big"><b>${nf(ds.tmax)}°</b><span>mín ${nf(ds.tmin)}°</span></div>
     <div class="tbar"><i style="background:${tempGrad(ds.tmin ?? 0, ds.tmax ?? 1)}"></i><b style="left:${pos}%"></b></div>
-    <div class="tt-s">agora ${nf(c.temp)}°</div></div>`;
+    <div class="tt-s">agora ${nf(c.temp)}°${feelTxt(c.temp, c.feel)}</div></div>`;
   // chuva: 24 colunas, uma por hora
   const hr = dayHourly(today, "precipitation"), mx = Math.max(1, ...hr.filter(v => v != null)), tot = hr.reduce((a, v) => a + (v ?? 0), 0);
   const ag = dayRainAgree(today), wet = ag.map((x, h) => x.k >= 2 ? h : -1).filter(h => h >= 0);
   const lvH = mm => mm >= CFG.thr.rain1[2] ? 3 : mm >= CFG.thr.rain1[1] ? 2 : mm >= CFG.thr.rain1[0] ? 1 : 0;
   const strip = ag.map((x, h) => `<i class="${h < nowH ? "past" : ""}${h === nowH ? " now" : ""}" data-lv="${x.k >= 2 ? lvH(x.mm) : ""}"${x.k >= 2 ? "" : ' data-off="1"'} title="${String(h).padStart(2, "0")}:00 · ${x.k >= 2 ? `chuva prevista por ${x.k} modelos (${nf(x.mm, 1)} mm)` : "sem chuva com acordo"}"></i>`).join("");
   const tRain = `<div class="tt"><div class="tt-k">chuva</div>
-    <div class="tt-big"><b>${nf(tot, tot < 10 ? 1 : 0)}</b><small>mm</small>${rainChance(A, today) != null ? `<em class="pchip" title="chance de chover pelo menos 1 mm hoje">${pct(rainChance(A, today))}</em>` : ""}</div>
+    <div class="tt-big"><b>${nf(tot, tot < 10 ? 1 : 0)}</b><small>mm</small>${rainChance(A, today) != null ? `<em class="rchip" title="chance de chover pelo menos 1 mm hoje">${pct(rainChance(A, today))}</em>` : ""}</div>
     <div class="rstrip">${strip}</div><div class="rax"><span>06:00</span><span>12:00</span><span>18:00</span></div>
     <div class="tt-s">${!wet.length ? "nenhuma hora com chuva prevista por 2 ou mais modelos" : wet[wet.length - 1] - wet[0] + 1 === wet.length ? `chuva das ${String(wet[0]).padStart(2, "0")}:00 às ${String(wet[wet.length - 1] + 1).padStart(2, "0")}:00` : `chuva em ${wet.length} ${wet.length === 1 ? "hora" : "horas"} do dia`}</div></div>`;
   // vento: bússola com a seta para onde o vento vai
@@ -1644,7 +1758,8 @@ function renderToday(A){
       ${c.dir != null ? `<g transform="rotate(${rot.toFixed(0)} 50 50)"><path d="M50 18l7 13h-4v22h-6V31h-4z" class="arr"/><circle cx="50" cy="78" r="3.5" class="arr"/></g>` : ""}
       <circle cx="50" cy="50" r="17" class="cc"/></svg>
     <div class="cw"><b data-lv="${lvG}">${nf(ds.gmax)}</b><small>km/h</small></div>
-    <div class="tt-s">rajada máxima${c.dir != null ? ` · vento de ${dirWord(c.dir)}` : ""}</div></div>`;
+    <div class="tt-s">${(() => { const hs = A.tlAll.filter(h => h.t.startsWith(today) && h.v.gust != null), pk = hs.reduce((a, h) => !a || h.v.gust > a.v.gust ? h : a, null);
+      return pk ? `rajada máxima às ${hourOf(pk.t)}${pk.v.dir != null ? `, vinda do ${dirWord(pk.v.dir)}` : ""}` : "rajada máxima"; })()}${c.dir != null ? ` · agora, vento de ${dirWord(c.dir)}` : ""}</div></div>`;
   // sol: arco do nascer ao pôr
   const st = sunTimes(today, place.lat, place.lon);
   let tSun = "";
@@ -1698,7 +1813,7 @@ function renderTen(A){
     <linearGradient id="t-area" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">${tStops.replace(/"\/>/g, '" stop-opacity=".75"/>')}</linearGradient></defs></svg>`;
   $("#ten").innerHTML = defs + head + rows;
   $("#ten-foot").innerHTML = `<div class="tscale"><span>cor = temperatura</span><span class="tsb"><i style="background:${tempGrad(0, 35)}"></i><span class="ts-n"><b>0°</b><b>7°</b><b>14°</b><b>21°</b><b>28°</b><b>35°</b></span></span><span class="ts-k"><b class="mn"></b> mínima <b class="mx"></b> máxima${A.cur.temp != null ? ' <b class="now"></b> agora' : ""}</span></div>
-    <p class="ten-key"><b class="pp">azul embaixo do ícone</b> = chance de chover pelo menos 1 mm no dia${lastE?.dayP && Object.keys(lastE.dayP).length ? " (5 modelos e 31 cenários do GFS)" : " (5 modelos)"} · <span class="fkey"><i style="--c:var(--lv1)"></i><i style="--c:var(--lv2)"></i><i style="--c:var(--lv3)"></i><i style="--c:#b18cff"></i><i style="--c:#a9c6d8"></i></span> embaixo do dia = risco com acordo de 2 ou mais modelos (atenção, alerta, severo, trovoada, nevoeiro) · <b class="fmm">mm</b> = chuva prevista no dia</p>`;
+    <p class="ten-key"><b class="pp">azul embaixo do ícone</b> = chance de chover pelo menos 1 mm no dia${lastE?.dayP && Object.keys(lastE.dayP).length ? " (5 modelos e 31 cenários do GFS)" : " (5 modelos)"} · <span class="fkey"><i style="--c:var(--lv1)"></i><i style="--c:var(--lv2)"></i><i style="--c:var(--lv3)"></i><i style="--c:#b18cff"></i><i style="--c:#a9c6d8"></i></span> embaixo do dia = risco previsto por 2 ou mais modelos, pela regra deste painel (atenção, alerta, severo, trovoada, nevoeiro) · <b class="fmm">mm</b> = chuva prevista no dia</p>`;
   // cursor da hora: passar o dedo ou o mouse sobre as curvas mostra a mesma hora em todos os dias, com a temperatura de cada um
   { const ten = $("#ten"), curves = [...ten.querySelectorAll(".trow[data-d] .tcurve")], chip = ten.querySelector(".tchip"), Yp = t => 92 - (t - gLo) / gs * 84;
     const hide = () => { chip.hidden = true; curves.forEach(c => c.querySelector(".tcur").hidden = true); };
@@ -1811,9 +1926,14 @@ async function loadOfficial(){
   OFF.busy = true;
   try {
     const rss = new DOMParser().parseFromString(await fetchText("https://apiprevmet3.inmet.gov.br/avisos/rss"), "text/xml");
-    const links = [...rss.querySelectorAll("item > link")].map(l => l.textContent.trim()).filter(Boolean).slice(0, 60);
+    // o próprio RSS traz o fim de cada aviso: os vencidos nem são baixados
     const now = Date.now(), hits = [];
-    await Promise.all(links.map(async u => { try {
+    const links = [...rss.querySelectorAll("item")].filter(it => { const m = (it.querySelector("description")?.textContent || "").match(/Fim[^0-9]{0,60}(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})/);
+        return !m || Date.parse(`${m[1]}T${m[2]}:00-03:00`) >= now; })
+      .map(it => it.querySelector("link")?.textContent.trim()).filter(Boolean).slice(0, 60);
+    // baixa de 6 em 6, para não engasgar a conexão do celular
+    const pool = async (arr, n, fn) => { let k = 0; await Promise.all(Array.from({ length:Math.min(n, arr.length) }, async () => { while (k < arr.length) await fn(arr[k++]); })); };
+    await pool(links, 6, async u => { try {
       const x = new DOMParser().parseFromString(await fetchText(u), "text/xml");
       const info = x.querySelector("info"); if (!info) return;
       const g = sel => info.querySelector(sel)?.textContent?.trim() || "";
@@ -1822,7 +1942,7 @@ async function loadOfficial(){
       if (!polys.some(r => r.length > 2 && inPoly(p.lat, p.lon, r))) return;
       const sv = SEV[g("severity")] || [1, g("severity") || "Aviso"];
       hits.push({ lv:sv[0], sev:sv[1], event:g("event") || g("headline"), onset:Date.parse(g("onset")), expires:exp, desc:g("description"), url:u });
-    } catch {} }));
+    } catch {} });
     OFF.list = hits.sort((a, b) => b.lv - a.lv || a.onset - b.onset); OFF.err = false;
   } catch { OFF.list = null; OFF.err = true; }
   OFF.key = key; OFF.busy = false; renderOfficial();
@@ -1856,8 +1976,10 @@ function bandMatrix(A, key, tl = A.timeline){
   const perLv = (h, mi) => h.per[mi]?.lv[key] ?? 0, TH = key === "thunder" || key === "fog", FG = key === "fog";
   // o que acende a célula, em cada aba (a matriz mostra nível de risco, não "se chove")
   const CRIT = { storm:`instabilidade (CAPE) de ${nf(CFG.thr.cape[0])} J/kg ou mais e vento em altura de ${CFG.thr.shear[0]} m/s ou mais, juntos`, thunder:"o modelo prevê trovoada na hora",
-    gust:`rajada de ${CFG.thr.gust[0]} km/h ou mais`, rain:`chuva de ${CFG.thr.rain24[0]} mm ou mais nas 24 horas anteriores, ou ${CFG.thr.rain1[0]} mm ou mais em 1 hora`, cyclone:`pressão caindo ${CFG.thr.pfall[0]} hPa ou mais em 24 horas` };
-  const isoVal = m => !m ? "" : key === "gust" ? `${nf(m.gust.v)} km/h` : key === "rain" ? `${nf(m.rain24.v)} mm em 24 horas` : key === "storm" ? `${nf(m.stormBest.cape)} J/kg` : key === "cyclone" ? `queda de ${nf(m.pf.v, 1)} hPa` : "";
+    gust:`rajada de ${CFG.thr.gust[0]} km/h ou mais`, rain:`chuva de ${CFG.thr.rain24[0]} mm ou mais nas 24 horas anteriores, ou ${CFG.thr.rain1[0]} mm ou mais em 1 hora`, cyclone:`pressão caindo ${CFG.thr.pfall[0]} hPa ou mais em 24 horas, com a pressão em ${CFG.pceil} hPa ou menos` };
+  // valor do modelo dentro das horas mostradas (e não o pico das 72 horas)
+  const isoVal = mi => { const mx = f => { const v = tl.map(h => h.per[mi] ? f(h.per[mi]) : null).filter(x => x != null); return v.length ? Math.max(...v) : null; };
+    return key === "gust" ? `${nf(mx(p => p.gust))} km/h` : key === "rain" ? `${nf(mx(p => p.r24))} mm em 24 horas` : key === "storm" ? `${nf(mx(p => p.cape))} J/kg` : key === "cyclone" ? `queda de ${nf(mx(p => p.pfall), 1)} hPa` : ""; };
   const at = v => TH && v ? (FG ? "f" : "t") : v, nm = v => TH ? (v ? (FG ? "nevoeiro" : "trovoada") : (FG ? "sem nevoeiro" : "sem trovoada")) : LEVEL_NAMES[v], col = v => TH ? (FG ? "#a9c6d8" : "#b18cff") : `var(--lv${v})`;
   const cons = tl.map(h => h.lv[key]);
   const wins = []; for (let j = 0; j < n; j++) if (cons[j] >= 1){ let e = j; while (e + 1 < n && cons[e + 1] >= 1) e++; wins.push([j, e]); j = e; }
@@ -1876,7 +1998,7 @@ function bandMatrix(A, key, tl = A.timeline){
     rain:`<b>•</b> o modelo prevê chuva nessa hora · <b class="c1">cor</b> chuva forte, a partir de ${CFG.thr.rain1[0]} mm em 1 hora ou ${CFG.thr.rain24[0]} mm em 24 horas`,
     gust:`<b>•</b> vento já forte, mas ainda sem perigo (rajada a partir de ${nf(IV.min)} km/h) · <b class="c1">cor</b> vento perigoso, a partir de ${CFG.thr.gust[0]} km/h`,
     storm:`<b>•</b> o ar já está ficando instável, sem perigo ainda · <b class="c1">cor</b> condições para tempestade forte`,
-    cyclone:`<b>•</b> a pressão está baixando: sinal de mudança de tempo, como frente fria. <b>Não é ciclone.</b> · <b class="c1">cor</b> queda forte de pressão, que pode indicar ciclone`,
+    cyclone:`<b>•</b> a pressão está baixando: sinal de mudança de tempo, como frente fria. <b>Não é ciclone.</b> · <b class="c1">cor</b> queda forte de pressão, já abaixo do normal (${CFG.pceil} hPa ou menos), que pode indicar ciclone`,
     thunder:`<b class="ct">cor</b> o modelo prevê trovoada nessa hora`,
     fog:`<b class="cf">cor</b> o modelo prevê nevoeiro ou cerração nessa hora (visibilidade abaixo de 1 km, ou ar saturado com vento fraco). Atenção na estrada, principalmente de madrugada e cedo.` };
   const rows = names.map((nmd, mi) => `<div class="mx-row" style="--n:${n}">${tl.map(h => { const p = h.per[mi] || {}, v = p.lv ? IV.f(p) : null, l = perLv(h, mi), on = v != null && v >= IV.min;
@@ -1898,7 +2020,7 @@ function bandMatrix(A, key, tl = A.timeline){
   const agreeN = a >= 0 ? names.filter((_, mi) => inWin(mi)).length : 0;
   // riscos isolados (um modelo só): mostra como etiquetas quando não há consenso
   const iso = a >= 0 ? [] : names.map((nmd, mi) => { const j = tl.findIndex(h => perLv(h, mi) >= 1); if (j < 0) return null; const mx = Math.max(...tl.map(h => perLv(h, mi)));
-    return `<span class="tag" style="--c:${col(mx)}"><i></i>${esc(nmd)} · ${esc(j === nowJ ? "agora" : multi ? `${weekday(tl[j].t)} ${hourOf(tl[j].t)}` : hourOf(tl[j].t))} · ${nm(mx).toLowerCase()}${isoVal(A.ok[mi]) ? ` <small>(${isoVal(A.ok[mi])})</small>` : ""}</span>`; }).filter(Boolean);
+    return `<span class="tag" style="--c:${col(mx)}"><i></i>${esc(nmd)} · ${esc(j === nowJ ? "agora" : multi ? `${weekday(tl[j].t)} ${hourOf(tl[j].t)}` : hourOf(tl[j].t))} · ${nm(mx).toLowerCase()}${isoVal(mi) ? ` <small>(${isoVal(mi)})</small>` : ""}</span>`; }).filter(Boolean);
   return { html:`<div class="mx">
       <div class="mx-lab">${offOn ? `<span class="offl">INMET</span>` : ""}${names.map((nm, mi) => `<span class="${inWin(mi) ? "hot" : ""}">${nm}</span>`).join("")}<span class="cons">quantos</span></div>
       <div class="mx-cells">${days}${offRow}${rows.join("")}${consRow}${win}${nowJ >= 0 ? `<span class="mx-now" title="agora" style="left:${nowJ / n * 100}%"></span>` : ""}<span class="mx-hov" hidden><b></b></span></div>
@@ -1977,7 +2099,7 @@ function renderRiskList(A){
       cards.push({ k, lv:0, t:fut[j].t, html:`<button type="button" class="rcard solo" data-k="${k}" data-d="${fut[j].t.slice(0, 10)}">
         <span class="rc-top"><i style="--c:var(--solo)"></i><b>${DNAME[k]}</b><span class="pill" data-lv="0">sem acordo</span></span>
         <span class="rc-when">só ${esc(joinPt(who))} · ${esc(cap1(rel(fut[j].t) || weekday(fut[j].t)))}, ${hourOf(fut[j].t)}</span>
-        <span class="rc-what">Um modelo sozinho não basta: os outros não preveem.</span>${strip}</button>`, sev:0 });
+        <span class="rc-what">Só um modelo prevê. Pela regra deste painel, é preciso pelo menos 2.</span>${strip}</button>`, sev:0 });
       return; }
     const [a, b] = W[0], hs = fut.slice(a, b + 1), agree = names.filter((_, mi) => hs.some(h => perOn(h, mi, k))).length;
     const allHs = W.flatMap(([x, y]) => fut.slice(x, y + 1)), far = a >= (h72 > 0 ? h72 : 1e9);
@@ -1990,7 +2112,7 @@ function renderRiskList(A){
   cards.sort((x, y) => y.sev - x.sev || x.t.localeCompare(y.t));
   $("#rlist").innerHTML = (cards.length ? `<div class="rcards">${cards.map(c => c.html).join("")}</div>` : `<p class="rnone">Nenhum risco previsto por 2 ou mais modelos nos próximos 10 dias.</p>`)
     + (calm.length ? `<p class="rcalm"><span>nenhum modelo prevê risco de</span> ${calm.map(k => `<b>${DNAME[k].toLowerCase()}</b>`).join(" · ")}</p>` : "")
-    + `<p class="rkey"><span class="akey fen"><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span><span><i style="background:#b18cff"></i>trovoada</span><span><i style="background:#a9c6d8"></i>nevoeiro</span><span><i style="background:var(--solo)"></i>só um modelo</span></span> cada faixa vai de agora até 10 dias; a linha marca 72 horas. Depois disso, trate como tendência. Os limites são os do INMET.</p>`;
+    + `<p class="rkey"><span class="akey fen"><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span><span><i style="background:#b18cff"></i>trovoada</span><span><i style="background:#a9c6d8"></i>nevoeiro</span><span><i style="background:var(--solo)"></i>só um modelo</span></span> <span><b>Regra deste painel</b>, não do INMET: só conta como risco quando pelo menos 2 dos 5 modelos preveem na mesma hora. Atenção, alerta e severo usam os mesmos limites de vento e chuva do INMET, mas não são avisos dele; o aviso oficial fica no topo da página. Cada faixa vai de agora até 10 dias; a linha marca 72 horas, e depois disso vale como tendência.</span></p>`;
   $("#rlist").querySelectorAll(".rcard").forEach(c => c.onclick = () => openDay(c.dataset.d, c.dataset.k));
   $("#rlist").querySelectorAll(".rstrip10 svg").forEach(sv => sv.parentElement.parentElement && sv.addEventListener("click", e => { e.stopPropagation();
     const r = sv.getBoundingClientRect(), j = clamp(Math.floor((e.clientX - r.left) / r.width * n), 0, n - 1); openDay(fut[j].t.slice(0, 10), sv.closest(".rcard").dataset.k); }));
@@ -2309,7 +2431,9 @@ function drawHourly(){
     if (x + 6 < lastR + 6) return; ctx.fillStyle = ACC; ctx.letterSpacing = "1px"; ctx.fillText(txt, x + 6, 15); ctx.letterSpacing = "0px"; lastR = x + 6 + ctx.measureText(txt).width; } });
   // coluna sob o dedo
   if (hov >= 0 && hov !== sel){ ctx.fillStyle = "rgba(255,255,255,.04)"; ctx.fillRect(x0 + hov * bw, top - 6, bw, Hh - top - bottom + 8); }
-  (LV_.length ? LV_ : LANES.slice(0, 1)).forEach((L, k) => { const LC = L.col ? [LV[0], L.col, L.col, L.col] : LV;
+  (LV_.length ? LV_ : LANES.slice(0, 1)).forEach((L, k) => { let LC = L.col ? [LV[0], L.col, L.col, L.col] : LV;
+    // queda de pressão com a pressão ainda alta (acima de ${CFG.pceil} hPa) não é risco: sem cores de nível nesse dia
+    if (L.key === "cyclone" && !tl.some(h => (h.lv.cyclone ?? 0) >= 1)){ const g = css("--solo"); LC = [LV[0], g, g, g]; }
     const y0 = top + k * (laneH + gap), yb = y0 + laneH, thr = L.thr();
     const pos = v => v == null ? null : L.temp ? v : Math.max(0, v);
     const vals = tl.map(h => pos(L.val(h)));
@@ -2394,12 +2518,13 @@ function renderHourDetail(){
     <div><div class="label">${h.i === lastA.i0 ? "Agora" : h.i < lastA.i0 ? "Hora que já passou (previsão)" : "Hora escolhida"}</div><div class="when">${esc(whenTitle(h.t))}</div></div>
     <div class="hrow" data-k="temp" data-lv="0">
       <div class="k"><b>Temperatura</b><span class="label">${h.per.length} modelos</span></div>
-      <p><b>${nf(v.temp, 1)} °C</b> (mediana dos modelos)${(() => { const rh = h.per.map(p => p.rh).filter(x => x != null); return rh.length ? ` · umidade de ${nf(median(rh))}%` : ""; })()} · rajada de ${nf(v.gust)} km/h${(v.rain1 ?? 0) >= 0.2 ? ` · chuva de ${nf(v.rain1, 1)} mm` : ""}.</p>
+      <p><b>${nf(v.temp, 1)} °C</b> (mediana dos modelos)${v.feel != null ? ` · sensação de ${nf(v.feel)}°${Math.abs(v.feel - (v.temp ?? v.feel)) > 3 ? (v.feel > v.temp ? " (abafado)" : " (com o vento)") : ""}` : ""}${(() => { const rh = h.per.map(p => p.rh).filter(x => x != null); return rh.length ? ` · umidade de ${nf(median(rh))}%` : ""; })()} · rajada de ${nf(v.gust)} km/h${(v.rain1 ?? 0) >= 0.2 ? ` · chuva de ${nf(v.rain1, 1)} mm` : ""}.</p>
       ${agreeHTML(h.per.map(p => ({ name:p.name, lv:0, v:p.temp })), 0, x => nf(x, 1) + "°", true)}
     </div>
     <div class="hrow" data-k="gust" data-lv="${h.lv.gust}">
       <div class="k"><b>Vento ${termBtn("rajada")}</b><span class="label">${LEVEL_NAMES[h.lv.gust]}</span></div>
       <p>Rajadas de até <b>${nf(v.gust)} km/h</b>, ${carCompare(v.gust ?? 0)}.</p>
+      ${v.dir != null ? `<p class="wdir">${windArrow(v.dir, 22)}<span>Vento vindo do <b>${dirWord(v.dir)}</b>${(v.gust ?? 0) >= CFG.thr.gust[0] ? `: as janelas e árvores do lado ${dirWord(v.dir)} levam o primeiro impacto` : ""}.</span></p>` : ""}
       <p class="eff">${EFFECT.gust[h.lv.gust]}</p>
       ${chips("gust", x => nf(x), p => p.gust)}
     </div>
@@ -2420,7 +2545,7 @@ function renderHourDetail(){
     <div class="hrow" data-k="cyclone" data-lv="${h.lv.cyclone}">
       <div class="k"><b>Pressão ${termBtn("pressao")}</b><span class="label">${LEVEL_NAMES[h.lv.cyclone]}</span></div>
       <p>Pressão de <b>${nf(v.pres,1)} hPa</b>${pf}.</p>
-      <p class="eff">${h.lv.cyclone ? EFFECT.cyclone[h.lv.cyclone] : (v.pfall ?? 0) >= CFG.thr.pfall[0] / 2 ? "Pressão baixando: sinal de mudança de tempo, como frente fria. Não é ciclone." : "Pressão sem queda importante."}</p>
+      <p class="eff">${h.lv.cyclone ? EFFECT.cyclone[h.lv.cyclone] : (v.pfall ?? 0) >= CFG.thr.pfall[0] && (v.pres ?? 0) > CFG.pceil ? `Caiu bastante, mas a pressão ainda está alta (${nf(v.pres)} hPa): é o ar frio indo embora ou uma mudança de tempo, não ciclone. Só vira risco abaixo de ${CFG.pceil} hPa.` : (v.pfall ?? 0) >= CFG.thr.pfall[0] / 2 ? "Pressão baixando: sinal de mudança de tempo, como frente fria. Não é ciclone." : "Pressão sem queda importante."}</p>
       ${chips("cyclone", x => nf(x, 1) + " hPa", p => p.pfall == null ? null : Math.max(0, p.pfall))}
     </div>
     <div class="hrow" data-k="thunder" data-lv="${h.lv.thunder ? 1 : 0}">
@@ -2445,6 +2570,7 @@ function renderHourly(){
   const k = BAND.key;
   $("#hnote").textContent = k === "temp" ? "Curva = mediana dos 5 modelos, tirando o que destoa; a cor segue a temperatura. Em \"Ver cada modelo\", cada modelo vira uma linha fina na sua cor. Toque ou arraste sobre o gráfico para ver a hora."
     : k === "rain" ? `Coluna = chuva na hora que pelo menos 2 modelos preveem; cinza = só um modelo. Amarelo a partir de ${CFG.thr.rain1[0]} mm na hora, laranja a partir de ${CFG.thr.rain1[1]} e vermelho a partir de ${CFG.thr.rain1[2]}. O acumulado de 24 horas aparece no detalhe da hora e na matriz.`
+    : k === "cyclone" ? `Curva = queda de pressão em 24 horas que pelo menos 2 modelos preveem. Só ganha cor de risco quando a pressão também está em ${CFG.pceil} hPa ou menos; com a pressão alta, a queda é só mudança de tempo e a curva fica cinza.`
     : "Curva = o que pelo menos 2 modelos preveem na mesma hora; muda de cor ao cruzar atenção, alerta e severo. Em \"Ver cada modelo\", cada modelo vira uma linha fina na sua cor. Toque ou arraste sobre o gráfico para ver a hora.";
   $("#hsrc").innerHTML = srcLine(lastA, k === "temp" ? "curva = mediana dos modelos" : "valor que pelo menos 2 modelos atingem na mesma hora");
 }
@@ -2827,6 +2953,7 @@ function renderLinks(p){
     ["🗺", "Próximos dias em mapa", "A previsão desenhada sobre o mapa, para ver o sistema inteiro chegando.", [
       ["Windy", `https://www.windy.com/${lat}/${lon}?gust,${lat},${lon},9`, "Compara ECMWF, GFS e ICON; troque para chuva, CAPE ou pressão.", true],
       ["Ventusky", `https://www.ventusky.com/?p=${lat};${lon};8&l=gust`, "Animação de vento e chuva muito fácil de ler.", true],
+      ["Weather Lab (Google DeepMind)", "https://deepmind.google.com/science/weatherlab", "Previsões experimentais de inteligência artificial em mapa; pede login com conta Google. Não é aviso oficial.", false],
       ["earth.nullschool", `https://earth.nullschool.net/#current/wind/surface/level/orthographic=${lon},${lat},2500`, "Código aberto; mostra a circulação de um ciclone com clareza.", true],
     ]],
     ["⛈", "Tempo severo", "Para dias de tempestade, granizo e tornado.", [
@@ -2910,6 +3037,7 @@ async function load(){
     lastA = A; lastE = ens ? analyzeEnsemble(ens, A) : null; V.sel = null;
     renderAll();
     setTimeout(() => loadHistory().catch(() => {}), 50);
+    setTimeout(() => loadAI(), 80);
     loadOfficial().catch(() => {});   // avisos oficiais do INMET para o ponto   // histórico vem depois, sem atrasar o painel
     $("#updated").textContent = `Dados buscados ${whenLong(nowKey() + ":00")}. Próxima busca automática em ${CFG.refreshMin} minutos.`;
   } catch (e){
@@ -2926,7 +3054,7 @@ function renderAll(){
   if (DAY.place !== place){ DAY.place = place; DAY.user = false; }
   if (!DAY.user || !lastA.days.includes(DAY.d)){ const near = cards.filter(c => c.lv > 0 || c.k === "thunder").find(c => (tDate(c.t) - Date.now()) < 72 * 36e5);
     DAY.d = near ? near.t.slice(0, 10) : lastA.times[lastA.i0].slice(0, 10); BAND.key = near ? near.k : "temp"; }
-  renderTen(lastA); renderDay(lastA); renderDays(); renderModels(lastA, lastE);
+  renderTen(lastA); renderDay(lastA); renderDays(); renderModels(lastA, lastE); renderAI(lastA);
 }
 let obsDone = null;
 function setPlace(p){ place = p; store.set("sentinela.place", p); syncSelect(); load(); }
