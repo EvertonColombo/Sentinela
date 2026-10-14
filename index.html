@@ -3034,14 +3034,17 @@ function arPlate(T, text, { w = 0.056, h = 0.016, fg = "#e6eef4", glow = fg, wei
 // o número da máxima bem grande e, flutuando em cima, o tempo do dia em 3D (sol, nuvem, chuva, raio ou neblina)
 // cores fortes, de 3 em 3 graus, para as diferenças aparecerem
 const TOON = t => t < 2 ? "#7c5cff" : t < 6 ? "#3b6cff" : t < 10 ? "#2f9bff" : t < 13 ? "#1fc7f0" : t < 16 ? "#1fd6b0" : t < 19 ? "#4fdc5a" : t < 22 ? "#c8e62a" : t < 25 ? "#ffcc1f" : t < 28 ? "#ff9a1f" : t < 31 ? "#ff5a2a" : "#ff2050";
-function arToonText(T, text, { w = 0.06, h = 0.03, fill = "#ffffff", stroke = "#0b1a24", weight = 900 } = {}){
+function arToonText(T, text, { w = 0.06, h = 0.03, fill = "#ffffff", stroke = "#0b1a24", weight = 900, badge = null } = {}){
   const cv = document.createElement("canvas"); cv.height = 192; cv.width = Math.min(2048, Math.round(cv.height * w / h));
-  const g = cv.getContext("2d"); let fs = cv.height * 0.72; const F = () => g.font = `${weight} ${fs}px "Arial Rounded MT Bold", "Nunito", system-ui, -apple-system, sans-serif`; F();
+  const g = cv.getContext("2d"); let fs = cv.height * (badge ? 0.62 : 0.72);
+  // etiqueta sólida (pílula com borda escura): nada atrás encobre o número e ele aparece em qualquer fundo
+  if (badge){ const r = cv.height / 2, lw = cv.height * 0.09; g.beginPath(); g.roundRect(lw / 2, lw / 2, cv.width - lw, cv.height - lw, r - lw / 2); g.fillStyle = badge; g.fill(); g.lineWidth = lw; g.strokeStyle = stroke; g.stroke(); } const F = () => g.font = `${weight} ${fs}px "Arial Rounded MT Bold", "Nunito", system-ui, -apple-system, sans-serif`; F();
   while (g.measureText(text).width > cv.width * 0.86 && fs > 10){ fs -= 2; F(); }
   g.textAlign = "center"; g.textBaseline = "middle"; g.lineJoin = "round"; g.lineWidth = fs * 0.2; g.strokeStyle = stroke; const x = cv.width / 2, y = cv.height / 2 + fs * 0.05;
   g.strokeText(text, x, y); g.fillStyle = fill; g.fillText(text, x, y);
   const tex = new T.CanvasTexture(cv); tex.colorSpace = T.SRGBColorSpace;
-  return new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshStandardMaterial({ map:tex, emissive:0xffffff, emissiveMap:tex, emissiveIntensity:0.55, roughness:1, transparent:true, side:T.DoubleSide, depthWrite:false }));
+  // recorte (alphaTest) em vez de transparência: o iPhone e o Android desenham na ordem certa, sem o vidro passar na frente
+  return new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshStandardMaterial({ map:tex, emissive:0xffffff, emissiveMap:tex, emissiveIntensity:0.55, roughness:1, alphaTest:0.5, side:T.DoubleSide }));
 }
 async function buildARScene(A){
   const T = THREE, today = A.times[A.i0].slice(0, 10);
@@ -3056,8 +3059,8 @@ async function buildARScene(A){
   const top = isl + 0.002;
   // escala comum das temperaturas
   const lo = Math.min(...list.map(x => x.tmin)) - 2, hi = Math.max(...list.map(x => x.tmax)) + 1;
-  const bulbY = top + 0.016, Y = t => bulbY + 0.022 + (t - lo) / Math.max(1, hi - lo) * 0.15, iconY = Y(hi) + 0.075;
-  const name = d => d === today ? "Hoje" : cap1(rel(d + "T12:00") === "amanhã" ? "amanhã" : weekday(d + "T12:00"));
+  const bulbY = top + 0.016, Y = t => bulbY + 0.022 + (t - lo) / Math.max(1, hi - lo) * 0.15, tagY = Y(hi) + 0.03, iconY = Y(hi) + 0.085;
+  const name = d => d === today ? "Hoje" : cap1(rel(d + "T12:00") === "amanhã" ? "amanhã" : weekday(d + "T12:00").replace("-feira", ""));   // no 3D, só "Segunda", "Terça"…
   // peças de ícone
   const ball = (r, c, o) => new T.Mesh(new T.SphereGeometry(r, 24, 16), toon(c, o));
   const cloud = (c = 0xffffff) => { const g = new T.Group(); [[0, 0, 0.012], [-0.012, -0.003, 0.009], [0.012, -0.003, 0.009], [0.005, 0.006, 0.009]].forEach(([x, y, r]) => { const b = ball(r, c); b.position.set(x, y, 0); g.add(b); }); return g; };
@@ -3087,12 +3090,13 @@ async function buildARScene(A){
     const capT = ball(0.0058, col, { emissive:col, emissiveIntensity:0.35 }); capT.position.y = Y(x.tmax); g.add(capT);
     const ring = new T.Mesh(new T.TorusGeometry(0.0098, 0.0019, 10, 32), toon(0xffffff)); ring.rotation.x = Math.PI / 2; ring.position.y = Y(x.tmin); g.add(ring);
     // números: máxima grande e colorida; mínima pequena, ao lado do anel
-    const tx = arToonText(T, `${nf(x.tmax)}°`, { w:0.062, h:0.03, fill:col }); tx.position.set(0, Y(x.tmax) + 0.026, 0.004); g.add(tx);
-    const tn = arToonText(T, `${nf(x.tmin)}°`, { w:0.032, h:0.016, fill:"#ffffff" }); tn.position.set(0.02, Y(x.tmin), 0.004); g.add(tn);
+    // máxima numa etiqueta da cor da temperatura, numa fileira acima dos tubos; mínima numa etiqueta escura ao lado do anel, na frente do vidro
+    const tx = arToonText(T, `${nf(x.tmax)}°`, { w:0.058, h:0.03, fill:"#ffffff", badge:col }); tx.position.set(0, tagY, 0.012); g.add(tx);
+    const tn = arToonText(T, `${nf(x.tmin)}°`, { w:0.03, h:0.016, fill:"#ffffff", badge:"#173a5c" }); tn.position.set(0.021, Y(x.tmin), 0.014); g.add(tn);
     // tempo do dia flutuando em cima
     const k = wxKind({ cloud:x.cloud, rain:x.rain ?? 0, thunder:x.storm >= 2, day:true, daily:true }), ic = icon(k, x.rain); ic.position.y = iconY; ic.scale.setScalar(1.15); g.add(ic);
     // nome do dia na borda da ilha
-    const dn = arToonText(T, name(x.d), { w:0.064, h:0.017, fill:isT ? "#fff36b" : "#ffffff", weight:800 }); dn.rotation.x = -Math.PI / 2.4; dn.position.set(0, top + 0.002, 0.07); g.add(dn);
+    const dn = arToonText(T, name(x.d), { w:0.064, h:0.017, fill:isT ? "#fff36b" : "#ffffff", weight:800, stroke:"#1d4a22" }); dn.rotation.x = -Math.PI / 2.4; dn.position.set(0, top + 0.002, 0.07); g.add(dn);
     if (isT){ const halo = new T.Mesh(new T.TorusGeometry(0.02, 0.0022, 10, 40), toon(0xfff36b, { emissive:0xffd21f, emissiveIntensity:0.8 })); halo.rotation.x = Math.PI / 2; halo.position.y = top + 0.002; g.add(halo); }
   });
   const { GLTFExporter } = await import("three/addons/exporters/GLTFExporter.js");
