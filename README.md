@@ -85,6 +85,8 @@ A aba **queda de pressão** mostra quanto a pressão do ar cai em 24 horas. Qued
 
 A aba **nevoeiro** considera nevoeiro ou cerração quando o modelo prevê o código de nevoeiro, visibilidade abaixo de 1 km, ou ar saturado (umidade de 97% ou mais) com vento fraco. É um aviso para quem vai pegar a estrada e não muda o nível de risco do painel.
 
+O botão **Ver na mesa** monta os 10 dias como um cenário 3D em estilo de jogo: uma ilha com um termômetro de desenho animado por dia. O líquido vai da mínima (anel branco) à máxima, com uma cor forte a cada 3 graus, o número da máxima aparece grande em cima e, flutuando sobre cada termômetro, o tempo do dia em 3D (sol, nuvem, chuva, raio ou neblina). No celular, dá para colocar esse objeto em cima de uma mesa com a câmera (realidade aumentada): no iPhone abre o visualizador da Apple, no Android a câmera do Chrome. No computador, dá para girar e aproximar. Usa o [model-viewer](https://modelviewer.dev), do Google, que é baixado em segundo plano quando os 10 dias aparecem na tela (menos no modo de economia de dados), para a janela abrir rápido.
+
 Ao abrir a página, já vem aberto o dia do risco mais grave das próximas 72 horas; se não houver risco, abre hoje.
 
 **4. Contexto e referência**
@@ -107,7 +109,7 @@ Ao abrir a página, já vem aberto o dia do risco mais grave das próximas 72 ho
 | `manifest.webmanifest` | Nome, ícone e cores usados quando o painel é instalado na tela inicial. |
 | `icons/` | Ícones para a aba do navegador, iPhone e Android. |
 
-Bibliotecas carregadas de CDN: [three.js](https://threejs.org) (cenas 3D) e [Chart.js](https://www.chartjs.org) (gráficos). Sem internet para elas, o painel funciona sem essas partes.
+Bibliotecas carregadas de CDN: [three.js](https://threejs.org) (cenas 3D), [Chart.js](https://www.chartjs.org) (gráficos) e o [model-viewer](https://modelviewer.dev) (realidade aumentada), baixado depois do resto da página. Sem internet para elas, o painel funciona sem essas partes.
 
 ## Limites honestos
 

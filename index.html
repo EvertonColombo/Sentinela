@@ -634,6 +634,26 @@ header{display:grid;gap:12px}
 .mx-crit b.ct{padding:0 5px;border-radius:3px;color:#1b1030;background:#b18cff}
 
 
+
+/* realidade aumentada */
+.dz-r{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;justify-content:flex-end}
+.ar-btn{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.armodal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgb(3 8 12 / .72);backdrop-filter:blur(4px)}
+.armodal[hidden]{display:none}
+.ar-box{width:min(860px,100%);max-height:100%;display:grid;gap:10px;background:#0a1218;color:#e6eef4;border:1px solid var(--line);border-radius:14px;padding:14px;overflow:auto}
+.ar-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ar-stage{position:relative;height:min(64vh,560px);border-radius:12px;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#4fb6ff 0%,#2a7fd6 45%,#123c78 100%)}
+
+.ar-load{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:14px;color:#9fe9dc;font:600 .9rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.ar-load i{width:64px;height:64px;border-radius:50%;border:2px solid rgb(54 214 195 / .15);border-top-color:#36d6c3;box-shadow:0 0 24px rgb(54 214 195 / .35);animation:arspin 1s linear infinite}
+@keyframes arspin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.ar-load i{animation:none}}
+.ar-stage model-viewer{width:100%;height:100%;--poster-color:transparent}
+.ar-go{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);border:0;border-radius:99px;padding:10px 18px;font:600 .95rem var(--f-body);background:var(--accent);color:var(--bg);cursor:pointer;box-shadow:0 4px 16px rgb(0 0 0 / .4)}
+.ar-how{margin:0;font-size:.85rem;color:#93a4ae}
+.ar-key{margin:0;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.84rem;color:#c9d6de}
+.ar-key i{display:inline-block;width:18px;height:8px;border-radius:4px;margin-right:6px;vertical-align:1px}
+.ar-key .k-t{width:46px;background:linear-gradient(90deg,#3b6cff,#2f9bff,#1fc7f0,#1fd6b0,#4fdc5a,#c8e62a,#ffcc1f,#ff9a1f,#ff5a2a,#ff2050)} .ar-key .k-n{width:12px;height:12px;border-radius:50%;border:3px solid #fff;background:transparent}
 /* riscos dos 10 dias: um cartão por risco, com a faixa de agora até 10 dias */
 .rlist{display:grid;gap:12px}
 .rcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
@@ -946,7 +966,7 @@ footer p{margin:0;max-width:80ch}
 <section class="card" id="dez">
   <div class="card-head">
     <h2>Próximos 10 dias</h2>
-    <span class="label">toque num dia para ver hora a hora</span>
+    <span class="dz-r"><span class="label">toque num dia para ver hora a hora</span><button class="btn ar-btn" type="button" id="arbtn"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 2l8 4.5v9L12 20l-8-4.5v-9z M4 6.5l8 4.5 8-4.5 M12 11v9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Ver na mesa</button></span>
   </div>
   <div class="ten" id="ten"><p class="status">Calculando…</p></div>
   <div class="ten-foot" id="ten-foot"></div>
@@ -1071,6 +1091,14 @@ footer p{margin:0;max-width:80ch}
 </footer>
 </div>
 <div id="pop" role="dialog" hidden></div>
+<div class="armodal" id="armodal" role="dialog" aria-modal="true" aria-labelledby="ar-t" hidden>
+  <div class="ar-box">
+    <div class="ar-head"><h2 id="ar-t">Os 10 dias em 3D</h2><button class="btn" type="button" id="arclose" aria-label="Fechar">✕</button></div>
+    <div class="ar-stage" id="arstage"><p class="status">Montando o modelo 3D…</p></div>
+    <p class="ar-key"><span><i class="k-t"></i>termômetro: da mínima à máxima, cada cor é uma faixa de 3 graus</span><span><i class="k-n"></i>anel branco = mínima</span><span>em cima, o tempo do dia</span></p>
+    <p class="ar-how" id="arhow"></p>
+  </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
@@ -2984,6 +3012,119 @@ function renderThunder(A, tl){
   th.innerHTML = `${txt} <span class="muted">Previsão dos modelos, não detecção: raios caindo agora no <a href="https://www.lightningmaps.org/" target="_blank" rel="noopener">LightningMaps ↗</a>.</span>`;
 }
 // avisos do navegador: funcionam com a página aberta (pode ficar em segundo plano)
+/* ====================== realidade aumentada: os 10 dias na mesa ====================== */
+// o objeto é montado aqui com three.js, exportado como GLB e mostrado pelo <model-viewer> (Google, código aberto),
+// que abre a câmera no Android (WebXR) e gera sozinho o arquivo do Quick Look no iPhone
+const MV_URL = "https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js";
+let AR_URL = null;
+// placa de texto com fundo transparente e brilho (vira holograma no 3D)
+function arPlate(T, text, { w = 0.056, h = 0.016, fg = "#e6eef4", glow = fg, weight = 600, bg = null } = {}){
+  const cv = document.createElement("canvas"); cv.height = Math.round(Math.min(160, 2048 * h / w)); cv.width = Math.min(2048, Math.round(cv.height * w / h));
+  const g = cv.getContext("2d");
+  if (bg){ g.fillStyle = bg; g.beginPath(); g.roundRect ? g.roundRect(0, 0, cv.width, cv.height, cv.height * 0.3) : g.rect(0, 0, cv.width, cv.height); g.fill(); }
+  let fs = cv.height * 0.6; const F = () => g.font = `${weight} ${fs}px system-ui, -apple-system, "Segoe UI", sans-serif`; F();
+  while (g.measureText(text).width > cv.width * 0.9 && fs > 8){ fs -= 2; F(); }
+  g.textAlign = "center"; g.textBaseline = "middle"; g.shadowColor = glow; g.shadowBlur = fs * 0.35; g.fillStyle = fg;
+  g.fillText(text, cv.width / 2, cv.height / 2 + fs * 0.04); g.shadowBlur = 0; g.fillText(text, cv.width / 2, cv.height / 2 + fs * 0.04);
+  const tex = new T.CanvasTexture(cv); tex.colorSpace = T.SRGBColorSpace;
+  const m = new T.MeshStandardMaterial({ map:tex, emissive:0xffffff, emissiveMap:tex, emissiveIntensity:1, roughness:1, metalness:0, transparent:true, side:T.DoubleSide, depthWrite:false });
+  return new T.Mesh(new T.PlaneGeometry(w, h), m);
+}
+// cena estilo jogo: uma ilha com um termômetro de desenho animado por dia (o líquido sobe até a máxima; o anel branco marca a mínima),
+// o número da máxima bem grande e, flutuando em cima, o tempo do dia em 3D (sol, nuvem, chuva, raio ou neblina)
+// cores fortes, de 3 em 3 graus, para as diferenças aparecerem
+const TOON = t => t < 2 ? "#7c5cff" : t < 6 ? "#3b6cff" : t < 10 ? "#2f9bff" : t < 13 ? "#1fc7f0" : t < 16 ? "#1fd6b0" : t < 19 ? "#4fdc5a" : t < 22 ? "#c8e62a" : t < 25 ? "#ffcc1f" : t < 28 ? "#ff9a1f" : t < 31 ? "#ff5a2a" : "#ff2050";
+function arToonText(T, text, { w = 0.06, h = 0.03, fill = "#ffffff", stroke = "#0b1a24", weight = 900 } = {}){
+  const cv = document.createElement("canvas"); cv.height = 192; cv.width = Math.min(2048, Math.round(cv.height * w / h));
+  const g = cv.getContext("2d"); let fs = cv.height * 0.72; const F = () => g.font = `${weight} ${fs}px "Arial Rounded MT Bold", "Nunito", system-ui, -apple-system, sans-serif`; F();
+  while (g.measureText(text).width > cv.width * 0.86 && fs > 10){ fs -= 2; F(); }
+  g.textAlign = "center"; g.textBaseline = "middle"; g.lineJoin = "round"; g.lineWidth = fs * 0.2; g.strokeStyle = stroke; const x = cv.width / 2, y = cv.height / 2 + fs * 0.05;
+  g.strokeText(text, x, y); g.fillStyle = fill; g.fillText(text, x, y);
+  const tex = new T.CanvasTexture(cv); tex.colorSpace = T.SRGBColorSpace;
+  return new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshStandardMaterial({ map:tex, emissive:0xffffff, emissiveMap:tex, emissiveIntensity:0.55, roughness:1, transparent:true, side:T.DoubleSide, depthWrite:false }));
+}
+async function buildARScene(A){
+  const T = THREE, today = A.times[A.i0].slice(0, 10);
+  const list = A.days.filter(d => d >= today).slice(0, 10).map(d => ({ d, ...A.dayStats[d] })).filter(x => x.tmin != null), n = list.length;
+  const sc = new T.Scene(), toon = (c, o = {}) => new T.MeshStandardMaterial({ color:c, roughness:0.55, metalness:0, ...o });
+  const step = 0.066, L = (n - 1) * step, x0 = -L / 2, isl = 0.035;
+  // ilha: grama em cima, terra nas laterais, cantos arredondados
+  const shape = (w, d, r) => { const s = new T.Shape(), x = -w / 2, y = -d / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + d - r); s.quadraticCurveTo(x + w, y + d, x + w - r, y + d); s.lineTo(x + r, y + d); s.quadraticCurveTo(x, y + d, x, y + d - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s; };
+  const slab = (w, d, h, r, c, y) => { const g = new T.ExtrudeGeometry(shape(w, d, r), { depth:h, bevelEnabled:true, bevelThickness:0.004, bevelSize:0.004, bevelSegments:3, curveSegments:10 }); g.rotateX(-Math.PI / 2); const m = new T.Mesh(g, toon(c)); m.position.y = y; sc.add(m); return m; };
+  const W = L + 0.09, D = 0.17;
+  slab(W, D, isl - 0.012, 0.03, 0x8a5a3c, 0); slab(W + 0.002, D + 0.002, 0.008, 0.03, 0x5ccf5f, isl - 0.012);
+  const top = isl + 0.002;
+  // escala comum das temperaturas
+  const lo = Math.min(...list.map(x => x.tmin)) - 2, hi = Math.max(...list.map(x => x.tmax)) + 1;
+  const bulbY = top + 0.016, Y = t => bulbY + 0.022 + (t - lo) / Math.max(1, hi - lo) * 0.15, iconY = Y(hi) + 0.075;
+  const name = d => d === today ? "Hoje" : cap1(rel(d + "T12:00") === "amanhã" ? "amanhã" : weekday(d + "T12:00"));
+  // peças de ícone
+  const ball = (r, c, o) => new T.Mesh(new T.SphereGeometry(r, 24, 16), toon(c, o));
+  const cloud = (c = 0xffffff) => { const g = new T.Group(); [[0, 0, 0.012], [-0.012, -0.003, 0.009], [0.012, -0.003, 0.009], [0.005, 0.006, 0.009]].forEach(([x, y, r]) => { const b = ball(r, c); b.position.set(x, y, 0); g.add(b); }); return g; };
+  const sun = () => { const g = new T.Group(); g.add(ball(0.011, 0xffd21f, { emissive:0xffb000, emissiveIntensity:0.6 }));
+    for (let k = 0; k < 8; k++){ const r = new T.Mesh(new T.CylinderGeometry(0.0018, 0.0018, 0.007, 8), toon(0xffd21f, { emissive:0xffb000, emissiveIntensity:0.5 })); const a = k * Math.PI / 4; r.position.set(Math.cos(a) * 0.017, Math.sin(a) * 0.017, 0); r.rotation.z = a - Math.PI / 2; g.add(r); } return g; };
+  const drop = () => { const d = ball(0.0032, 0x2f8bff, { emissive:0x1f6fff, emissiveIntensity:0.3 }); d.scale.set(1, 1.5, 1); return d; };
+  const bolt = () => { const s = new T.Shape(); s.moveTo(0.002, 0.012); s.lineTo(-0.006, -0.001); s.lineTo(0, -0.001); s.lineTo(-0.003, -0.013); s.lineTo(0.007, 0.002); s.lineTo(0.001, 0.002); s.lineTo(0.005, 0.012); s.closePath();
+    const g = new T.ExtrudeGeometry(s, { depth:0.003, bevelEnabled:false }); g.translate(0, 0, -0.0015); return new T.Mesh(g, toon(0xffd21f, { emissive:0xffb000, emissiveIntensity:0.7 })); };
+  const icon = (k, mm) => { const g = new T.Group();
+    if (k === "sun" || k === "moon") g.add(sun());
+    else if (k === "partly" || k === "partly-night"){ const s = sun(); s.position.set(-0.008, 0.008, -0.004); s.scale.setScalar(0.8); g.add(s); const c = cloud(); c.position.set(0.004, -0.003, 0.004); g.add(c); }
+    else if (k === "cloud"){ const c = cloud(0xdfe6ee); g.add(c); }
+    else if (k === "fog"){ g.add(cloud(0xdfe6ee)); [-0.014, -0.02].forEach((y, i) => { const b = new T.Mesh(new T.CapsuleGeometry(0.0018, 0.022 - i * 0.006, 4, 8), toon(0xc9d4de)); b.rotation.z = Math.PI / 2; b.position.y = y; g.add(b); }); }
+    else { const dark = k === "thunder" ? 0x7d8794 : 0xb9c4cf; g.add(cloud(dark)); const nd = Math.min(5, Math.max(1, Math.round(Math.sqrt(mm ?? 1) * 1.2)));
+      for (let q = 0; q < nd; q++){ const d = drop(); d.position.set(-0.012 + q * (0.024 / Math.max(1, nd - 1)) * (nd > 1 ? 1 : 0), -0.018 - (q % 2) * 0.006, 0); g.add(d); }
+      if (k === "thunder"){ const b = bolt(); b.position.set(0.004, -0.02, 0.006); g.add(b); } }
+    return g; };
+  list.forEach((x, i) => { const px = x0 + i * step, isT = x.d === today, col = TOON(x.tmax), ice = new T.Color(TOON(x.tmin)).lerp(new T.Color(0xffffff), 0.35);
+    const g = new T.Group(); g.position.set(px, 0, -0.01); sc.add(g);
+    // termômetro: bulbo, tubo de vidro, líquido até a máxima (parte de baixo, até a mínima, mais clara)
+    const bulb = ball(0.0135, col, { emissive:col, emissiveIntensity:0.25 }); bulb.position.y = bulbY; g.add(bulb);
+    const glass = new T.Mesh(new T.CapsuleGeometry(0.0085, Y(hi) - bulbY, 6, 24), toon(0xffffff, { transparent:true, opacity:0.28, roughness:0.1 })); glass.position.y = (Y(hi) + bulbY) / 2 + 0.002; g.add(glass);
+    const liq = (y0, y1, c, k) => { const m = new T.Mesh(new T.CylinderGeometry(0.0058, 0.0058, Math.max(0.001, y1 - y0), 24), toon(c, { emissive:c, emissiveIntensity:k })); m.position.y = (y0 + y1) / 2; g.add(m); };
+    liq(bulbY, Y(x.tmin), ice, 0.1);
+    // da mínima à máxima, um gomo por grau na cor daquela temperatura
+    for (let t = Math.floor(x.tmin); t < Math.ceil(x.tmax); t++){ const a = Math.max(t, x.tmin), b = Math.min(t + 1, x.tmax); if (b > a) liq(Y(a), Y(b) + 0.0002, TOON((a + b) / 2), 0.35); }
+    const capT = ball(0.0058, col, { emissive:col, emissiveIntensity:0.35 }); capT.position.y = Y(x.tmax); g.add(capT);
+    const ring = new T.Mesh(new T.TorusGeometry(0.0098, 0.0019, 10, 32), toon(0xffffff)); ring.rotation.x = Math.PI / 2; ring.position.y = Y(x.tmin); g.add(ring);
+    // números: máxima grande e colorida; mínima pequena, ao lado do anel
+    const tx = arToonText(T, `${nf(x.tmax)}°`, { w:0.062, h:0.03, fill:col }); tx.position.set(0, Y(x.tmax) + 0.026, 0.004); g.add(tx);
+    const tn = arToonText(T, `${nf(x.tmin)}°`, { w:0.032, h:0.016, fill:"#ffffff" }); tn.position.set(0.02, Y(x.tmin), 0.004); g.add(tn);
+    // tempo do dia flutuando em cima
+    const k = wxKind({ cloud:x.cloud, rain:x.rain ?? 0, thunder:x.storm >= 2, day:true, daily:true }), ic = icon(k, x.rain); ic.position.y = iconY; ic.scale.setScalar(1.15); g.add(ic);
+    // nome do dia na borda da ilha
+    const dn = arToonText(T, name(x.d), { w:0.064, h:0.017, fill:isT ? "#fff36b" : "#ffffff", weight:800 }); dn.rotation.x = -Math.PI / 2.4; dn.position.set(0, top + 0.002, 0.07); g.add(dn);
+    if (isT){ const halo = new T.Mesh(new T.TorusGeometry(0.02, 0.0022, 10, 40), toon(0xfff36b, { emissive:0xffd21f, emissiveIntensity:0.8 })); halo.rotation.x = Math.PI / 2; halo.position.y = top + 0.002; g.add(halo); }
+  });
+  const { GLTFExporter } = await import("three/addons/exporters/GLTFExporter.js");
+  const glb = await new GLTFExporter().parseAsync(sc, { binary:true });
+  return URL.createObjectURL(new Blob([glb], { type:"model/gltf-binary" }));
+}
+// a biblioteca de realidade aumentada é baixada antes, quando os 10 dias aparecem na tela (menos no modo de economia de dados)
+let MV_P = null; const loadMV = () => MV_P ||= import(MV_URL);
+if (!navigator.connection?.saveData && "IntersectionObserver" in window){
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)){ io.disconnect(); const go = () => loadMV().catch(() => { MV_P = null; }); window.requestIdleCallback ? requestIdleCallback(go, { timeout:4000 }) : setTimeout(go, 1500); } }, { rootMargin:"300px" });
+  io.observe($("#dez"));
+}
+async function openAR(){
+  const md = $("#armodal"), st = $("#arstage"), how = $("#arhow"); md.hidden = false; document.body.style.overflow = "hidden";
+  if (!THREE || !lastA){ st.innerHTML = `<p class="status" style="padding:16px">O 3D não carregou (sem acesso ao jsDelivr). Tente de novo mais tarde.</p>`; return; }
+  st.innerHTML = `<div class="ar-load"><i></i><span>Montando o 3D…</span></div>`;
+  try {
+    await loadMV();
+    if (AR_URL) URL.revokeObjectURL(AR_URL); AR_URL = await buildARScene(lastA);
+    st.innerHTML = `<model-viewer src="${AR_URL}" alt="Os próximos 10 dias em 3D: um termômetro por dia e o tempo de cada dia em cima" ar ar-modes="webxr quick-look scene-viewer" camera-controls touch-action="pan-y" shadow-intensity="0.8" shadow-softness="1" environment-image="neutral" tone-mapping="neutral" exposure="1.05" camera-orbit="0deg 70deg 80%" field-of-view="30deg" interaction-prompt="none" auto-rotate auto-rotate-delay="6000" rotation-per-second="8deg">
+      <button slot="ar-button" class="ar-go" type="button">Ver na mesa com a câmera</button></model-viewer>`;
+    const mv = st.querySelector("model-viewer");
+    const msg = ok => how.innerHTML = ok ? "Toque em <b>Ver na mesa com a câmera</b> e aponte o celular para uma mesa ou o chão. Gire com dois dedos, aumente com pinça e ande em volta. No iPhone abre o visualizador da Apple; no Android, a câmera do Chrome."
+      : "Arraste para girar e use a roda do mouse ou a pinça para aproximar. Para ver na mesa com a câmera, abra esta página no celular (iPhone com Safari ou Android com Chrome).";
+    msg(false); mv.addEventListener("load", () => msg(mv.canActivateAR), { once:true });
+  } catch (e){ st.innerHTML = `<p class="status" style="padding:16px">Não consegui montar o 3D agora (${esc(e.message || "erro")}).</p>`; }
+}
+function closeAR(){ $("#armodal").hidden = true; document.body.style.overflow = ""; $("#arstage").innerHTML = ""; }
+$("#arbtn").onclick = openAR; $("#arclose").onclick = closeAR;
+$("#armodal").addEventListener("click", e => { if (e.target.id === "armodal") closeAR(); });
+addEventListener("keydown", e => { if (e.key === "Escape" && !$("#armodal").hidden) closeAR(); });
+
 /* ====================== lugares ====================== */
 let myPlaces = store.get("sentinela.places") || [];
 let place = store.get("sentinela.place") || DEFAULT_PLACE;
