@@ -654,6 +654,26 @@ header{display:grid;gap:12px}
 .ar-key{margin:0;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.84rem;color:#c9d6de}
 .ar-key i{display:inline-block;width:18px;height:8px;border-radius:4px;margin-right:6px;vertical-align:1px}
 .ar-key .k-t{width:46px;background:linear-gradient(90deg,#3b6cff,#2f9bff,#1fc7f0,#1fd6b0,#4fdc5a,#c8e62a,#ffcc1f,#ff9a1f,#ff5a2a,#ff2050)} .ar-key .k-n{width:12px;height:12px;border-radius:50%;border:3px solid #fff;background:transparent}
+
+/* janela de sol */
+.tt-sol .sw-t{font-size:1.25rem}
+.tt-sol .sw-t.none{color:var(--muted);font-size:1.05rem}
+.swstrip{display:grid;grid-template-columns:repeat(15,1fr);gap:2px;height:12px}
+.swstrip i{border-radius:3px}
+.sw-ax span:nth-child(1){left:20%}.sw-ax span:nth-child(2){left:46.7%}.sw-ax span:nth-child(3){left:73.3%}
+.sw-ind{display:grid;gap:3px;border-top:1px solid var(--line);padding-top:7px}
+.sw-ind span{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.sw-ind small{font-size:.74rem;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:2px}
+.sw-ind small .term{transform:scale(.8)}
+.sw-ind b{font:600 .82rem var(--f-body);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.uvb::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 30%,transparent)}
+.evb{display:inline-flex;gap:2px;align-items:flex-end}
+.evb i{width:4px;border-radius:1px;background:var(--line)}
+.evb i:nth-child(1){height:5px}.evb i:nth-child(2){height:8px}.evb i:nth-child(3){height:11px}
+.evb[data-l="1"] i:nth-child(1),.evb[data-l="2"] i:nth-child(-n+2),.evb[data-l="3"] i{background:#4aa3e6}
+.sunband{position:absolute;left:0;right:0;bottom:-5px;height:3px;display:grid;grid-template-columns:repeat(24,1fr);border-radius:2px;overflow:hidden;z-index:1}
+.fsun{display:inline-block;width:16px;height:4px;border-radius:2px;background:#ffc533;vertical-align:2px}
+@media (max-width:560px){.tt-sol .sw-t{font-size:1.05rem}.tt-sol{grid-column:1 / -1}}
 /* riscos dos 10 dias: um cartão por risco, com a faixa de agora até 10 dias */
 .rlist{display:grid;gap:12px}
 .rcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
@@ -1160,7 +1180,7 @@ const LEVEL_NAMES = ["Sem risco","Atenção","Alerta","Severo"];
 const TZ = "America/Sao_Paulo";
 // direção média (média de vetores, para 350° e 10° darem 0° e não 180°)
 function meanDir(a){ let x = 0, y = 0, n = 0; a.forEach(d => { if (d != null){ x += Math.sin(d * Math.PI / 180); y += Math.cos(d * Math.PI / 180); n++; } }); return n ? (Math.atan2(x, y) * 180 / Math.PI + 360) % 360 : null; }
-const HOURLY = ["apparent_temperature","precipitation","wind_speed_10m","wind_direction_10m","wind_gusts_10m","pressure_msl",
+const HOURLY = ["apparent_temperature","uv_index","sunshine_duration","vapour_pressure_deficit","dew_point_2m","precipitation","wind_speed_10m","wind_direction_10m","wind_gusts_10m","pressure_msl",
   "cape","wind_speed_500hPa","wind_direction_500hPa","temperature_2m","weather_code","cloud_cover","is_day","relative_humidity_2m","visibility"];
 const THUNDER = [95, 96, 99];
 // nevoeiro ou cerração: código de nevoeiro (45, 48), visibilidade abaixo de 1 km, ou ar saturado (umidade 97% ou mais) com vento fraco
@@ -1183,6 +1203,10 @@ const carCompare = v => v < 25 ? "como o vento de andar de bicicleta" : v < 45 ?
 
 /* ====================== glossário ====================== */
 const GLOSS = {
+  janelasol: ["Janela de sol","Horas seguidas, de dia, em que pelo menos 2 modelos preveem sol (meia hora de sol ou mais em cada hora), sem chuva, sem trovoada e sem neblina.","Nos 10 dias, a faixa amarela embaixo de cada curva mostra essas horas. Amarelo claro é sol entre nuvens."],
+  uv: ["Índice UV","Mede a força da radiação ultravioleta do sol, a parte da luz que queima a pele. Depende mais da época do ano e da hora do que do calor: num dia fresco, o UV pode estar alto ao meio-dia.","Escala da Organização Mundial da Saúde: 0 a 2 baixo · 3 a 5 moderado · 6 a 7 alto · 8 a 10 muito alto · 11 ou mais extremo. A partir de 6, proteção é recomendada."],
+  evaporacao: ["Potencial de evaporação","Quanto o ar consegue secar o que está molhado. Junta a secura do ar (déficit de pressão de vapor) com o vento: ar seco e ventilado evapora rápido; ar úmido e parado, devagar.","Baixo: abaixo de 0,6 · moderado: de 0,6 a 1,2 · alto: acima de 1,2 (déficit de vapor em kPa, corrigido pelo vento)."],
+  conforto: ["Conforto (ponto de orvalho)","Temperatura em que o ar ficaria saturado. Diz quanta água o ar carrega de verdade, sem mudar ao longo do dia como a umidade relativa, que passa de 90% em quase toda madrugada.","Abaixo de 10°: ar seco · 10° a 16°: agradável · 16° a 20°: úmido · acima de 20°: abafado."],
   rajada: ["Rajada","Pico de vento que dura poucos segundos e é bem mais forte que o vento médio. É a rajada que destelha casas e derruba árvores.","Referência: 60 km/h quebra galhos · 80 km/h destelha · 100 km/h derruba árvores grandes."],
   acumulado: ["Chuva acumulada em 24 horas","Soma de toda a chuva que cai em 24 horas seguidas, contadas a partir de qualquer hora. 1 milímetro de chuva é 1 litro de água em cada metro quadrado.","Em encostas, solo encharcado mais chuva forte é a receita de deslizamento. 50 mm já pede atenção; acima de 100 mm o risco é alto."],
   cape: ["CAPE (instabilidade do ar)","Mede o quanto o ar quente e úmido perto do chão tende a subir sozinho e formar nuvens de tempestade. Quanto maior, mais instável o ar e mais fortes podem ser as tempestades. A unidade é J/kg.","Abaixo de 1.000: instabilidade baixa · 1.000 a 2.500: moderada · acima de 2.500: alta. Sozinha não basta: precisa de vento em altura junto."],
@@ -1414,6 +1438,7 @@ function analyze(results){
     const s = { gust: cons(ok.map(m => m.sc.gust[i])) ?? 0, rain: cons(ok.map(m => m.sc.rain[i])) ?? 0, storm: cons(ok.map(m => m.sc.storm[i])) ?? 0, cyclone: cons(ok.map(m => m.sc.cyclone[i])) ?? 0 };
     const lv = { gust: lvOfScore(s.gust), rain: lvOfScore(s.rain), storm: lvOfScore(s.storm), cyclone: lvOfScore(s.cyclone) };
     const per = ok.map(m => ({ name:m.name, gust:m.s.wind_gusts_10m[i], rain1:m.s.precipitation[i], r24:m.r24[i], cape:m.s.cape[i], shear:m.shear[i], temp:m.s.temperature_2m[i], feel:m.s.apparent_temperature?.[i] ?? null, dir:m.s.wind_direction_10m[i],
+      sun:m.s.sunshine_duration?.[i] ?? null, cloud:m.s.cloud_cover?.[i] ?? null, uv:m.s.uv_index?.[i] ?? null, vpd:m.s.vapour_pressure_deficit?.[i] ?? null, dew:m.s.dew_point_2m?.[i] ?? null, day:m.s.is_day?.[i] ?? null,
       lv:{ gust:lvOfScore(m.sc.gust[i]), rain:lvOfScore(m.sc.rain[i]), storm:lvOfScore(m.sc.storm[i]), cyclone:lvOfScore(m.sc.cyclone[i]), thunder:THUNDER.includes(m.s.weather_code?.[i]) ? 1 : 0, fog:isFog(m.s, i) ? 1 : 0 }, pfall:m.pfall[i], vis:m.s.visibility?.[i] ?? null, rh:m.s.relative_humidity_2m?.[i] ?? null }));
     lv.thunder = per.filter(p => p.lv.thunder).length >= 2 ? 1 : 0;
     lv.fog = per.filter(p => p.lv.fog).length >= 2 ? 1 : 0;
@@ -1421,7 +1446,8 @@ function analyze(results){
       v: { gust: cons(ok.map(m => m.s.wind_gusts_10m[i])), rain1: cons(ok.map(m => m.s.precipitation[i])), rain24: cons(ok.map(m => m.r24[i])),
            cape: sp2.cape ?? null, shear: sp2.shear ?? null, pres: mid(ok.map(m => m.s.pressure_msl[i]), FLOOR.pres),
            pfall: cons(ok.map(m => m.pfall[i])), temp: mid(ok.map(m => m.s.temperature_2m[i]), FLOOR.temp),
-           feel: mid(ok.map(m => m.s.apparent_temperature?.[i]), FLOOR.temp), wind: mid(ok.map(m => m.s.wind_speed_10m[i]), FLOOR.wind), dir: meanDir(ok.map(m => m.s.wind_direction_10m[i])) } };
+           feel: mid(ok.map(m => m.s.apparent_temperature?.[i]), FLOOR.temp), dew: mid(ok.map(m => m.s.dew_point_2m?.[i]), FLOOR.temp), vpd: median(ok.map(m => m.s.vapour_pressure_deficit?.[i])),
+           uv: median(ok.map(m => m.s.uv_index?.[i])), wind: mid(ok.map(m => m.s.wind_speed_10m[i]), FLOOR.wind), dir: meanDir(ok.map(m => m.s.wind_direction_10m[i])) } };
   });
   const timeline = tlAll.filter(h => h.i >= i0 && h.i < i1);
   const days = [...new Set(times.map(t => t.slice(0,10)))].filter(d => ok.some(m => m.daily[d]?.n >= 20));
@@ -1506,6 +1532,7 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => { if (e.key === "Escape") hidePop(); });
 addEventListener("resize", hidePop);
 const GMETA = {   // ícone, tema e onde o termo aparece no painel
+  janelasol:["☀️","Sol","#today"], uv:["☀️","Sol","#today"], evaporacao:["💧","Sol","#today"], conforto:["💧","Sol","#today"],
   rajada:["💨","Vento","#riscos"], acumulado:["🌧","Chuva","#riscos"], cape:["🔥","Tempestade","#c-storm"], shear:["🌀","Tempestade","#c-storm"],
   supercelula:["⛈","Tempestade","#riscos"], pressao:["🧭","Pressão","#hora-a-hora"], ciclone:["🌪","Pressão","#riscos"], niveis:["🚦","Níveis","#riscos"],
   modelo:["🖥","Modelos","#modelos"], consenso:["🤝","Modelos","#riscos"], ensemble:["🎲","Modelos","#riscos"], rodada:["⏱","Modelos","#modelos"],
@@ -1758,6 +1785,31 @@ function renderHeroNow(A){
   return { cloud:(c.cloud ?? 50) / 100, rain:c.rain ?? 0, thunder:c.thunder, day:c.day ?? true, wind:c.wind ?? 10, kind:k };
 }
 
+// JANELA DE SOL: estado de cada hora (2 = sol, 1 = sol entre nuvens, 0 = nublado, -1 = chuva ou trovoada, null = noite)
+// com acordo de pelo menos 2 modelos; neblina conta como nublado
+function sunState(h){
+  if (h.per.some(p => p.day === 0) && h.per.filter(p => p.day === 0).length * 2 >= h.per.length) return null;
+  const wet = h.per.filter(p => (p.rain1 ?? 0) >= 0.1 || p.lv?.thunder).length; if (wet >= 2) return -1;
+  const lvl = p => p.lv?.fog ? 0 : p.sun != null ? (p.sun >= 1800 ? 2 : p.sun >= 900 ? 1 : 0) : p.cloud != null ? (p.cloud < 40 ? 2 : p.cloud < 70 ? 1 : 0) : null;
+  const L = h.per.map(lvl).filter(x => x != null); if (L.length < 2) return 0;
+  return kth(L, 2);   // o segundo maior: o que pelo menos 2 modelos garantem
+}
+const UVCAT = v => v == null ? null : v < 3 ? ["baixo", "#3ea72d"] : v < 6 ? ["moderado", "#e8c400"] : v < 8 ? ["alto", "#f18b00"] : v < 11 ? ["muito alto", "#e53210"] : ["extremo", "#b567a4"];
+const EVAP = e => e == null ? null : e >= 1.2 ? ["alto", 3] : e >= 0.6 ? ["moderado", 2] : ["baixo", 1];
+const CONF = d => d == null ? null : d < 10 ? "ar seco" : d < 16 ? "agradável" : d < 20 ? "úmido" : "abafado";
+// janela principal do dia (a sequência mais longa de sol, de 2 horas ou mais), só de agora em diante
+function sunWindow(A, d){
+  const hs = A.tlAll.filter(h => h.t.startsWith(d)), st = hs.map(h => h.i < A.i0 ? null : sunState(h));
+  let best = null, a = -1; st.forEach((v, j) => { if (v === 2){ if (a < 0) a = j; } else if (a >= 0){ if (!best || j - a > best[1] - best[0] + 1) best = [a, j - 1]; a = -1; } });
+  if (a >= 0 && (!best || st.length - a > best[1] - best[0] + 1)) best = [a, st.length - 1];
+  if (best && best[1] - best[0] < 1) best = null;
+  const sunH = st.filter(v => v === 2).length;
+  const sel = best ? hs.slice(best[0], best[1] + 1) : hs.filter((h, j) => st[j] != null && st[j] >= 1);
+  const uv = Math.max(...sel.map(h => h.v.uv ?? -1)), vpd = median(sel.map(h => h.v.vpd)), wind = median(sel.map(h => h.v.wind)), dew = median(sel.map(h => h.v.dew));
+  return { d, hs, st, best, sunH, uv: uv >= 0 ? uv : null, evap: vpd == null ? null : vpd * (1 + Math.min(wind ?? 0, 30) / 25), dew };
+}
+const SUNCOL = v => v === 2 ? "#ffc533" : v === 1 ? "#ffe9a3" : v === -1 ? "#4aa3e6" : v === 0 ? "var(--line)" : "color-mix(in srgb,var(--line) 35%,transparent)";
+
 // HOJE: quatro cartões visuais
 function renderToday(A){
   const today = A.times[A.i0].slice(0, 10), ds = A.dayStats[today]; if (!ds) { $("#today").innerHTML = ""; return; }
@@ -1799,7 +1851,23 @@ function renderToday(A){
         <line x1="4" y1="52" x2="96" y2="52" class="sa-hz"/>
         ${up ? `<circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="6" class="sa-sun"/>` : ""}</svg>
       <div class="sun-t"><span><small>nascer</small><b>${clock(st.rise)}</b></span><span><small>pôr</small><b>${clock(st.set)}</b></span></div></div>`; }
-  $("#today").innerHTML = tTemp + tRain + tWind + tSun;
+  // janela de sol: hoje ou, se hoje não houver mais, o próximo dia com janela
+  let W = sunWindow(A, today), wDay = today;
+  if (!W.best){ const nx = A.days.filter(d => d > today).slice(0, 3).map(d => sunWindow(A, d)).find(w => w.best); if (nx){ W = nx; wDay = nx.d; } }
+  const hhmm = j => `${String(j).padStart(2, "0")}:00`;
+  const wLbl = wDay === today ? "" : `${cap1(rel(wDay + "T12:00") || weekday(wDay + "T12:00"))}, `;
+  const seg = W.st.slice(6, 21).map((v, k) => `<i style="background:${SUNCOL(v)}" title="${hhmm(k + 6)} · ${v === 2 ? "sol" : v === 1 ? "sol entre nuvens" : v === -1 ? "chuva" : v === 0 ? "nublado" : "já passou"}"></i>`).join("");
+  const uvC = UVCAT(W.uv), ev = EVAP(W.evap), cf = CONF(W.dew);
+  const tSolW = `<div class="tt tt-sol"><div class="tt-k">janela de sol ${termBtn("janelasol")}</div>
+    <div class="tt-big">${W.best ? `<b class="sw-t">${wLbl}${hhmm(W.best[0])} às ${hhmm(W.best[1] + 1)}</b>` : `<b class="sw-t none">sem sol firme</b>`}</div>
+    <div class="swstrip">${seg}</div><div class="rax sw-ax"><span>09:00</span><span>13:00</span><span>17:00</span></div>
+    <div class="sw-ind">
+      ${uvC ? `<span title="força do sol na pele"><small>índice UV ${termBtn("uv")}</small><b class="uvb" style="--c:${uvC[1]}">${nf(W.uv)} · ${uvC[0]}</b></span>` : ""}
+      ${ev ? `<span title="quanto o ar seca o que está molhado"><small>evaporação ${termBtn("evaporacao")}</small><b><em class="evb" data-l="${ev[1]}"><i></i><i></i><i></i></em>${ev[0]}</b></span>` : ""}
+      ${cf ? `<span title="ponto de orvalho de ${nf(W.dew)}°"><small>conforto ${termBtn("conforto")}</small><b>${cf}</b></span>` : ""}
+    </div>
+    <div class="tt-s">${W.best ? `${W.best[1] - W.best[0] + 1} horas seguidas` : W.sunH ? `${W.sunH} ${W.sunH === 1 ? "hora" : "horas"} de sol, sem sequência longa` : "nenhuma hora de sol com acordo entre modelos"}${W.best ? "" : ""}</div></div>`;
+  $("#today").innerHTML = tTemp + tRain + tWind + tSun + tSolW;
 }
 
 // PRÓXIMOS 10 DIAS: uma linha por dia; tocar abre o dia (hora a hora, riscos e modelos)
@@ -1827,7 +1895,8 @@ function renderTen(A){
     const iMin = tv.reduce((a, v, i) => v != null && v < (tv[a] ?? 1e9) ? i : a, 0), iMax = tv.reduce((a, v, i) => v != null && v > (tv[a] ?? -1e9) ? i : a, 0);
     const dot = (h, cls) => tv[h] == null ? "" : `<b class="${cls}" style="left:${h / 23 * 100}%;top:${Y(tv[h])}%" title="${String(h).padStart(2, "0")}:00 · ${nf(tv[h])}°"></b>`;
     const nowDot = x.d === today && tv[nowH] != null ? dot(nowH, "now") : "";
-    const viz = `<span class="tv-l" style="color:var(--tmin)">${nf(x.tmin)}°</span><span class="tcurve" data-t="${tv.map(t => t == null ? "" : t.toFixed(1)).join(",")}"><span class="tcur" hidden><i></i><b></b><em></em></span><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="${line} L100 100 L0 100Z" fill="url(#t-area)"/><path d="${line}" fill="none" stroke="var(--ink)" stroke-width="2.4" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>${dot(iMin, "mn")}${dot(iMax, "mx")}${nowDot}</span><span class="tv-r" style="color:var(--tmax);font-weight:600">${nf(x.tmax)}°</span>`;
+    const SW = sunWindow(A, x.d), sunBand = `<span class="sunband" aria-hidden="true">${SW.hs.map(h => `<i style="background:${(() => { const v = h.i < A.i0 ? null : sunState(h); return v === 2 ? "#ffc533" : v === 1 ? "#ffe9a3" : "transparent"; })()}"></i>`).join("")}</span>`;
+    const viz = `<span class="tv-l" style="color:var(--tmin)">${nf(x.tmin)}°</span><span class="tcurve" data-t="${tv.map(t => t == null ? "" : t.toFixed(1)).join(",")}"><span class="tcur" hidden><i></i><b></b><em></em></span>${sunBand}<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="${line} L100 100 L0 100Z" fill="url(#t-area)"/><path d="${line}" fill="none" stroke="var(--ink)" stroke-width="2.4" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>${dot(iMin, "mn")}${dot(iMax, "mx")}${nowDot}</span><span class="tv-r" style="color:var(--tmax);font-weight:600">${nf(x.tmax)}°</span>`;
     // embaixo do nome: um ponto por risco com acordo no dia e a chuva do dia
     const L = dayLevels(A, x.d), fl = RKEYS.filter(k => L[k]).map(k => `<i style="--c:${flagCol(k, L[k])}" title="${esc(flagTxt(k, L[k]))}"></i>`).join("");
     const mm = (x.rain ?? 0) >= 1 ? `<b class="fmm" title="chuva prevista no dia (mediana dos modelos)">${nf(x.rain, x.rain < 10 ? 1 : 0)} mm</b>` : "";
@@ -1841,7 +1910,7 @@ function renderTen(A){
     <linearGradient id="t-area" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">${tStops.replace(/"\/>/g, '" stop-opacity=".75"/>')}</linearGradient></defs></svg>`;
   $("#ten").innerHTML = defs + head + rows;
   $("#ten-foot").innerHTML = `<div class="tscale"><span>cor = temperatura</span><span class="tsb"><i style="background:${tempGrad(0, 35)}"></i><span class="ts-n"><b>0°</b><b>7°</b><b>14°</b><b>21°</b><b>28°</b><b>35°</b></span></span><span class="ts-k"><b class="mn"></b> mínima <b class="mx"></b> máxima${A.cur.temp != null ? ' <b class="now"></b> agora' : ""}</span></div>
-    <p class="ten-key"><b class="pp">azul embaixo do ícone</b> = chance de chover pelo menos 1 mm no dia${lastE?.dayP && Object.keys(lastE.dayP).length ? " (5 modelos e 31 cenários do GFS)" : " (5 modelos)"} · <span class="fkey"><i style="--c:var(--lv1)"></i><i style="--c:var(--lv2)"></i><i style="--c:var(--lv3)"></i><i style="--c:#b18cff"></i><i style="--c:#a9c6d8"></i></span> embaixo do dia = risco previsto por 2 ou mais modelos, pela regra deste painel (atenção, alerta, severo, trovoada, nevoeiro) · <b class="fmm">mm</b> = chuva prevista no dia</p>`;
+    <p class="ten-key"><b class="pp">azul embaixo do ícone</b> = chance de chover pelo menos 1 mm no dia${lastE?.dayP && Object.keys(lastE.dayP).length ? " (5 modelos e 31 cenários do GFS)" : " (5 modelos)"} · <span class="fkey"><i style="--c:var(--lv1)"></i><i style="--c:var(--lv2)"></i><i style="--c:var(--lv3)"></i><i style="--c:#b18cff"></i><i style="--c:#a9c6d8"></i></span> embaixo do dia = risco previsto por 2 ou mais modelos, pela regra deste painel (atenção, alerta, severo, trovoada, nevoeiro) · <b class="fmm">mm</b> = chuva prevista no dia · <span class="fsun"></span> faixa amarela na curva = janela de sol ${termBtn("janelasol")}</p>`;
   // cursor da hora: passar o dedo ou o mouse sobre as curvas mostra a mesma hora em todos os dias, com a temperatura de cada um
   { const ten = $("#ten"), curves = [...ten.querySelectorAll(".trow[data-d] .tcurve")], chip = ten.querySelector(".tchip"), Yp = t => 92 - (t - gLo) / gs * 84;
     const hide = () => { chip.hidden = true; curves.forEach(c => c.querySelector(".tcur").hidden = true); };
@@ -2546,7 +2615,7 @@ function renderHourDetail(){
     <div><div class="label">${h.i === lastA.i0 ? "Agora" : h.i < lastA.i0 ? "Hora que já passou (previsão)" : "Hora escolhida"}</div><div class="when">${esc(whenTitle(h.t))}</div></div>
     <div class="hrow" data-k="temp" data-lv="0">
       <div class="k"><b>Temperatura</b><span class="label">${h.per.length} modelos</span></div>
-      <p><b>${nf(v.temp, 1)} °C</b> (mediana dos modelos)${v.feel != null ? ` · sensação de ${nf(v.feel)}°${Math.abs(v.feel - (v.temp ?? v.feel)) > 3 ? (v.feel > v.temp ? " (abafado)" : " (com o vento)") : ""}` : ""}${(() => { const rh = h.per.map(p => p.rh).filter(x => x != null); return rh.length ? ` · umidade de ${nf(median(rh))}%` : ""; })()} · rajada de ${nf(v.gust)} km/h${(v.rain1 ?? 0) >= 0.2 ? ` · chuva de ${nf(v.rain1, 1)} mm` : ""}.</p>
+      <p><b>${nf(v.temp, 1)} °C</b> (mediana dos modelos)${v.feel != null ? ` · sensação de ${nf(v.feel)}°${Math.abs(v.feel - (v.temp ?? v.feel)) > 3 ? (v.feel > v.temp ? " (abafado)" : " (com o vento)") : ""}` : ""}${v.dew != null ? ` · ${CONF(v.dew)} <span class="muted">(ponto de orvalho ${nf(v.dew)}°)</span> ${termBtn("conforto")}` : ""}${(v.uv ?? 0) >= 1 ? ` · UV ${nf(v.uv)}, ${UVCAT(v.uv)[0]}` : ""} · rajada de ${nf(v.gust)} km/h${(v.rain1 ?? 0) >= 0.2 ? ` · chuva de ${nf(v.rain1, 1)} mm` : ""}.</p>
       ${agreeHTML(h.per.map(p => ({ name:p.name, lv:0, v:p.temp })), 0, x => nf(x, 1) + "°", true)}
     </div>
     <div class="hrow" data-k="gust" data-lv="${h.lv.gust}">

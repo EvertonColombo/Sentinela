@@ -60,7 +60,10 @@ A página tem quatro partes, de cima para baixo.
 **1. Para todo mundo**
 - **Céu do título com o tempo de agora:** sol, nuvens, chuva, noite estrelada e relâmpagos só quando há trovoada prevista, com a temperatura e a condição no canto.
 - **Faixa do topo:** o **aviso oficial do INMET** para o ponto (perigo potencial, perigo ou grande perigo), com tipo e horário, e uma linha com o que os modelos mostram. Se o INMET não puder ser consultado, vale o nível dos modelos, com aviso.
-- **Hoje:** temperatura, com a sensação térmica quando ela difere mais de 3 °C; chuva, com o total do dia, a chance e as horas com chuva prevista por 2 ou mais modelos; vento em bússola, com a hora e a direção da rajada mais forte; arco do sol com nascer e pôr.
+- **Hoje:** temperatura, com a sensação térmica quando ela difere mais de 3 °C; chuva, com o total do dia, a chance e as horas com chuva prevista por 2 ou mais modelos; vento em bússola, com a hora e a direção da rajada mais forte; arco do sol com nascer e pôr; e a **janela de sol**: as horas seguidas com sol e sem chuva em que pelo menos 2 modelos concordam, numa faixa das 06:00 às 20:00, com três indicadores para esse período:
+  - **índice UV:** força do sol na pele, na escala da Organização Mundial da Saúde (baixo, moderado, alto, muito alto e extremo);
+  - **evaporação:** quanto o ar seca o que está molhado, juntando o déficit de vapor e o vento (baixo, moderado ou alto);
+  - **conforto:** pelo ponto de orvalho, que não muda ao longo do dia como a umidade (ar seco, agradável, úmido ou abafado).
 
 **2. Riscos nos próximos 10 dias**
 
@@ -73,7 +76,7 @@ Quando só um modelo prevê o risco, o cartão aparece tracejado, como "sem acor
 
 **3. Próximos 10 dias**
 
-Uma linha por dia: ícone, chance de chuva, mínima, curva da temperatura ao longo do dia e máxima. Embaixo do nome do dia aparecem um ponto para cada risco com acordo e a chuva prevista no dia.
+Uma linha por dia: ícone, chance de chuva, mínima, curva da temperatura ao longo do dia e máxima. Embaixo da curva, uma faixa amarela marca as horas de sol. Embaixo do nome do dia aparecem um ponto para cada risco com acordo e a chuva prevista no dia.
 
 **Tocar num dia abre o dia ali mesmo**, com uma aba para cada assunto: **temperatura, chuva, vento, tempestade, raios, queda de pressão e nevoeiro**. Cada aba mostra, sempre na mesma ordem:
 - quando, por quanto tempo, quantos modelos concordam e um número do dia (chuva total, rajada máxima, menor visibilidade…);
