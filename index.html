@@ -557,6 +557,11 @@ header{display:grid;gap:12px}
 .rn-t i,.rlink i,.rtag i{width:9px;height:9px;border-radius:50%;background:var(--c);flex:none;box-shadow:0 0 6px color-mix(in srgb,var(--c) 60%,transparent)}
 .rn-w{grid-column:1;font:600 .95rem var(--f-mono)} .rn-s{grid-column:1;font-size:.86rem;color:var(--muted)} .rn-s b{color:var(--ink);font-weight:600}
 .rn-go{grid-column:2;grid-row:2 / 5;align-self:center;font:600 .8rem var(--f-body);color:var(--muted);white-space:nowrap}
+.rgrp{display:inline-flex;align-items:center;flex-wrap:wrap;gap:4px 6px;padding:3px 10px;border-radius:99px;border:1px solid var(--line);background:var(--panel);font-size:.84rem;color:var(--ink)}
+.rgrp b{font-weight:600}
+.rgrp i{width:9px;height:9px;border-radius:50%;background:var(--c);flex:none}
+.rday{font:inherit;color:var(--ink);cursor:pointer;background:none;border:0;padding:0;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--ink) 30%,transparent);text-underline-offset:3px}
+.rday:hover{color:var(--accent);text-decoration-color:var(--accent)} .rday.far{text-decoration-style:dashed}
 .rthen,.rsolo{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:.86rem;color:var(--muted)}
 .rlink{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:.84rem;color:var(--ink);cursor:pointer;padding:3px 10px;border-radius:99px;border:1px solid var(--line);background:var(--panel)}
 .rlink:hover{border-color:var(--accent)} .rlink.far{border-style:dashed} .rlink.solo{color:var(--muted);border-style:dotted}
@@ -1770,7 +1775,7 @@ function renderTen(A){
     const viz = `<span class="tv-l" style="color:var(--tmin)">${nf(x.tmin)}°</span><span class="tcurve" data-t="${tv.map(t => t == null ? "" : t.toFixed(1)).join(",")}"><span class="tcur" hidden><i></i><b></b><em></em></span>${sunBand}<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="${line} L100 100 L0 100Z" fill="url(#t-area)"/><path d="${line}" fill="none" stroke="var(--ink)" stroke-width="2.4" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>${dot(iMin, "mn")}${dot(iMax, "mx")}${nowDot}</span><span class="tv-r" style="color:var(--tmax);font-weight:600">${nf(x.tmax)}°</span>`;
     // embaixo do nome: um ponto por risco com acordo no dia e a chuva do dia
     const RK = dayRisks(A, x.d);
-    const chips = RK.length ? `<span class="rchips">${RK.map(e => `<span class="rtag${e.far ? " far" : ""}" role="button" tabindex="0" data-k="${e.k}" style="--c:${flagCol(e.k, Math.max(1, e.lv))}" title="${esc(cap1(peakTxt(e.k, e.hs)))}${e.far ? " · depois de 3 dias, vale como tendência" : ""}"><i></i><b>${DNAME[e.k]}</b>${e.k === "thunder" || e.k === "fog" ? "" : `<em>${LEVEL_NAMES[e.lv].toLowerCase()}</em>`}<span>${hourOf(e.a.t)} → ${hourOf(e.b.t)}${e.more ? ` e mais ${e.more}` : ""}</span></span>`).join("")}</span>` : "";
+    const chips = RK.length ? `<span class="rchips">${RK.map(e => `<span class="rtag${e.far ? " far" : ""}" role="button" tabindex="0" data-k="${e.k}" style="--c:${flagCol(e.k, Math.max(1, e.lv))}" title="${esc(cap1(peakTxt(e.k, e.hs)))}${e.far ? " · depois de 3 dias, vale como tendência" : ""}"><i></i><b>${DNAME[e.k]}</b>${e.k === "thunder" || e.k === "fog" ? "" : `<em>${LEVEL_NAMES[e.lv].toLowerCase()}</em>`}<span>${hrSpan(e.a, e.b)}${e.more ? ` e mais ${e.more} ${e.more === 1 ? "período" : "períodos"}` : ""}</span></span>`).join("")}</span>` : "";
     const mm = (x.rain ?? 0) >= 1 ? `<b class="fmm" title="chuva prevista no dia (mediana dos modelos)">${nf(x.rain, x.rain < 10 ? 1 : 0)} mm</b>` : "";
     const open = DAY.d === x.d;
     return `<div class="trow${x.d === today ? " today" : ""}${open ? " open" : ""}${chips ? " hasr" : ""}" data-d="${x.d}" role="button" tabindex="0" aria-expanded="${open}"><span class="td"><span class="tdn">${esc(name(x.d))}</span>${mm ? `<span class="flags">${mm}</span>` : ""}</span>${icon}${viz}${chips}</div>`;
@@ -2055,6 +2060,10 @@ function peakTxt(k, hs){
     return vis < 1e9 ? `visibilidade de até ${vis < 1000 ? nf(vis) + " m" : nf(vis / 1000, 1) + " km"}` : "nevoeiro ou cerração"; }
   return ""; }
 // riscos de um dia, com acordo de 2 ou mais modelos (só horas de agora em diante): viram etiquetas dentro da linha do dia
+// "16:00 → 18:00"; quando o risco aparece numa hora só, "às 17:00"
+const hrSpan = (a, b) => a.t === b.t ? `às ${hourOf(a.t)}` : `${hourOf(a.t)} → ${hourOf(b.t)}`;
+// nome curto do dia, sem preposição: "hoje", "amanhã", "sábado"
+const dayWord = d => rel(d + "T12:00") || weekday(d + "T12:00");
 const dayPhrase = d => { const r = rel(d + "T12:00"); if (r) return r; const w = weekday(d + "T12:00"); return (/^(sábado|domingo)/.test(w) ? "no " : "na ") + w; };
 const lvWord = (k, lv) => k === "thunder" ? "trovoada prevista" : k === "fog" ? "previsto" : LEVEL_NAMES[lv].toLowerCase();
 function dayRisks(A, d){
@@ -2071,17 +2080,21 @@ function renderRiskList(A){
   // por risco: a primeira ocorrência e em quantos dias aparece
   const byK = RORDER.map(k => { const e = ev.filter(x => x.k === k); return e.length ? { ...e[0], nDays:e.length, lvMax:Math.max(...e.map(x => x.lv)) } : null; }).filter(Boolean).sort((x, y) => x.d.localeCompare(y.d) || y.lv - x.lv || x.a.t.localeCompare(y.a.t));   // por dia; no mesmo dia, o mais grave primeiro
   const dot = e => `<i style="--c:${flagCol(e.k, Math.max(1, e.lv))}"></i>`;
-  const span = e => `${hourOf(e.a.t)} → ${hourOf(e.b.t)}`;
+  const span = e => hrSpan(e.a, e.b);
   let html;
   if (byK.length){ const f = byK[0], agree = names.filter((_, mi) => f.hs.some(h => perOn(h, mi, f.k))).length;
     html = `<button type="button" class="rnext${f.far ? " far" : ""}" data-d="${f.d}" data-k="${f.k}" style="--c:${flagCol(f.k, Math.max(1, f.lv))}">
         <span class="rn-k">próximo risco</span>
         <span class="rn-t">${dot(f)}<b>${DNAME[f.k]}</b><em>${lvWord(f.k, f.lv)}</em></span>
         <span class="rn-w">${esc(cap1(dayPhrase(f.d)))}, ${span(f)}</span>
-        <span class="rn-s">${esc(cap1(peakTxt(f.k, f.hs)))} · <b>${agree} de ${names.length}</b> modelos${f.far ? " · tendência" : ""}</span>
+        <span class="rn-s">${f.k === "thunder" ? "" : `${esc(cap1(peakTxt(f.k, f.hs)))} · `}<b>${agree} de ${names.length}</b> modelos${f.far ? " · tendência" : ""}</span>
         <span class="rn-go" aria-hidden="true">ver o dia →</span></button>`
-      + (byK.length > 1 || f.nDays > 1 ? `<p class="rthen"><span>depois:</span> ${[f.nDays > 1 ? `<button type="button" class="rlink" data-d="${f.d}" data-k="${f.k}">${dot(f)}${DNAME[f.k].toLowerCase()} em mais ${f.nDays - 1} ${f.nDays === 2 ? "dia" : "dias"}</button>` : "",
-          ...byK.slice(1).map(e => `<button type="button" class="rlink${e.far ? " far" : ""}" data-d="${e.d}" data-k="${e.k}">${dot(e)}${DNAME[e.k].toLowerCase()} ${esc(dayPhrase(e.d))}${e.nDays > 1 ? ` e em mais ${e.nDays - 1} ${e.nDays === 2 ? "dia" : "dias"}` : ""}</button>`)].filter(Boolean).join("")}</p>` : "");
+      + (byK.length > 1 || f.nDays > 1 ? `<p class="rthen"><span>nos próximos dias:</span> ${byK.map(e => {
+          // os dias em que o risco aparece; com mais de 3 dias, só o primeiro e o último
+          const ds = ev.filter(x => x.k === e.k), dl = x => `<button type="button" class="rday${x.far ? " far" : ""}" data-d="${x.d}" data-k="${x.k}" title="${esc(cap1(dayWord(x.d)))}, ${hrSpan(x.a, x.b)}">${esc(dayWord(x.d))}</button>`;
+          const days = ds.length <= 3 ? ds.map(dl).reduce((t, x, i, arr) => t + (i ? (i === arr.length - 1 ? " e " : ", ") : "") + x, "")
+            : `${ds.length} dias, de ${dl(ds[0])} a ${dl(ds[ds.length - 1])}`;
+          return `<span class="rgrp">${dot(e)}<b>${DNAME[e.k].toLowerCase()}</b> ${days}</span>`; }).join("")}</p>` : "");
   } else html = `<p class="rnone">Nenhum risco previsto por 2 ou mais modelos nos próximos 10 dias.</p>`;
   // sinais isolados: um modelo sozinho prevê e nenhum outro acompanha (não contam como risco)
   const fut = A.tlAll.filter(h => h.i >= A.i0 && days.includes(h.t.slice(0, 10)));
@@ -2144,7 +2157,7 @@ function renderDay(A){
   } else {
     const M = bandMatrix(A, key, tl), more = (M.wins?.length || 0) - 1, tot = (M.wins || []).reduce((t, [x, y]) => t + y - x + 1, 0);
     const nextOn = (() => { const last = tl[tl.length - 1], k2 = A.tlAll.findIndex(h => h.i === last.i + 1); return M.b === tl.length - 1 && k2 >= 0 && (A.tlAll[k2].lv[key] ?? 0) >= 1; })();
-    const when = M.a < 0 ? (M.iso ? `<i style="--c:#8ea4b6">sem acordo</i>` : "—") : `${hourOf(tl[M.a].t)} <i style="--c:#8ea4b6">→</i> ${hourOf(tl[M.b].t)}${nextOn ? ` <i style="--c:#8ea4b6">e segue</i>` : ""}`;
+    const when = M.a < 0 ? (M.iso ? `<i style="--c:#8ea4b6">sem acordo</i>` : "—") : M.a === M.b ? `às ${hourOf(tl[M.a].t)}` : `${hourOf(tl[M.a].t)} <i style="--c:#8ea4b6">→</i> ${hourOf(tl[M.b].t)}${nextOn ? ` <i style="--c:#8ea4b6">e segue</i>` : ""}`;
     const extra = { rain:["chuva no dia", `${nf(ds.rain ?? 0, (ds.rain ?? 0) < 10 ? 1 : 0)} mm${rainChance(A, d) != null ? ` <i style="--c:#4fa8ff">${pct(rainChance(A, d))}</i>` : ""}`],
       gust:["rajada máxima", `${hrMax(h => h.v.gust)} km/h`], storm:["instabilidade máxima", `${hrMax(h => h.v.cape)} J/kg`],
       thunder:["modelos com trovoada", `${hrMax(h => h.per.filter(p => p.lv.thunder).length)} de ${ok.length}`], cyclone:["maior queda", `${hrMax(h => h.v.pfall, 1)} hPa`],

@@ -70,7 +70,7 @@ A página tem quatro partes, de cima para baixo.
 
 Um resumo curto, em ordem de data:
 - **Próximo risco:** o que é, o nível, o dia e o horário, o pico (rajada, chuva em 24 horas, instabilidade…) e quantos modelos concordam. Tocar abre o dia.
-- **Depois:** os riscos seguintes, um por etiqueta, com o dia em que começam.
+- **Nos próximos dias:** cada risco com os dias em que aparece, por exemplo "raios hoje e amanhã" ou "nevoeiro 7 dias, de amanhã a sexta-feira". Tocar no nome de um dia abre aquele dia, na aba daquele risco.
 - **Sinais isolados:** o que só um modelo prevê fica à parte, numa linha discreta, porque não conta como risco.
 
 O detalhe de cada risco fica dentro do seu dia, na lista de 10 dias. Depois de 3 dias, as etiquetas ficam tracejadas: valem como **tendência**, porque os modelos erram mais.
