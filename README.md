@@ -60,29 +60,33 @@ A página tem quatro partes, de cima para baixo.
 **1. Para todo mundo**
 - **Céu do título com o tempo de agora:** sol, nuvens, chuva, noite estrelada e relâmpagos só quando há trovoada prevista, com a temperatura e a condição no canto.
 - **Faixa do topo:** o **aviso oficial do INMET** para o ponto (perigo potencial, perigo ou grande perigo), com tipo e horário, e uma linha com o que os modelos mostram. Se o INMET não puder ser consultado, vale o nível dos modelos, com aviso.
-- **Hoje:** temperatura, com a sensação térmica quando ela difere mais de 3 °C; chuva, com o total do dia, a chance e as horas com chuva prevista por 2 ou mais modelos; vento em bússola, com a hora e a direção da rajada mais forte; arco do sol com nascer e pôr; e a **janela de sol**: as horas seguidas com sol e sem chuva em que pelo menos 2 modelos concordam, numa faixa das 06:00 às 20:00, com três indicadores para esse período:
-  - **índice UV:** força do sol na pele, na escala da Organização Mundial da Saúde (baixo, moderado, alto, muito alto e extremo);
+- **Hoje:** a temperatura de agora em destaque, com a mínima e a máxima do dia na barra e a sensação térmica quando ela difere mais de 3 °C; chuva, com o total do dia, a chance e as horas com chuva prevista por 2 ou mais modelos; vento em bússola, com a hora e a direção da rajada mais forte; arco do sol com nascer e pôr; e a **janela de sol**: as horas seguidas com sol e sem chuva em que pelo menos 2 modelos concordam, sempre entre o nascer e o pôr do sol calculados para o lugar, numa faixa das 06:00 às 21:00, com três indicadores para esse período:
+  - **índice UV:** força do sol na pele, na escala da Organização Mundial da Saúde (baixo, moderado, alto, muito alto e extremo). Vem do CAMS, o serviço de atmosfera do Copernicus; se ele faltar, vem do modelo GFS;
   - **evaporação:** quanto o ar seca o que está molhado, juntando o déficit de vapor e o vento (baixo, moderado ou alto);
   - **conforto:** pelo ponto de orvalho, que não muda ao longo do dia como a umidade (ar seco, agradável, úmido ou abafado).
+- **Qualidade do ar:** o índice de agora (escala dos Estados Unidos, de 0 a 500) em palavras e cor, de "boa" a "perigosa", o poluente que mais pesa, e uma faixa com as próximas 24 horas. Vem do CAMS, em quadrados de cerca de 45 km: é previsão de modelo, não medição de estação. Fumaça de queimadas aparece como partículas finas.
 
 **2. Riscos nos próximos 10 dias**
 
-Um cartão por risco (tempestade, vento, chuva, raios, queda de pressão e nevoeiro), do mais grave para o mais leve. Cada cartão mostra:
-- o nível, o primeiro período com acordo entre modelos e quantos períodos vêm depois;
-- o pico (rajada, chuva em 24 horas, instabilidade, queda de pressão, visibilidade) e quantos modelos concordam;
-- uma faixa de agora até 10 dias, com uma marca por hora e uma linha nas 72 horas. Depois de 3 dias, o cartão leva a etiqueta **tendência**, porque os modelos erram mais.
+Um resumo curto, em ordem de data:
+- **Próximo risco:** o que é, o nível, o dia e o horário, o pico (rajada, chuva em 24 horas, instabilidade…) e quantos modelos concordam. Tocar abre o dia.
+- **Depois:** os riscos seguintes, um por etiqueta, com o dia em que começam.
+- **Sinais isolados:** o que só um modelo prevê fica à parte, numa linha discreta, porque não conta como risco.
 
-Quando só um modelo prevê o risco, o cartão aparece tracejado, como "sem acordo". Tocar no cartão, ou num ponto da faixa, abre o dia certo na aba certa.
+O detalhe de cada risco fica dentro do seu dia, na lista de 10 dias. Depois de 3 dias, as etiquetas ficam tracejadas: valem como **tendência**, porque os modelos erram mais.
 
 **3. Próximos 10 dias**
 
-Uma linha por dia: ícone, chance de chuva, mínima, curva da temperatura ao longo do dia e máxima. Embaixo da curva, uma faixa amarela marca as horas de sol. Embaixo do nome do dia aparecem um ponto para cada risco com acordo e a chuva prevista no dia.
+Uma linha por dia: ícone, chance de chuva, mínima, curva da temperatura ao longo do dia e máxima. Embaixo da curva, uma faixa amarela marca as horas de sol. Embaixo do nome do dia aparece a chuva prevista. Nos dias com risco, uma segunda linha traz uma etiqueta para cada risco com acordo de 2 ou mais modelos, com o nível e o horário, por exemplo "Chuva · alerta · 16:00 → 23:00". Tocar na etiqueta abre o dia já na aba daquele risco.
 
 **Tocar num dia abre o dia ali mesmo**, com uma aba para cada assunto: **temperatura, chuva, vento, tempestade, raios, queda de pressão e nevoeiro**. Cada aba mostra, sempre na mesma ordem:
 - quando, por quanto tempo, quantos modelos concordam e um número do dia (chuva total, rajada máxima, menor visibilidade…);
 - a **matriz** daquele dia: uma linha por modelo e uma coluna por hora, com a linha do INMET no topo e a linha "quantos" embaixo. Os períodos com acordo ficam contornados, e ao passar o dedo ou o mouse um cursor mostra a hora. Embaixo vem uma explicação em linguagem simples. Na aba temperatura, no lugar da matriz, aparece a faixa de mínima a máxima de cada modelo, com o que destoa em rosa;
 - o **hora a hora** do dia (curva, ou colunas na chuva), com a opção de ver a linha de cada modelo, e o **detalhe da hora** escolhida (no vento, de que lado ele vem);
-- na aba tempestade, o gráfico de **ingredientes** (instabilidade e vento em altura).
+- na aba tempestade, o gráfico de **ingredientes** (instabilidade e vento em altura) e dois sinais que dizem se o risco é firme ou frágil, sem mudar o nível:
+  - **jato de baixos níveis:** vento de 43 km/h ou mais a cerca de 1,5 km de altura, vindo do norte. É o combustível das grandes tempestades do Sul do Brasil e **reforça** o sinal;
+  - **inibição (CIN):** a "tampa" de ar que pode impedir a tempestade de nascer. Forte (100 J/kg ou mais), ela **segura** o sinal. Só o GFS e o UKMO fornecem esse dado.
+- nas abas temperatura, chuva e queda de pressão, uma linha **IA** tracejada, logo abaixo dos 5 modelos, mostra o que prevê o AIGFS (a inteligência artificial da NOAA). É uma segunda opinião e não entra na conta.
 
 A aba **queda de pressão** mostra quanto a pressão do ar cai em 24 horas. Queda pequena costuma ser só mudança de tempo, como uma frente fria; só uma queda forte pode indicar ciclone. Por isso o nome não fala em ciclone.
 
@@ -94,8 +98,8 @@ Ao abrir a página, já vem aberto o dia do risco mais grave das próximas 72 ho
 
 **4. Contexto e referência**
 - **Neste dia, desde 1940:** como costuma ser a data no lugar escolhido, com dados da **reanálise ERA5**, ou seja, o que aconteceu, e não previsão. Mostra a máxima de cada ano, a normal de 1991 a 2020, recordes e tendência. Carrega depois do resto e fica guardado no navegador até o dia seguinte.
-- **Comparar dias:** ontem, hoje e amanhã em 3D, hora a hora, e em barras com a diferença entre os dias.
-- **Os 5 modelos:** origem, tamanho do quadrado e última rodada de cada um, o que cada um prevê em réguas visuais (com a tabela recolhida) o cartão **"E o INMET?"**, sobre o modelo COSMO que o INMET roda, e o cartão **"E a inteligência artificial?"**, que compara dia a dia a temperatura e a chuva do **AIGFS** (modelo de IA da NOAA, feito a partir do GraphCast do Google DeepMind) com a mediana dos 5 modelos. Se o AIGFS não responder, o painel tenta o GraphCast experimental. Um gráfico compara também a queda de pressão em 24 horas, o sinal que o painel usa para ciclone. O modelo de IA vem de 6 em 6 horas, não traz rajadas nem instabilidade e fica fora da regra dos 2 modelos: é só uma segunda opinião. O cartão também leva ao **Weather Lab** do Google, com a geração mais nova (WeatherNext), que é experimental e pede login.
+- **Comparar dias:** ontem, hoje e amanhã em 3D, hora a hora, e em barras com a diferença entre os dias. No celular, a cena 3D muda de proporção (mais alta e menos comprida) para encher o quadro.
+- **Os 5 modelos:** origem, tamanho do quadrado e última rodada de cada um, o que cada um prevê em réguas visuais (com a tabela recolhida) o cartão **"E o INMET?"**, sobre o modelo COSMO que o INMET roda, e o cartão **"E a inteligência artificial?"**, que explica o **AIGFS** (modelo de IA da NOAA, feito a partir do GraphCast do Google DeepMind) e resume em uma frase como ele difere dos 5 modelos nos próximos dias. Se o AIGFS não responder, o painel tenta o GraphCast experimental. A comparação dia a dia fica dentro de cada dia, na linha IA. O cartão também leva ao **Weather Lab** do Google, que é experimental e pede login.
 - **Termos explicados** e **links úteis** (radar, raios ao vivo, satélite, avisos oficiais).
 
 ## Privacidade
@@ -123,4 +127,4 @@ Bibliotecas carregadas de CDN: [three.js](https://threejs.org) (cenas 3D), [Char
 
 ## Créditos
 
-Dados de previsão: [Open-Meteo](https://open-meteo.com) (licença CC BY 4.0), que reúne os modelos do ECMWF, NOAA (GFS), DWD (ICON), Environment Canada (GEM) e Met Office (UKMO), além do AIGFS (NOAA, a partir do GraphCast do Google DeepMind).
+Dados de previsão, qualidade do ar e índice UV: [Open-Meteo](https://open-meteo.com) (licença CC BY 4.0), com dados do CAMS/Copernicus para o ar, que reúne os modelos do ECMWF, NOAA (GFS), DWD (ICON), Environment Canada (GEM) e Met Office (UKMO), além do AIGFS (NOAA, a partir do GraphCast do Google DeepMind).
