@@ -500,6 +500,36 @@ header{display:grid;gap:12px}
 .mx-crit b.c1{padding:0 5px;border-radius:3px;color:#1b1400;background:linear-gradient(90deg,var(--lv1),var(--lv2),var(--lv3))}
 .mx-crit b.ct{padding:0 5px;border-radius:3px;color:#1b1030;background:#b18cff}
 
+
+/* espiral do clima: tela cheia */
+.sp-open{display:inline-flex;align-items:center;gap:6px;font-weight:600;margin-left:auto}
+.spmodal{position:fixed;inset:0;z-index:60;background:radial-gradient(ellipse at 50% 60%,#14263a 0%,#070d16 55%,#020407 100%);color:#e8eef4;overflow:hidden;overscroll-behavior:contain}
+.spmodal[hidden]{display:none}
+.sp-stage{position:absolute;inset:0;touch-action:none} .sp-stage canvas{display:block;width:100%;height:100%;outline:none}
+.sp-labels{position:absolute;inset:0;pointer-events:none}
+.sp-labels span{position:absolute;left:0;top:0;transform:translate(-50%,-50%);font:600 12px/1 "IBM Plex Mono",ui-monospace,monospace;color:#cfe0ec;text-shadow:0 1px 6px #000,0 0 2px #000;white-space:nowrap;transition:opacity .2s;will-change:transform}
+.sp-labels span.yr{font-size:13px;color:#fff;letter-spacing:.04em} .sp-labels span.mo{font:500 11px/1 system-ui,sans-serif;color:#9fb6c8}
+.sp-labels span.now{font:700 12px/1 system-ui,sans-serif;color:#0b1520;background:#7cf2dc;padding:4px 8px;border-radius:99px;text-shadow:none;box-shadow:0 0 16px #36d6c3}
+.sp-top{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:16px 18px;background:linear-gradient(#020407cc,transparent);pointer-events:none}
+.sp-top h2{margin:0;font:700 clamp(1.2rem,3vw,1.8rem) var(--f-display);letter-spacing:-.01em} .sp-top p{margin:2px 0 0;font-size:.88rem;color:#9fb6c8}
+.sp-x{pointer-events:auto;width:40px;height:40px;border-radius:50%;border:1px solid #ffffff33;background:#ffffff14;color:#fff;font-size:1rem;cursor:pointer;backdrop-filter:blur(6px)}
+.sp-modes{justify-self:center;pointer-events:auto;margin-bottom:6px;display:flex;gap:4px;padding:4px;border-radius:99px;background:#0a141ecc;border:1px solid #ffffff1f;backdrop-filter:blur(8px)}
+.sp-modes button{border:0;background:none;color:#b8cad8;font:600 .84rem system-ui,sans-serif;padding:7px 14px;border-radius:99px;cursor:pointer;white-space:nowrap}
+.sp-modes button[aria-selected="true"]{background:#e8eef4;color:#0b1520}
+.sp-day{position:absolute;right:18px;top:90px;width:min(300px,calc(100% - 36px));padding:12px 14px;border-radius:14px;background:#0a141ee6;border:1px solid #ffffff26;backdrop-filter:blur(10px);font-size:.88rem;box-shadow:0 10px 30px #0008}
+.sp-day[hidden]{display:none}
+.sp-day b.d{display:block;font:700 1rem var(--f-display);margin-bottom:6px}
+.sp-day .big{display:flex;align-items:baseline;gap:8px;margin-bottom:4px} .sp-day .big strong{font:700 1.9rem var(--f-mono)}
+.sp-day .row{display:flex;justify-content:space-between;gap:10px;color:#b8cad8;padding:2px 0} .sp-day .row b{color:#fff;font-family:var(--f-mono)}
+.sp-foot{position:absolute;left:0;right:0;bottom:0;padding:22px 18px 16px;display:grid;gap:8px;background:linear-gradient(transparent,#020407e6 35%);pointer-events:none}
+.sp-legend{display:grid;gap:4px;max-width:520px;width:100%;justify-self:center}
+.sp-legend .bar{height:10px;border-radius:99px} .sp-legend .tk{display:flex;justify-content:space-between;font:500 .72rem var(--f-mono);color:#b8cad8}
+.sp-fact{margin:0;text-align:center;font-size:.95rem;color:#fff} .sp-fact b{color:#ffcf7a}
+.sp-note{margin:0;text-align:center;font-size:.74rem;color:#8ba3b5;max-width:760px;justify-self:center}
+.sp-load{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:14px;color:#9fe9dc;font:600 .85rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;pointer-events:none}
+.sp-load[hidden]{display:none}
+.sp-load i{width:56px;height:56px;border-radius:50%;border:2px solid #36d6c326;border-top-color:#36d6c3;animation:arspin 1s linear infinite}
+@media (max-width:640px){.sp-modes button{padding:7px 10px;font-size:.78rem}.sp-day{top:78px;bottom:auto;left:12px;right:12px;width:auto;padding:10px 12px}.sp-day .big strong{font-size:1.6rem}.sp-note{font-size:.68rem}.sp-labels span.mo{display:none}}
 /* realidade aumentada */
 .dz-r{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;justify-content:flex-end}
 .ar-btn{display:inline-flex;align-items:center;gap:6px;font-weight:600}
@@ -891,6 +921,7 @@ footer p{margin:0;max-width:80ch}
 <section class="card" id="historia">
   <div class="card-head">
     <h2 id="hist-title">Neste dia, desde 1940</h2>
+    <button class="btn sp-open" type="button" id="spbtn" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 19c3 1.5 11 1.5 14 0M5 15c3 1.5 11 1.5 14 0M5 11c3 1.5 11 1.5 14 0M5 7c3 1.5 11 1.5 14 0M5 7v12M19 7v12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Ver todos os anos</button>
     <span class="hist-badge" title="ERA5: reconstrução do tempo passado feita pelo centro europeu ECMWF, juntando observações de estações, satélites, balões e navios com um modelo. É o que aconteceu, num quadrado de cerca de 25 km, e não uma previsão.">o que aconteceu · reanálise ERA5, não é previsão</span>
   </div>
   <div class="hist" id="hist"><p class="status">Carregando histórico…</p></div>
@@ -976,6 +1007,26 @@ footer p{margin:0;max-width:80ch}
 </footer>
 </div>
 <div id="pop" role="dialog" hidden></div>
+<div class="spmodal" id="spmodal" role="dialog" aria-modal="true" aria-labelledby="sp-t" hidden>
+  <div class="sp-stage" id="spstage"></div>
+  <div class="sp-labels" id="splabels" aria-hidden="true"></div>
+  <header class="sp-top">
+    <div><h2 id="sp-t">Espiral do clima</h2><p id="sp-sub"></p></div>
+    <button class="sp-x" type="button" id="spclose" aria-label="Fechar">✕</button>
+  </header>
+  <div class="sp-day" id="spday" hidden></div>
+  <footer class="sp-foot">
+    <div class="sp-modes" role="tablist" aria-label="O que a cor mostra">
+    <button type="button" role="tab" data-m="temp" aria-selected="true">Temperatura</button>
+    <button type="button" role="tab" data-m="anom" aria-selected="false">Comparado ao normal</button>
+    <button type="button" role="tab" data-m="rain" aria-selected="false">Chuva</button>
+  </div>
+    <div class="sp-legend" id="splegend"></div>
+    <p class="sp-fact" id="spfact"></p>
+    <p class="sp-note">Cada volta é um ano, de baixo para cima; cada quadradinho é um dia. Gire com o dedo ou o mouse e toque num dia. Reanálise ERA5, quadrado de cerca de 25 km; os anos 1940 e 1950 são menos precisos na América do Sul, porque havia poucas estações.</p>
+  </footer>
+  <div class="sp-load" id="spload"><i></i><span>Montando os anos…</span></div>
+</div>
 <div class="armodal" id="armodal" role="dialog" aria-modal="true" aria-labelledby="ar-t" hidden>
   <div class="ar-box">
     <div class="ar-head"><h2 id="ar-t">Os 10 dias em 3D</h2><button class="btn" type="button" id="arclose" aria-label="Fechar">✕</button></div>
@@ -986,7 +1037,7 @@ footer p{margin:0;max-width:80ch}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.183.2/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.2/examples/jsm/" } }</script>
 <script type="module">
 /* three.js + pós-processamento. Se a internet falhar, o painel funciona sem 3D. */
 let THREE = null, FX = null;
@@ -1448,7 +1499,7 @@ function stage(host, o = {}){
   if (!HAS3D || !host) return null;
   let renderer; try { renderer = new THREE.WebGLRenderer({ antialias:true, powerPreference:"high-performance" }); } catch { return null; }
   renderer.setPixelRatio(Math.min(o.small ? 1.25 : 2, devicePixelRatio || 1));
-  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.85;
   host.prepend(renderer.domElement);
   const S = { renderer, scene:new THREE.Scene(), camera:new THREE.PerspectiveCamera(o.fov || 32, 1, 0.1, 1000), host,
@@ -1806,7 +1857,7 @@ function renderTen(A){
 
 /* ====================== neste dia, desde 1940 (o que aconteceu: reanálise ERA5) ====================== */
 // ERA5 = reconstrução do tempo passado feita com observações (estações, satélites, balões, navios) + modelo. Não é previsão.
-const HIST = { key:null, data:null, busy:false };
+const HIST = { key:null, data:null, busy:false, raw:null, rawKey:null };
 async function fetchHistory(p){
   const end = new Date(Date.now() - 6 * 864e5).toISOString().slice(0, 10);
   const vars = ["temperature_2m_max","temperature_2m_min","precipitation_sum","sunshine_duration","daylight_duration","wind_gusts_10m_max"];
@@ -1849,10 +1900,10 @@ async function loadHistory(){
   if (HIST.busy) return; HIST.busy = true; $("#hist").innerHTML = `<p class="status">Buscando ${new Date().getFullYear() - 1940} anos de registros…</p>`;
   const d = await fetchHistory(p); HIST.busy = false;
   if (!d){ $("#hist").innerHTML = `<p class="status">Não consegui carregar o histórico agora. O resto do painel não depende dele.</p>`; return; }
-  HIST.key = key; HIST.data = histStats(d, mmdd); store.set("sentinela.hist3", { key, data:HIST.data }); renderHistory();
+  HIST.key = key; HIST.data = histStats(d, mmdd); HIST.raw = d; HIST.rawKey = `${p.lat.toFixed(2)},${p.lon.toFixed(2)}`; store.set("sentinela.hist3", { key, data:HIST.data }); renderHistory();
 }
 function renderHistory(){
-  const H = HIST.data, A = lastA; if (!H){ $("#hist").innerHTML = `<p class="status">Sem dados históricos para este ponto.</p>`; return; }
+  const H = HIST.data, A = lastA; $("#spbtn").hidden = !THREE || !H; if (!H){ $("#hist").innerHTML = `<p class="status">Sem dados históricos para este ponto.</p>`; return; }
   const today = nowKey().slice(0, 10), dayTxt = new Date(today + "T12:00:00-03:00").toLocaleDateString("pt-BR", { timeZone:TZ, day:"numeric", month:"long" });
   $("#hist-title").textContent = `${cap1(dayTxt)}, desde ${H.y0}`;
   // tipo de dia
@@ -2887,10 +2938,216 @@ function renderThunder(A, tl){
   th.innerHTML = `${txt} <span class="muted">Previsão dos modelos, não detecção: raios caindo agora no <a href="https://www.lightningmaps.org/" target="_blank" rel="noopener">LightningMaps ↗</a>.</span>`;
 }
 // avisos do navegador: funcionam com a página aberta (pode ficar em segundo plano)
+/* ====================== espiral do clima: todos os dias desde 1940 ====================== */
+// Cada volta da espiral é um ano (1940 embaixo); cada ladrilho é um dia. A cor e o relevo mostram a temperatura média
+// (média da máxima e da mínima), a diferença para o normal de 1991 a 2020 ou a chuva. Tudo vem do histórico ERA5 que
+// a seção "Neste dia" já baixa; a cena só é montada quando alguém abre a espiral, e é desmontada ao fechar.
+const SP = { run:null, mode:"temp" };
+const SP_RAMP = {
+  temp:[[0,"#1d1a6b"],[.12,"#2b3fc0"],[.28,"#2f8be8"],[.42,"#3cc6e6"],[.55,"#9ee8d2"],[.66,"#f7eaa0"],[.76,"#ffc548"],[.86,"#ff8a2c"],[.94,"#f2433a"],[1,"#b3124f"]],
+  anom:[[0,"#2a63ff"],[.25,"#5c8fe6"],[.42,"#33465e"],[.5,"#26303c"],[.58,"#5e3a34"],[.75,"#ff8a5a"],[1,"#ff2e4d"]],
+  rain:[[0,"#111a24"],[.08,"#17304d"],[.3,"#2b6fc4"],[.55,"#33b6f5"],[.8,"#a9efff"],[1,"#ffffff"]] };
+function spRampCol(stops, t, out){ t = clamp(t, 0, 1); let i = 1; while (i < stops.length - 1 && t > stops[i][0]) i++;
+  const [a, ca] = stops[i - 1], [b, cb] = stops[i], k = b > a ? (t - a) / (b - a) : 0;
+  const A_ = new THREE.Color(ca), B_ = new THREE.Color(cb); return out.copy(A_).lerp(B_, clamp(k, 0, 1)); }
+const spDate = t => new Date(t + "T12:00:00-03:00").toLocaleDateString("pt-BR", { timeZone:TZ, weekday:"long", day:"numeric", month:"long", year:"numeric" });
+const MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const sgn = v => (v > 0 ? "+" : v < 0 ? "−" : "") + nf(Math.abs(v), 1);
+
+// prepara os dias: ano, posição no ano, média, diferença para o normal do dia e chuva
+function spData(d){
+  const n = d.time.length, Y = new Int16Array(n), F = new Float32Array(n), T = new Float32Array(n), Rn = new Float32Array(n), DOY = new Int16Array(n);
+  const y0 = +d.time[0].slice(0, 4), byKey = new Map();
+  for (let i = 0; i < n; i++){ const t = d.time[i], y = +t.slice(0, 4), jan1 = Date.UTC(y, 0, 1), doy = Math.round((Date.parse(t + "T00:00:00Z") - jan1) / 864e5), len = (y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0)) ? 366 : 365;
+    const mx = d.temperature_2m_max[i], mn = d.temperature_2m_min[i];
+    Y[i] = y - y0; DOY[i] = doy; F[i] = (doy + 0.5) / len; T[i] = mx != null && mn != null ? (mx + mn) / 2 : NaN; Rn[i] = d.precipitation_sum?.[i] ?? NaN; byKey.set(`${y}|${doy}`, i); }
+  // normal de cada dia do ano (1991 a 2020; se faltar, todos os anos), suavizado em 21 dias
+  const sum = new Float64Array(366), cnt = new Float64Array(366);
+  const base = i => { const y = y0 + Y[i]; return y >= 1991 && y <= 2020; }, useBase = d.time.some((_, i) => base(i));
+  for (let i = 0; i < n; i++) if (!isNaN(T[i]) && (!useBase || base(i))){ sum[DOY[i]] += T[i]; cnt[DOY[i]]++; }
+  const clim = new Float32Array(366);
+  for (let k = 0; k < 366; k++){ let s = 0, c = 0; for (let j = -10; j <= 10; j++){ const q = (k + j + 366) % 366; s += sum[q]; c += cnt[q]; } clim[k] = c ? s / c : NaN; }
+  const A_ = new Float32Array(n); for (let i = 0; i < n; i++) A_[i] = T[i] - clim[DOY[i]];
+  const fin = [...T].filter(v => !isNaN(v)).sort((a, b) => a - b), q = p => fin[Math.floor(p * (fin.length - 1))];
+  // média móvel (centrada) para o relevo: a cor mostra cada dia; o relevo, a onda das estações e das ondas de calor e de frio
+  const smooth = (src, w) => { const out = new Float32Array(n); let s = 0, c = 0; const h = w >> 1;
+    for (let i = -h; i < n; i++){ const a = i + h, b = i - h - 1; if (a < n && !isNaN(src[a])){ s += src[a]; c++; } if (b >= 0 && !isNaN(src[b])){ s -= src[b]; c--; } if (i >= 0) out[i] = c ? s / c : NaN; } return out; };
+  const ST = smooth(T, 15), SA = smooth(A_, 15), SR = smooth(Rn, 7);
+  const sl = [...ST].filter(v => !isNaN(v)).sort((a, b) => a - b), sq = p => sl[Math.floor(p * (sl.length - 1))];
+  return { d, n, y0, y1:y0 + Y[n - 1], Y, F, T, A:A_, R:Rn, ST, SA, SR, DOY, byKey, clim, lo:q(0.01), hi:q(0.99), slo:sq(0.01), shi:sq(0.99), useBase };
+}
+// frase de destaque de cada modo (só anos completos)
+function spFact(D, mode){
+  const full = []; for (let y = D.y0; y <= D.y1; y++){ const idx = []; for (let i = 0; i < D.n; i++) if (D.Y[i] === y - D.y0) idx.push(i); if (idx.length >= 360) full.push({ y, idx }); }
+  if (mode === "rain"){ const tot = full.map(o => ({ y:o.y, v:o.idx.reduce((s, i) => s + (isNaN(D.R[i]) ? 0 : D.R[i]), 0) })); if (!tot.length) return "";
+    const wet = tot.reduce((a, b) => b.v > a.v ? b : a), dry = tot.reduce((a, b) => b.v < a.v ? b : a);
+    return `Ano mais chuvoso: <b>${wet.y}</b>, com ${nf(wet.v)} mm. Mais seco: <b>${dry.y}</b>, com ${nf(dry.v)} mm.`; }
+  if (mode === "anom"){ const mean = ys => { const a = full.filter(o => ys(o.y)).flatMap(o => o.idx.map(i => D.A[i])).filter(v => !isNaN(v)); return a.length ? a.reduce((s, v) => s + v, 0) / a.length : null; };
+    const last = full.slice(-10), recent = mean(y => y >= last[0]?.y), old = mean(y => y >= 1961 && y <= 1990);
+    if (recent == null || old == null || !last.length) return "";
+    const df = recent - old; return `Os últimos 10 anos completos (${last[0].y} a ${last[last.length - 1].y}) foram, em média, <b>${nf(Math.abs(df), 1)}° ${df >= 0 ? "mais quentes" : "mais frios"}</b> que os de 1961 a 1990.`; }
+  let hot = -1, cold = -1, mx = D.d.temperature_2m_max, mn = D.d.temperature_2m_min;
+  for (let i = 0; i < D.n; i++){ if (mx[i] != null && (hot < 0 || mx[i] > mx[hot])) hot = i; if (mn[i] != null && (cold < 0 || mn[i] < mn[cold])) cold = i; }
+  return hot < 0 ? "" : `Dia mais quente: <b>${spDate(D.d.time[hot]).replace(/^[^,]+, /, "")}</b>, máxima de ${nf(mx[hot])}°. Mais frio: <b>${spDate(D.d.time[cold]).replace(/^[^,]+, /, "")}</b>, mínima de ${nf(mn[cold])}°.`;
+}
+// cor e relevo de cada dia, conforme o modo
+function spTargets(D, mode, col, dep){
+  const c = new THREE.Color(), span = Math.max(1, D.hi - D.lo);
+  for (let i = 0; i < D.n; i++){ let t, dp;
+    if (mode === "temp"){ const v = D.T[i], sv = D.ST[i]; t = isNaN(v) ? 0 : (v - D.lo) / span; dp = 0.04 + 0.62 * Math.pow(clamp(isNaN(sv) ? 0 : (sv - D.slo) / Math.max(1, D.shi - D.slo), 0, 1), 1.6); }
+    else if (mode === "anom"){ const v = D.A[i], sv = D.SA[i]; t = isNaN(v) ? .5 : 0.5 + clamp(Math.sign(v) * Math.max(0, Math.abs(v) - 1) / 10, -0.5, 0.5); dp = 0.04 + 0.6 * Math.pow(Math.min(1, Math.abs(isNaN(sv) ? 0 : sv) / 4), 1.5); }
+    else { const v = D.R[i], sv = D.SR[i]; t = isNaN(v) || v < 0.2 ? 0 : Math.sqrt(v / 60); dp = 0.04 + 0.55 * clamp(isNaN(sv) ? 0 : Math.sqrt(sv / 20), 0, 1); }
+    spRampCol(SP_RAMP[mode], t, c); col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b; dep[i] = dp; }
+}
+function spLegend(D, mode){
+  const st = SP_RAMP[mode].map(([p, c]) => `${c} ${p * 100}%`).join(","), tk = a => `<div class="tk">${a.map(x => `<span>${x}</span>`).join("")}</div>`;
+  const lab = mode === "temp" ? tk([`${nf(D.lo)}°`, `${nf((D.lo + D.hi) / 2)}°`, `${nf(D.hi)}°`, "temperatura média do dia"].slice(0, 3)) : mode === "anom" ? tk(["6° mais frio", "normal", "6° mais quente"]) : tk(["sem chuva", "15 mm", "60 mm ou mais"]);
+  const what = mode === "temp" ? "média do dia (entre a máxima e a mínima) · o relevo segue a média de 15 dias: os verões saltam para fora" : mode === "anom" ? `diferença para o normal do dia (${D.useBase ? "1991 a 2020" : "todos os anos"}) · o relevo marca as ondas de calor e de frio` : "chuva do dia · o relevo marca as semanas mais chuvosas";
+  return `<div class="bar" style="background:linear-gradient(90deg,${st})"></div>${lab}<div class="tk" style="justify-content:center;color:#8ba3b5">${what}</div>`;
+}
+async function openSpiral(){
+  if (!THREE) return;
+  const md = $("#spmodal"), stage = $("#spstage"), load = $("#spload"); md.hidden = false; document.body.style.overflow = "hidden"; load.hidden = false;
+  $("#spday").hidden = true; $("#spfact").innerHTML = ""; $("#splegend").innerHTML = ""; $("#sp-sub").textContent = place.name;
+  const key = `${place.lat.toFixed(2)},${place.lon.toFixed(2)}`;
+  if (!HIST.raw || HIST.rawKey !== key){ const d = await fetchHistory(place); if (md.hidden) return;
+    if (!d){ load.innerHTML = `<span>Não consegui carregar o histórico agora.</span>`; return; } HIST.raw = d; HIST.rawKey = key; }
+  const { OrbitControls } = await import("three/addons/controls/OrbitControls.js"); if (md.hidden) return;
+  const D = spData(HIST.raw), N = D.n, years = D.y1 - D.y0 + 1;
+  $("#sp-sub").textContent = `${place.name} · ${D.y0} a ${D.y1} · ${N.toLocaleString("pt-BR")} dias`;
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches, small = innerWidth < 640;
+  // cena
+  const R = 4, P = 0.072, H = years * P, W = 2 * Math.PI * R / 365.25 * 0.8, TH = P * 0.78;
+  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true, powerPreference:"high-performance" });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, small ? 1.75 : 2)); renderer.setClearColor(0, 0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95; renderer.outputColorSpace = THREE.SRGBColorSpace;
+  stage.appendChild(renderer.domElement);
+  const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x060b13, 0.018);
+  const cam = new THREE.PerspectiveCamera(small ? 50 : 38, 1, 0.1, 200);
+  scene.add(new THREE.HemisphereLight(0xcfe3ff, 0x0a0f16, 1.0));
+  const sun = new THREE.DirectionalLight(0xffffff, 1.5); sun.position.set(7, 12, 9); scene.add(sun);
+  const rim = new THREE.DirectionalLight(0x6fe6ff, 0.6); rim.position.set(-8, 4, -6); scene.add(rim);
+  // ladrilhos: um único InstancedMesh; a cor também acende um pouco (para o brilho)
+  const mat = new THREE.MeshStandardMaterial({ roughness:0.42, metalness:0.08 });
+  mat.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace("#include <emissivemap_fragment>", "#include <emissivemap_fragment>\n#ifdef USE_COLOR\n totalEmissiveRadiance += vColor.rgb * 0.3;\n#endif"); };
+  const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), mat, N);
+  mesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(N * 3), 3); mesh.frustumCulled = false; scene.add(mesh);
+  const cs = new Float32Array(N), sn = new Float32Array(N), yy = new Float32Array(N);
+  for (let i = 0; i < N; i++){ const th = D.F[i] * Math.PI * 2; cs[i] = Math.cos(th); sn[i] = Math.sin(th); yy[i] = (D.Y[i] + D.F[i]) * P; }
+  const curC = new Float32Array(N * 3), curD = new Float32Array(N), tgtC = new Float32Array(N * 3), tgtD = new Float32Array(N), fromC = new Float32Array(N * 3), fromD = new Float32Array(N);
+  const write = () => { const m = mesh.instanceMatrix.array, ca = mesh.instanceColor.array;
+    for (let i = 0; i < N; i++){ const dp = curD[i], r = R + dp / 2, c = cs[i], s = sn[i], o = i * 16;
+      m[o] = c * W; m[o + 1] = 0; m[o + 2] = -s * W; m[o + 3] = 0; m[o + 4] = 0; m[o + 5] = TH; m[o + 6] = 0; m[o + 7] = 0;
+      m[o + 8] = s * dp; m[o + 9] = 0; m[o + 10] = c * dp; m[o + 11] = 0; m[o + 12] = s * r; m[o + 13] = yy[i]; m[o + 14] = c * r; m[o + 15] = 1; }
+    ca.set(curC); mesh.instanceMatrix.needsUpdate = true; mesh.instanceColor.needsUpdate = true; };
+  spTargets(D, SP.mode, curC, curD); write();
+  // núcleo escuro (esconde o lado de trás) e base com anéis de luz
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(R - 0.02, R - 0.02, H, 96, 1, true), new THREE.MeshStandardMaterial({ color:0x05080d, roughness:1, side:THREE.DoubleSide }));
+  core.position.y = H / 2; scene.add(core);
+  const glowTex = (() => { const cv = document.createElement("canvas"); cv.width = cv.height = 256; const g = cv.getContext("2d"), gr = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+    gr.addColorStop(0, "rgba(54,214,195,.55)"); gr.addColorStop(.35, "rgba(40,120,200,.22)"); gr.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+    const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; })();
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(R * 5, R * 5), new THREE.MeshBasicMaterial({ map:glowTex, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending }));
+  floor.rotation.x = -Math.PI / 2; floor.position.y = -0.05; scene.add(floor);
+  const ringM = new THREE.MeshBasicMaterial({ color:0x7cf2dc });
+  [R + 0.55, R + 0.9].forEach((rr, k) => { const t = new THREE.Mesh(new THREE.TorusGeometry(rr, k ? 0.006 : 0.014, 6, 200), ringM); t.rotation.x = Math.PI / 2; t.position.y = -0.03; scene.add(t); });
+  for (let m = 0; m < 12; m++){ const th = m / 12 * Math.PI * 2, tk = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.01, 0.35), ringM); tk.position.set(Math.sin(th) * (R + 0.72), -0.03, Math.cos(th) * (R + 0.72)); tk.rotation.y = th; scene.add(tk); }
+  // "hoje": uma linha de luz no dia de hoje, atravessando todos os anos
+  const todayK = nowKey().slice(0, 10), ty = +todayK.slice(0, 4), tdoy = Math.round((Date.parse(todayK + "T00:00:00Z") - Date.UTC(ty, 0, 1)) / 864e5), tth = (tdoy + 0.5) / 365.25 * Math.PI * 2;
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, H + 0.6, 8), new THREE.MeshBasicMaterial({ color:0xbffff4 }));
+  beam.position.set(Math.sin(tth) * (R + 0.48), (H + 0.6) / 2 - 0.3, Math.cos(tth) * (R + 0.48)); scene.add(beam);
+  // poeira de luz em volta
+  const pg = new THREE.BufferGeometry(), pp = new Float32Array(900 * 3);
+  for (let i = 0; i < 900; i++){ const a = Math.random() * Math.PI * 2, rr = R + 1 + Math.random() * 9; pp[i * 3] = Math.sin(a) * rr; pp[i * 3 + 1] = Math.random() * (H + 4) - 1; pp[i * 3 + 2] = Math.cos(a) * rr; }
+  pg.setAttribute("position", new THREE.BufferAttribute(pp, 3));
+  const dust = new THREE.Points(pg, new THREE.PointsMaterial({ color:0x9fdcff, size:0.035, transparent:true, opacity:0.55, depthWrite:false, blending:THREE.AdditiveBlending })); scene.add(dust);
+  // contorno do dia escolhido
+  const pick = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({ color:0xffffff })); pick.visible = false; scene.add(pick);
+  // controles
+  const ctl = new OrbitControls(cam, renderer.domElement); ctl.enableDamping = true; ctl.dampingFactor = 0.07; ctl.enablePan = false;
+  ctl.minDistance = 3.5; ctl.maxDistance = 60; ctl.maxPolarAngle = Math.PI * 0.62; ctl.target.set(0, H * 0.12, 0); ctl.autoRotateSpeed = 0.55;
+  // distância para a torre caber inteira entre o título e o rodapé
+  const asp = stage.clientWidth / Math.max(1, stage.clientHeight), half = Math.tan(THREE.MathUtils.degToRad(cam.fov / 2));
+  const fitD = Math.max((H * 0.5 + R * 0.75) / half, (R + 1.4) / (half * Math.min(1, asp))) * 1.08;
+  const endPos = new THREE.Vector3().setFromSphericalCoords(fitD, Math.PI * 0.34, tth + 0.5).add(ctl.target);
+  const startPos = new THREE.Vector3().setFromSphericalCoords(fitD * 0.55, Math.PI * 0.6, tth - 1.9).add(new THREE.Vector3(0, H * 0.1, 0));
+  cam.position.copy(calm ? endPos : startPos); ctl.update();
+  // pós-processamento: brilho
+  let comp = null;
+  if (FX){ comp = new FX.EffectComposer(renderer); comp.addPass(new FX.RenderPass(scene, cam));
+    comp.addPass(new FX.UnrealBloomPass(new THREE.Vector2(256, 256), small ? 0.4 : 0.5, 0.5, 0.82)); comp.addPass(new FX.OutputPass()); }
+  // rótulos em HTML (anos a cada 10, meses por extenso, "hoje")
+  const lbBox = $("#splabels"); lbBox.innerHTML = ""; const labels = [];
+  const addL = (txt, cls, pos, dir) => { const el = document.createElement("span"); el.className = cls; el.textContent = txt; lbBox.appendChild(el); labels.push({ el, pos, dir }); };
+  const spine = -0.006 * Math.PI * 2;
+  for (let y = Math.ceil(D.y0 / 10) * 10; y <= D.y1; y += 10) addL(String(y), "yr", new THREE.Vector3(Math.sin(spine) * (R + 0.75), (y - D.y0) * P + 0.03, Math.cos(spine) * (R + 0.75)), spine);
+  addL(String(D.y0), "yr", new THREE.Vector3(Math.sin(spine) * (R + 0.75), 0.03, Math.cos(spine) * (R + 0.75)), spine);
+  if (D.y1 % 10) addL(String(D.y1), "yr", new THREE.Vector3(Math.sin(spine) * (R + 0.75), (D.y1 - D.y0) * P + 0.03, Math.cos(spine) * (R + 0.75)), spine);
+  MESES.forEach((m, k) => { const th = (k + 0.5) / 12 * Math.PI * 2; addL(m, "mo", new THREE.Vector3(Math.sin(th) * (R + 1.25), -0.04, Math.cos(th) * (R + 1.25)), th); });
+  const tl = new Date(todayK + "T12:00:00-03:00").toLocaleDateString("pt-BR", { timeZone:TZ, day:"numeric", month:"long" });
+  addL(`${tl}, em todos os anos`, "now", new THREE.Vector3(Math.sin(tth) * (R + 0.48), H + 0.45, Math.cos(tth) * (R + 0.48)), null);
+  const v3 = new THREE.Vector3();
+  const placeLabels = (w, h) => { const cx = cam.position.x - ctl.target.x * 0, cz = cam.position.z, cl = Math.hypot(cx, cz) || 1;
+    for (const L of labels){ v3.copy(L.pos).project(cam); const vis = v3.z < 1;
+      let op = 1; if (L.dir != null){ op = clamp((Math.sin(L.dir) * cx / cl + Math.cos(L.dir) * cz / cl + 0.05) * 3.5, 0, 1); }
+      L.el.style.opacity = vis ? op : 0; L.el.style.transform = `translate(${(v3.x + 1) / 2 * w}px,${(1 - v3.y) / 2 * h}px) translate(-50%,-50%)`; } };
+  // tamanho
+  const size = () => { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); comp?.setSize(w, h); };
+  const ro = new ResizeObserver(size); ro.observe(stage); size();
+  // escolher um dia: o raio da câmera cruza o cilindro da espiral; o ângulo dá o dia do ano e a altura dá o ano
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  const dayAt = (cx, cy) => { const r = renderer.domElement.getBoundingClientRect(); ndc.set((cx - r.left) / r.width * 2 - 1, -(cy - r.top) / r.height * 2 + 1); ray.setFromCamera(ndc, cam);
+    const o = ray.ray.origin, d = ray.ray.direction, Rp = R + 0.1, a = d.x * d.x + d.z * d.z, b = 2 * (o.x * d.x + o.z * d.z), c = o.x * o.x + o.z * o.z - Rp * Rp, disc = b * b - 4 * a * c;
+    if (disc < 0 || a < 1e-9) return -1; const t = (-b - Math.sqrt(disc)) / (2 * a); if (t <= 0) return -1;
+    const x = o.x + d.x * t, y = o.y + d.y * t, z = o.z + d.z * t; let th = Math.atan2(x, z); if (th < 0) th += Math.PI * 2;
+    const f = th / (Math.PI * 2), k = Math.round(y / P - f); if (k < 0 || k >= years) return -1;
+    const yr = D.y0 + k, len = (yr % 4 === 0 && (yr % 100 !== 0 || yr % 400 === 0)) ? 366 : 365, i = D.byKey.get(`${yr}|${Math.min(len - 1, Math.floor(f * len))}`);
+    return i == null ? -1 : i; };
+  const showDay = i => { const box = $("#spday"); if (i < 0){ box.hidden = true; pick.visible = false; return; }
+    const t = D.d.time[i], mx = D.d.temperature_2m_max[i], mn = D.d.temperature_2m_min[i], rn = D.R[i], an = D.A[i];
+    box.hidden = false; box.innerHTML = `<b class="d">${esc(cap1(spDate(t)))}</b>
+      <div class="big"><strong style="color:${spRampCol(SP_RAMP.temp, (D.T[i] - D.lo) / Math.max(1, D.hi - D.lo), new THREE.Color()).getStyle()}">${isNaN(D.T[i]) ? "—" : nf(D.T[i], 1) + "°"}</strong><span>média do dia</span></div>
+      <div class="row"><span>máxima</span><b>${mx == null ? "—" : nf(mx, 1) + "°"}</b></div><div class="row"><span>mínima</span><b>${mn == null ? "—" : nf(mn, 1) + "°"}</b></div>
+      <div class="row"><span>comparado ao normal do dia</span><b>${isNaN(an) ? "—" : sgn(an) + "°"}</b></div><div class="row"><span>chuva</span><b>${isNaN(rn) ? "—" : nf(rn, rn < 10 ? 1 : 0) + " mm"}</b></div>`;
+    const dp = curD[i], r = R + dp / 2; pick.visible = true; pick.position.set(sn[i] * r, yy[i], cs[i] * r); pick.rotation.set(0, Math.atan2(sn[i], cs[i]), 0); pick.scale.set(W * 1.25, TH * 1.25, dp + 0.04); };
+  let t0 = null, userMoved = false, down = null, introT = calm ? 1 : 0, last = performance.now(), tween = null, raf = 0, hoverQ = null;
+  const el = renderer.domElement;
+  el.addEventListener("pointerdown", e => { down = { x:e.clientX, y:e.clientY }; if (introT < 1){ introT = 1; } userMoved = true; ctl.autoRotate = false; });
+  el.addEventListener("pointerup", e => { if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 6) showDay(dayAt(e.clientX, e.clientY)); down = null; });
+  el.addEventListener("pointermove", e => { if (e.pointerType === "mouse" && !down) hoverQ = [e.clientX, e.clientY]; });
+  ctl.addEventListener("start", () => { ctl.autoRotate = false; });
+  // troca de modo: cor e relevo passam de um para o outro em 0,8 segundo
+  const setMode = m => { SP.mode = m; document.querySelectorAll(".sp-modes [data-m]").forEach(b => b.setAttribute("aria-selected", b.dataset.m === m));
+    fromC.set(curC); fromD.set(curD); spTargets(D, m, tgtC, tgtD); tween = { t0:performance.now(), dur:calm ? 1 : 800 };
+    $("#splegend").innerHTML = spLegend(D, m); $("#spfact").innerHTML = spFact(D, m); };
+  document.querySelectorAll(".sp-modes [data-m]").forEach(b => b.onclick = () => setMode(b.dataset.m));
+  $("#splegend").innerHTML = spLegend(D, SP.mode); $("#spfact").innerHTML = spFact(D, SP.mode);
+  document.querySelectorAll(".sp-modes [data-m]").forEach(b => b.setAttribute("aria-selected", b.dataset.m === SP.mode));
+  load.hidden = true;
+  // animação: a espiral cresce de 1940 até hoje enquanto a câmera sobe; depois gira devagar
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const loop = now => { raf = requestAnimationFrame(loop); const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (introT < 1){ t0 ??= now; introT = Math.min(1, (now - t0) / 4200); const e = ease(introT); mesh.count = Math.max(1, Math.floor(N * e)); core.scale.y = Math.max(0.001, e); core.position.y = H * e / 2;
+      cam.position.lerpVectors(startPos, endPos, ease(Math.min(1, introT * 1.08))); if (introT >= 1 && !calm) ctl.autoRotate = true; }
+    else if (mesh.count !== N){ mesh.count = N; core.scale.y = 1; core.position.y = H / 2; if (!userMoved) cam.position.copy(endPos); }
+    if (tween){ const k = Math.min(1, (now - tween.t0) / tween.dur), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      for (let i = 0; i < N * 3; i++) curC[i] = fromC[i] + (tgtC[i] - fromC[i]) * e; for (let i = 0; i < N; i++) curD[i] = fromD[i] + (tgtD[i] - fromD[i]) * e; write(); if (k >= 1) tween = null; }
+    if (hoverQ){ showDay(dayAt(hoverQ[0], hoverQ[1])); hoverQ = null; }
+    if (!calm) dust.rotation.y += dt * 0.02;
+    ctl.update(); comp ? comp.render() : renderer.render(scene, cam); placeLabels(stage.clientWidth, stage.clientHeight); };
+  raf = requestAnimationFrame(loop);
+  SP.run = { stop(){ cancelAnimationFrame(raf); ro.disconnect(); ctl.dispose(); comp?.dispose?.();
+    scene.traverse(o => { o.geometry?.dispose?.(); if (o.material){ o.material.map?.dispose?.(); o.material.dispose?.(); } }); renderer.dispose(); renderer.domElement.remove(); lbBox.innerHTML = ""; } };
+}
+function closeSpiral(){ SP.run?.stop(); SP.run = null; $("#spmodal").hidden = true; document.body.style.overflow = ""; $("#spload").hidden = false; $("#spload").innerHTML = `<i></i><span>Montando os anos…</span>`; }
+$("#spbtn").onclick = () => openSpiral().catch(e => { console.warn(e); $("#spload").innerHTML = `<span>Não consegui montar a espiral (${esc(e.message || "erro")}).</span>`; });
+$("#spclose").onclick = closeSpiral;
+addEventListener("keydown", e => { if (e.key === "Escape" && !$("#spmodal").hidden) closeSpiral(); });
+
 /* ====================== realidade aumentada: os 10 dias na mesa ====================== */
 // o objeto é montado aqui com three.js, exportado como GLB e mostrado pelo <model-viewer> (Google, código aberto),
 // que abre a câmera no Android (WebXR) e gera sozinho o arquivo do Quick Look no iPhone
-const MV_URL = "https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js";
+const MV_URL = "https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer-module.min.js";
 let AR_URL = null;
 // cena estilo jogo: uma ilha com um termômetro de desenho animado por dia (o líquido sobe até a máxima; o anel branco marca a mínima),
 // o número da máxima bem grande e, flutuando em cima, o tempo do dia em 3D (sol, nuvem, chuva, raio ou neblina)

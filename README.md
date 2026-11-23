@@ -98,6 +98,12 @@ Ao abrir a página, já vem aberto o dia do risco mais grave das próximas 72 ho
 
 **4. Contexto e referência**
 - **Neste dia, desde 1940:** como costuma ser a data no lugar escolhido, com dados da **reanálise ERA5**, ou seja, o que aconteceu, e não previsão. Mostra a máxima de cada ano, a normal de 1991 a 2020, recordes e tendência. Carrega depois do resto e fica guardado no navegador até o dia seguinte.
+- **Espiral do clima (botão "Ver todos os anos"):** abre em tela cheia uma torre em 3D com todos os dias desde 1940 no lugar escolhido. Cada volta é um ano, de baixo para cima, e cada quadradinho é um dia. Três modos:
+  - **Temperatura:** a cor é a média do dia (entre a máxima e a mínima); o relevo segue a média de 15 dias, então os verões saltam para fora.
+  - **Comparado ao normal:** azul quando o dia foi mais frio que o normal daquela data (1991 a 2020), vermelho quando foi mais quente; perto do normal fica apagado.
+  - **Chuva:** quanto mais chuva, mais claro e mais saliente.
+  - Uma linha de luz marca a data de hoje em todos os anos. Gire com o dedo ou o mouse; tocar num dia mostra a data completa, a máxima, a mínima, a chuva e a diferença para o normal. Embaixo, uma frase resume o modo (recordes, o quanto os últimos 10 anos esquentaram em relação a 1961 a 1990, o ano mais chuvoso e o mais seco).
+  - Usa o mesmo histórico ERA5 (nada de novo é baixado se ele já foi carregado) e só é montada quando aberta; ao fechar, tudo é desmontado para não pesar na página.
 - **Comparar dias:** ontem, hoje e amanhã em 3D, hora a hora, e em barras com a diferença entre os dias. No celular, a cena 3D muda de proporção (mais alta e menos comprida) para encher o quadro.
 - **Os 5 modelos:** origem, tamanho do quadrado e última rodada de cada um, o que cada um prevê em réguas visuais (com a tabela recolhida) o cartão **"E o INMET?"**, sobre o modelo COSMO que o INMET roda, e o cartão **"E a inteligência artificial?"**, que explica o **AIGFS** (modelo de IA da NOAA, feito a partir do GraphCast do Google DeepMind) e resume em uma frase como ele difere dos 5 modelos nos próximos dias. Se o AIGFS não responder, o painel tenta o GraphCast experimental. A comparação dia a dia fica dentro de cada dia, na linha IA. O cartão também leva ao **Weather Lab** do Google, que é experimental e pede login.
 - **Termos explicados** e **links úteis** (radar, raios ao vivo, satélite, avisos oficiais).
