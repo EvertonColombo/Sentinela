@@ -530,6 +530,31 @@ header{display:grid;gap:12px}
 .sp-load[hidden]{display:none}
 .sp-load i{width:56px;height:56px;border-radius:50%;border:2px solid #36d6c326;border-top-color:#36d6c3;animation:arspin 1s linear infinite}
 @media (max-width:640px){.sp-modes button{padding:7px 10px;font-size:.78rem}.sp-day{top:78px;bottom:auto;left:12px;right:12px;width:auto;padding:10px 12px}.sp-day .big strong{font-size:1.6rem}.sp-note{font-size:.68rem}.sp-labels span.mo{display:none}}
+/* vento com o celular */
+.windmodal{position:fixed;inset:0;z-index:60;background:radial-gradient(ellipse at 50% 45%,#0f2a33,#03070b 72%);color:#eef3f8;overflow:auto;overscroll-behavior:contain;display:flex;flex-direction:column;align-items:center;padding:0 16px 18px;text-align:center}
+.windmodal[hidden]{display:none}
+.wv-top{align-self:stretch;display:flex;justify-content:space-between;align-items:flex-start;padding:14px 0 4px;text-align:left}
+.wv-top h2{margin:0;font:700 clamp(1.15rem,3vw,1.5rem) var(--f-display)}.wv-top p{margin:2px 0 0;font-size:.85rem;color:#9fb6c8}
+.wv-head b{display:block;font:800 clamp(1.45rem,6vw,2.3rem) var(--f-display);letter-spacing:-.01em;line-height:1.15}
+.wv-head span{display:block;font:600 clamp(1.05rem,4vw,1.4rem) var(--f-display);color:#ffc98a;margin-top:2px}
+.wv-head b i{font-style:normal;color:#7cf2dc;white-space:nowrap}.wv-head span i{font-style:normal;white-space:nowrap}
+.wv-speed{margin:8px 0 0;font-size:.92rem;color:#c9d8e4}.wv-speed b{color:#fff;font-size:1.05rem}
+.wv-rose{position:relative;width:min(92vw,440px,52vh);aspect-ratio:1;margin:10px auto 4px;flex:none}
+.wv-rose svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+#wv-flow{position:absolute;left:17.4%;top:17.4%;width:65.2%;height:65.2%;border-radius:50%;background:radial-gradient(#0d2029,#08151c)}
+.wv-rose .disc{fill:none;stroke:#7cf2dc55;stroke-width:1.5}
+.wv-rose .big line{stroke:url(#wvg);stroke-width:16;stroke-linecap:round}.wv-rose .big path{fill:#ffc98a;filter:drop-shadow(0 0 8px #ffc98a88)}
+.wv-rose .tk line{stroke:#9fb6c8;stroke-width:1.2;opacity:.5}.wv-rose .tk line.b{stroke:#7cf2dc;stroke-width:2.2;opacity:.9}
+.wv-rose .cd{font:700 15px var(--f-body,system-ui);fill:#9fd8cf;text-anchor:middle;dominant-baseline:middle}.wv-rose .cd.n{fill:#7cf2dc;font-size:18px;font-weight:800}.wv-rose .cd.s{font-size:11px;fill:#7f97a8;font-weight:600}
+.wv-rose .tl{fill:#7cf2dc;filter:drop-shadow(0 0 6px #7cf2dc)}
+.wv-rose .pill rect{stroke-width:1.5}.wv-rose .pill text{font:800 14px var(--f-body,system-ui);text-anchor:middle;dominant-baseline:middle}
+.wv-rose .pill.from rect{fill:#7cf2dc}.wv-rose .pill.from text{fill:#04231e}.wv-rose .pill.to rect{fill:#2a1d0f;stroke:#ffc98a}.wv-rose .pill.to text{fill:#ffc98a}
+.wv-rose .me{fill:#fff}
+.wv-hint{margin:6px 0 0;padding:6px 14px;border-radius:99px;background:#ffffff14;font:600 .9rem var(--f-body);min-height:1.2em;transition:background .2s}
+.wv-hint.ok{background:#7cf2dc;color:#04231e}
+.wv-next{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;margin-top:12px;font-size:.84rem;color:#c9d8e4}.wv-next b{font-family:var(--f-mono);color:#fff}.wv-nt{color:#8ea4b6}
+.wv-note{max-width:520px;margin:12px 0 0;font-size:.72rem;color:#8ea4b6;line-height:1.45}
+.wind-open{margin-top:8px;grid-column:1 / -1;width:100%;justify-content:center;gap:6px}.wind-open svg{margin-right:6px;vertical-align:-2px}
 /* realidade aumentada */
 .dz-r{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;justify-content:flex-end}
 .ar-btn{display:inline-flex;align-items:center;gap:6px;font-weight:600}
@@ -1026,6 +1051,15 @@ footer p{margin:0;max-width:80ch}
     <p class="sp-note">Cada volta é um ano, de baixo para cima; cada quadradinho é um dia. Gire com o dedo ou o mouse e toque num dia. Reanálise ERA5, quadrado de cerca de 25 km; os anos 1940 e 1950 são menos precisos na América do Sul, porque havia poucas estações.</p>
   </footer>
   <div class="sp-load" id="spload"><i></i><span>Montando os anos…</span></div>
+</div>
+<div class="windmodal" id="windmodal" role="dialog" aria-modal="true" aria-labelledby="wv-t" hidden>
+  <header class="wv-top"><div><h2 id="wv-t">Vento agora</h2><p id="wv-sub"></p></div><button class="sp-x" type="button" id="wv-close" aria-label="Fechar">✕</button></header>
+  <div class="wv-head" id="wv-head"></div>
+  <p class="wv-speed" id="wv-speed"></p>
+  <div class="wv-rose"><canvas id="wv-flow" width="300" height="300"></canvas><svg viewBox="-230 -230 460 460" id="wv-rose" aria-hidden="true"></svg></div>
+  <p class="wv-hint" id="wv-hint" aria-live="polite"></p>
+  <div class="wv-next" id="wv-next"></div>
+  <p class="wv-note">Segure o celular deitado, com a tela para cima: a rosa gira para ficar igual ao chão à sua volta. A seta no alto é para onde o celular aponta. Perto de metais, ímãs e carros a bússola do celular pode errar. Direção e força vêm da previsão para o lugar escolhido no painel.</p>
 </div>
 <div class="armodal" id="armodal" role="dialog" aria-modal="true" aria-labelledby="ar-t" hidden>
   <div class="ar-box">
@@ -1768,7 +1802,8 @@ function renderToday(A){
       <circle cx="50" cy="50" r="17" class="cc"/></svg>
     <div class="cw"><b data-lv="${lvG}">${nf(ds.gmax)}</b><small>km/h</small></div>
     <div class="tt-s">${(() => { const hs = A.tlAll.filter(h => h.t.startsWith(today) && h.v.gust != null), pk = hs.reduce((a, h) => !a || h.v.gust > a.v.gust ? h : a, null);
-      return pk ? `rajada máxima às ${hourOf(pk.t)}${pk.v.dir != null ? `, vinda do ${dirWord(pk.v.dir)}` : ""}` : "rajada máxima"; })()}${c.dir != null ? ` · agora, vento de ${dirWord(c.dir)}` : ""}</div></div>`;
+      return pk ? `rajada máxima às ${hourOf(pk.t)}${pk.v.dir != null ? `, vinda do ${dirWord(pk.v.dir)}` : ""}` : "rajada máxima"; })()}${c.dir != null ? ` · agora, vento de ${dirWord(c.dir)}` : ""}</div>
+    ${c.dir != null ? `<button class="btn wind-open" type="button"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 5l3 8h-6z" fill="currentColor"/></svg>De onde vem o vento</button>` : ""}</div>`;
   // sol: arco do nascer ao pôr
   const st = sunTimes(today, place.lat, place.lon);
   let tSun = "";
@@ -3143,6 +3178,84 @@ function closeSpiral(){ SP.run?.stop(); SP.run = null; $("#spmodal").hidden = tr
 $("#spbtn").onclick = () => openSpiral().catch(e => { console.warn(e); $("#spload").innerHTML = `<span>Não consegui montar a espiral (${esc(e.message || "erro")}).</span>`; });
 $("#spclose").onclick = closeSpiral;
 addEventListener("keydown", e => { if (e.key === "Escape" && !$("#spmodal").hidden) closeSpiral(); });
+
+/* ====================== vento com o celular: de onde vem e para onde vai ====================== */
+// Celular deitado na mão: a bússola dele gira a rosa para ficar igual ao chão em volta. A bússola aponta para o norte
+// magnético, que no Brasil fica de 13 a 23 graus a oeste do norte verdadeiro; a diferença vem de uma grade do modelo
+// magnético oficial WMM2025 (de 2 em 2 graus). Sem bússola (computador), a rosa fica parada com o norte para cima.
+const DECL = (() => { const g = "64,47,29,10,-8,-27,-45,-63,-81,-97,-112,-127,-140,-152,-163,-173,-181,-189,-195,-200,-205,-209,-212,-215,-217;52,35,17,-2,-21,-40,-58,-76,-93,-110,-125,-139,-152,-164,-175,-184,-192,-199,-206,-211,-215,-219,-222,-224,-226;41,23,5,-14,-33,-52,-70,-88,-106,-122,-137,-151,-164,-175,-185,-194,-202,-209,-215,-219,-224,-227,-230,-232,-233;30,12,-7,-26,-45,-63,-82,-100,-117,-132,-147,-161,-173,-184,-194,-203,-210,-217,-222,-227,-230,-233,-236,-238,-239;19,1,-18,-37,-55,-74,-92,-110,-126,-142,-157,-170,-182,-192,-202,-210,-217,-223,-228,-232,-236,-238,-240,-242,-243;8,-10,-28,-47,-65,-84,-102,-119,-135,-151,-165,-177,-189,-199,-208,-216,-222,-228,-232,-236,-239,-241,-243,-244,-245;-1,-19,-38,-56,-75,-93,-110,-127,-143,-158,-172,-184,-195,-205,-213,-220,-226,-231,-235,-239,-241,-243,-244,-245,-245;-10,-28,-46,-65,-83,-101,-118,-134,-150,-164,-177,-189,-200,-209,-217,-224,-229,-234,-237,-240,-242,-243,-243,-243,-243;-19,-37,-55,-73,-90,-108,-125,-141,-156,-169,-182,-193,-203,-212,-219,-226,-231,-235,-237,-240,-241,-241,-241,-240,-239;-27,-44,-62,-79,-97,-114,-130,-146,-160,-174,-186,-196,-206,-214,-221,-226,-231,-234,-237,-238,-238,-238,-237,-236,-233;-34,-51,-68,-86,-103,-119,-135,-150,-164,-177,-188,-198,-207,-215,-221,-226,-230,-233,-235,-235,-235,-234,-232,-230,-226;-40,-57,-74,-91,-107,-124,-139,-153,-167,-179,-190,-200,-208,-215,-221,-225,-228,-231,-231,-231,-230,-228,-226,-222,-218;-46,-62,-79,-95,-112,-127,-142,-156,-169,-180,-191,-200,-208,-214,-220,-223,-226,-227,-227,-227,-225,-222,-219,-214,-209;-51,-67,-83,-99,-115,-130,-144,-158,-170,-181,-191,-200,-207,-213,-217,-221,-223,-223,-223,-221,-219,-215,-211,-206,-200;-55,-71,-87,-103,-118,-132,-146,-159,-171,-181,-191,-199,-206,-211,-215,-217,-219,-219,-217,-215,-212,-208,-202,-197,-190;-59,-75,-90,-106,-120,-134,-148,-160,-171,-181,-190,-197,-204,-208,-212,-214,-214,-214,-212,-209,-205,-200,-194,-187,-180;-63,-78,-93,-108,-122,-136,-148,-160,-171,-180,-189,-196,-201,-205,-208,-209,-209,-208,-205,-202,-197,-192,-185,-178,-171;-66,-81,-96,-110,-124,-137,-149,-160,-170,-179,-187,-193,-198,-202,-204,-205,-204,-202,-199,-195,-190,-184,-177,-169,-161;-69,-84,-98,-112,-125,-137,-149,-160,-169,-178,-185,-191,-195,-198,-200,-200,-199,-196,-193,-188,-182,-176,-168,-161,-152;-72,-86,-100,-113,-126,-138,-149,-159,-168,-176,-183,-188,-192,-194,-195,-195,-193,-190,-186,-181,-175,-168,-160,-152,-144;-75,-88,-101,-114,-127,-138,-149,-158,-167,-174,-180,-185,-188,-190,-190,-189,-187,-184,-180,-174,-168,-161,-153,-144,-136;-77,-90,-103,-115,-127,-138,-148,-157,-165,-172,-177,-181,-184,-186,-186,-184,-182,-178,-173,-167,-161,-153,-145,-137,-128;-79,-92,-105,-116,-128,-138,-148,-156,-164,-170,-175,-178,-180,-181,-181,-179,-176,-172,-167,-161,-154,-147,-139,-130,-121".split(";").map(r => r.split(",").map(Number));
+  return (lat, lon) => { const fy = clamp((lat + 36) / 2, 0, 21.999), fx = clamp((lon + 76) / 2, 0, 23.999), y = Math.floor(fy), x = Math.floor(fx), a = fy - y, b = fx - x;
+    return (g[y][x] * (1 - b) * (1 - a) + g[y][x + 1] * b * (1 - a) + g[y + 1][x] * (1 - b) * a + g[y + 1][x + 1] * b * a) / 10; }; })();
+const CARD16 = ["norte","norte-nordeste","nordeste","leste-nordeste","leste","leste-sudeste","sudeste","sul-sudeste","sul","sul-sudoeste","sudoeste","oeste-sudoeste","oeste","oeste-noroeste","noroeste","norte-noroeste"];
+const dir16 = az => CARD16[Math.round(((az % 360) + 360) % 360 / 22.5) % 16];
+const WV = { stop:null };
+function openWind(){
+  const A = lastA, c = A?.cur; if (!c || c.dir == null) return;
+  // o iPhone só libera a bússola dentro do toque que abriu a tela
+  const ask = typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function" ? DeviceOrientationEvent.requestPermission().catch(() => "denied") : Promise.resolve("granted");
+  const md = $("#windmodal"); md.hidden = false; document.body.style.overflow = "hidden";
+  const from = c.dir, to = (from + 180) % 360, today = A.times[A.i0].slice(0, 10), ds = A.dayStats[today] || {};
+  $("#wv-sub").textContent = place.name;
+  $("#wv-head").innerHTML = `<b>O vento vem do <i>${dir16(from)}</i></b><span>e vai para o <i>${dir16(to)}</i></span>`;
+  $("#wv-speed").innerHTML = `<b>${nf(c.wind)}</b> km/h agora${c.gust != null ? ` · rajadas de <b>${nf(c.gust)}</b> km/h` : ""}${ds.gmax != null ? ` · até ${nf(ds.gmax)} km/h hoje` : ""}`;
+  // próximas horas, de 3 em 3
+  const nowT = A.times[A.i0], nx = A.tlAll.filter(h => h.t > nowT && h.v.dir != null).filter((h, i) => (i + 1) % 3 === 0).slice(0, 4);
+  $("#wv-next").innerHTML = nx.length ? `<span class="wv-nt">depois:</span>${nx.map(h => `<span><b>${hourOf(h.t)}</b> do ${dir16(h.v.dir)}${h.v.wind != null ? `, ${nf(h.v.wind)} km/h` : ""}</span>`).join("")}` : "";
+  // rosa: marcas, pontos cardeais por extenso, faixa do vento e os dois rótulos (vem do / vai para)
+  const R = 150, ticks = Array.from({ length:72 }, (_, i) => { const a = i * 5 * Math.PI / 180, big = i % 9 === 0, r1 = big ? R - 16 : i % 2 ? R - 6 : R - 10;
+    return `<line x1="${(Math.sin(a) * r1).toFixed(1)}" y1="${(-Math.cos(a) * r1).toFixed(1)}" x2="${(Math.sin(a) * R).toFixed(1)}" y2="${(-Math.cos(a) * R).toFixed(1)}"${big ? ' class="b"' : ""}/>`; }).join("");
+  const at = (deg, r) => [Math.sin(deg * Math.PI / 180) * r, -Math.cos(deg * Math.PI / 180) * r];
+  const word = (deg, r, txt, cls) => { const [x, y] = at(deg, r); return `<g class="up" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><text class="${cls}">${txt}</text></g>`; };
+  const [fx, fy] = at(from, R + 34), [tx, ty] = at(to, R + 34);
+  const [ax, ay] = at(from, R - 58), [bx, by] = at(to, R - 70), [hx, hy] = at(to, R - 40);
+  $("#wv-rose").innerHTML = `<defs><linearGradient id="wvg" gradientUnits="userSpaceOnUse" x1="${ax.toFixed(1)}" y1="${ay.toFixed(1)}" x2="${hx.toFixed(1)}" y2="${hy.toFixed(1)}"><stop offset="0" stop-color="#7cf2dc" stop-opacity=".15"/><stop offset=".55" stop-color="#7cf2dc" stop-opacity=".85"/><stop offset="1" stop-color="#ffc98a"/></linearGradient></defs>
+    <g id="wv-rot"><circle r="${R}" class="disc"/>
+      <g class="big"><line x1="${ax.toFixed(1)}" y1="${ay.toFixed(1)}" x2="${bx.toFixed(1)}" y2="${by.toFixed(1)}"/><g transform="translate(${hx.toFixed(1)} ${hy.toFixed(1)}) rotate(${to.toFixed(1)})"><path d="M0 -6l-24 36h48z"/></g></g>
+      <g class="tk">${ticks}</g>
+      ${["norte","leste","sul","oeste"].map((w, k) => word(k * 90, R - 34, w, k ? "cd" : "cd n")).join("")}
+      ${["nordeste","sudeste","sudoeste","noroeste"].map((w, k) => word(45 + k * 90, R - 30, w, "cd s")).join("")}
+      <g transform="rotate(${from.toFixed(1)})"><circle cy="${-R}" r="7" class="tl"/></g>
+      <g class="up" transform="translate(${fx.toFixed(1)} ${fy.toFixed(1)})"><g class="pill from"><rect x="-58" y="-15" width="116" height="30" rx="15"/><text y="1">vem daqui</text></g></g>
+      <g class="up" transform="translate(${tx.toFixed(1)} ${ty.toFixed(1)})"><g class="pill to"><rect x="-58" y="-15" width="116" height="30" rx="15"/><text y="1">vai para lá</text></g></g>
+    </g>
+    <path d="M0 -${R + 56}l-10 -16h20z" class="me" id="wv-me" visibility="hidden"/>`;
+  // riscos de vento: canvas recortado no círculo, girando junto com a rosa
+  const cv = $("#wv-flow"), g2 = cv.getContext("2d"), dpr = Math.min(devicePixelRatio, 2), S = 2 * R;
+  cv.width = cv.height = S * dpr; g2.scale(dpr, dpr);
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches, sp = 30 + Math.min(60, c.wind ?? 10) * 3.2, dx = Math.sin(to * Math.PI / 180), dy = -Math.cos(to * Math.PI / 180);
+  const P = Array.from({ length:70 }, () => ({ u:Math.random() * 2 - 1, v:Math.random() * 2 - 1, k:0.6 + Math.random() * 0.8 }));
+  // heading: bússola (iPhone: webkitCompassHeading; Android: deviceorientationabsolute), suavizada
+  const decl = DECL(place.lat, place.lon); let head = 0, tgt = null, buzz = false, last = performance.now(), raf = 0;
+  const onOri = e => { let h = null; if (e.webkitCompassHeading != null && e.webkitCompassHeading >= 0) h = e.webkitCompassHeading; else if ((e.absolute || e.type === "deviceorientationabsolute") && e.alpha != null) h = 360 - e.alpha;
+    if (h == null) return; const t = (h + decl + 360) % 360; if (tgt == null) head = t; tgt = t; };
+  const ev = "ondeviceorientationabsolute" in window ? "deviceorientationabsolute" : "deviceorientation";
+  ask.then(() => addEventListener(ev, onOri));
+  const hint = $("#wv-hint"), rot = $("#wv-rot"), t0 = performance.now();
+  const loop = now => { raf = requestAnimationFrame(loop); const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (tgt != null){ head += (((tgt - head + 540) % 360) - 180) * 0.15; head = (head + 360) % 360; }
+    if (tgt != null) $("#wv-me").setAttribute("visibility", "visible");
+    const r = -head; rot.setAttribute("transform", `rotate(${r.toFixed(2)})`); rot.querySelectorAll(".up").forEach(u => { const m = /translate\(([^)]+)\)/.exec(u.getAttribute("transform")); u.setAttribute("transform", `translate(${m[1]}) rotate(${(-r).toFixed(2)})`); });
+    cv.style.transform = `rotate(${r.toFixed(2)}deg)`;
+    // "de frente para o vento": o topo do celular aponta para onde ele vem
+    const off = Math.abs(((from - head + 540) % 360) - 180);
+    if (tgt == null) hint.textContent = performance.now() - t0 > 2500 ? "Sem bússola neste aparelho: o norte está para cima." : "Segure o celular deitado na mão.";
+    else if (off < 15){ hint.textContent = "Você está de frente para o vento: ele bate no seu rosto."; hint.classList.add("ok"); if (!buzz && navigator.vibrate) navigator.vibrate(40); buzz = true; }
+    else { hint.textContent = off > 165 ? "O vento está nas suas costas." : `Para ficar de frente para o vento, vire à ${((from - head + 540) % 360) - 180 > 0 ? "direita" : "esquerda"}.`; hint.classList.remove("ok"); if (off > 25) buzz = false; }
+    // riscos
+    g2.clearRect(0, 0, S, S); g2.save(); g2.beginPath(); g2.arc(R, R, R - 18, 0, 7); g2.clip(); g2.lineCap = "round";
+    for (const p of P){ if (!calm){ p.u += dx * sp * p.k * dt / R; p.v += dy * sp * p.k * dt / R; }
+      if (p.u * dx + p.v * dy > 1.05 || Math.hypot(p.u, p.v) > 1.5){ const s = Math.random() * 2 - 1; p.u = -dx * 1.05 + -dy * s; p.v = -dy * 1.05 + dx * s; }
+      const x = R + p.u * R, y = R + p.v * R, L = 18 + 22 * p.k, gr = g2.createLinearGradient(x - dx * L, y - dy * L, x, y);
+      gr.addColorStop(0, "rgba(124,242,220,0)"); gr.addColorStop(1, `rgba(124,242,220,${(0.35 + 0.5 * p.k / 1.4).toFixed(2)})`);
+      g2.strokeStyle = gr; g2.lineWidth = 1.4 + p.k * 1.4; g2.beginPath(); g2.moveTo(x - dx * L, y - dy * L); g2.lineTo(x, y); g2.stroke(); }
+    g2.restore(); };
+  raf = requestAnimationFrame(loop);
+  WV.stop = () => { cancelAnimationFrame(raf); removeEventListener(ev, onOri); };
+}
+function closeWind(){ WV.stop?.(); WV.stop = null; $("#windmodal").hidden = true; document.body.style.overflow = ""; }
+$("#wv-close").onclick = closeWind;
+addEventListener("keydown", e => { if (e.key === "Escape" && !$("#windmodal").hidden) closeWind(); });
+document.addEventListener("click", e => { if (e.target.closest(".wind-open")) openWind(); });
 
 /* ====================== realidade aumentada: os 10 dias na mesa ====================== */
 // o objeto é montado aqui com three.js, exportado como GLB e mostrado pelo <model-viewer> (Google, código aberto),
