@@ -496,6 +496,7 @@ header{display:grid;gap:12px}
 .hy-key span{display:inline-flex;align-items:center;gap:6px} .hy-key b{font:600 .85rem var(--f-mono);color:var(--ink)}
 .hy-key i{width:18px;height:0;border-top:2px dashed var(--muted)} .hy-key i.kf{border-top-color:var(--tmax)}
 .ten-key .pp{font-family:var(--f-body)}
+.b-why{grid-column:1 / -1;margin:0;font-size:.8rem;color:#c9d8e4}.b-why i{font-style:normal;font-weight:700;color:var(--c)}.b-why small{color:#8ea4b6;font-size:.72rem}
 .mx-crit b{font:inherit;font-weight:700;color:#fff;text-transform:none;letter-spacing:0;margin:0}
 .mx-crit b.c1{padding:0 5px;border-radius:3px;color:#1b1400;background:linear-gradient(90deg,var(--lv1),var(--lv2),var(--lv3))}
 .mx-crit b.ct{padding:0 5px;border-radius:3px;color:#1b1030;background:#b18cff}
@@ -555,7 +556,7 @@ header{display:grid;gap:12px}
 .wv-hint.ok{background:#7cf2dc;color:#04231e}
 .wv-next{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;margin-top:12px;font-size:.84rem;color:#c9d8e4}.wv-next b{font-family:var(--f-mono);color:#fff}.wv-nt{color:#8ea4b6}
 .wv-note{max-width:520px;margin:12px 0 0;font-size:.72rem;color:#8ea4b6;line-height:1.45}
-.wind-open{margin-top:8px;grid-column:1 / -1;width:100%;justify-content:center;gap:6px}.wind-open svg{margin-right:6px;vertical-align:-2px}
+.wind-open{margin-top:8px;grid-column:1 / -1;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;text-align:left}.wind-open svg{flex:none}.wind-open span{display:flex;flex-direction:column;line-height:1.2}.wind-open small{font-size:.72rem;opacity:.75;font-weight:500}
 /* realidade aumentada */
 .dz-r{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;justify-content:flex-end}
 .ar-btn{display:inline-flex;align-items:center;gap:6px;font-weight:600}
@@ -1444,13 +1445,13 @@ function analyzeEnsemble(ens, A){
   const gk = Object.keys(h).filter(k => k.startsWith("wind_gusts_10m")), pk = Object.keys(h).filter(k => k.startsWith("precipitation"));
   const hit = (keys, test) => keys.length ? keys.filter(k => { for (let i = start; i < end; i++) if (test(h[k], i)) return true; return false; }).length / keys.length : null;
   // chance de chuva: fração dos 31 cenários com pelo menos 1 mm no dia, e com pelo menos 0,2 mm em cada hora
-  const dayP = {}, hourP = {};
+  const dayP = {}, hourP = {}, dayN = {};
   if (pk.length){ const dates = [...new Set(times.map(t => t.slice(0, 10)))];
     for (const d of dates){ const ix = times.map((t, i) => t.startsWith(d) ? i : -1).filter(i => i >= 0);
       const sums = pk.map(k => { let s = 0, n = 0; ix.forEach(i => { if (h[k][i] != null){ s += h[k][i]; n++; } }); return n >= 20 ? s : null; }).filter(v => v != null);
-      if (sums.length) dayP[d] = sums.filter(v => v >= 1).length / sums.length;
+      if (sums.length){ dayP[d] = sums.filter(v => v >= 1).length / sums.length; dayN[d] = [sums.filter(v => v >= 1).length, sums.length]; }
       hourP[d] = ix.map(i => { const v = pk.map(k => h[k][i]).filter(x => x != null); return v.length ? v.filter(x => x >= 0.2).length / v.length : null; }); } }
-  return { pctGust: hit(gk, (a,i) => (a[i] ?? 0) >= CFG.ensProb.gust), pctRain: hit(pk, (a,i) => (rolling(a, i, 24) ?? 0) >= CFG.ensProb.rain24), n: Math.max(gk.length, pk.length), dayP, hourP };
+  return { pctGust: hit(gk, (a,i) => (a[i] ?? 0) >= CFG.ensProb.gust), pctRain: hit(pk, (a,i) => (rolling(a, i, 24) ?? 0) >= CFG.ensProb.rain24), n: Math.max(gk.length, pk.length), dayP, hourP, dayN };
 }
 
 /* ====================== fontes e concordância ====================== */
@@ -1658,8 +1659,36 @@ function bucketsHTML(mm){
 
 /* ====================== hoje e 10 dias ====================== */
 // chance de chuva no dia: metade vem dos 31 cenários do GFS, metade da fração dos 5 modelos com 1 mm ou mais (só os modelos quando não há cenários)
-function rainChance(A, d){ const e = lastE?.dayP?.[d], ds = A.dayStats[d], m = ds?.n ? ds.wet / ds.n : null;
-  return e != null && m != null ? (e + m) / 2 : e ?? m; }
+/* WeatherNext 2 (Google DeepMind), pelo Open-Meteo: 64 cenários, de 6 em 6 horas. Entra só na chance de chuva:
+   os 64 cenários se somam aos 31 do GFS ("cenários"); a média com a fração dos 5 modelos continua igual. Carrega depois do resto. */
+const WN = { key:null, dayN:null, err:false };
+async function loadWN(){ const k = `${place.lat},${place.lon}`;
+  try { const u = new URL("https://ensemble-api.open-meteo.com/v1/ensemble");
+    u.search = new URLSearchParams({ latitude:place.lat, longitude:place.lon, hourly:"precipitation", models:"google_weathernext2_ensemble", timezone:TZ, past_days:1, forecast_days:11 });
+    const r = await fetch(u); if (!r.ok) throw new Error("weathernext " + r.status); const j = await r.json(); if (k !== `${place.lat},${place.lon}`) return;
+    const h = j.hourly, keys = Object.keys(h || {}).filter(x => x.startsWith("precipitation")), dayN = {};
+    if (!keys.length) throw new Error("weathernext sem chuva");
+    // soma do dia em cada cenário; os dados vêm de 6 em 6 horas, então basta ter pelo menos 4 valores no dia
+    const days = [...new Set(h.time.map(t => t.slice(0, 10)))];
+    for (const d of days){ const ix = h.time.map((t, i) => t.startsWith(d) ? i : -1).filter(i => i >= 0);
+      const sums = keys.map(x => { let s = 0, n = 0; ix.forEach(i => { if (h[x][i] != null){ s += h[x][i]; n++; } }); return n >= 4 ? s : null; }).filter(v => v != null);
+      if (sums.length >= 10) dayN[d] = [sums.filter(v => v >= 1).length, sums.length]; }
+    WN.key = k; WN.dayN = dayN; WN.err = false;
+  } catch (e){ console.warn(e); WN.key = k; WN.dayN = null; WN.err = true; }
+  if (lastA){ renderTen(lastA); renderToday(lastA); if (DAY.d) renderDay(lastA); } }
+const wnDay = d => WN.key === `${place.lat},${place.lon}` ? WN.dayN?.[d] ?? null : null;
+// chance de chuva = média dos cenários do GFS e do Google, cada um com o mesmo peso (o Google tem mais cenários,
+// mas isso não o torna mais certo). Os 5 modelos aparecem hora a hora no dia aberto; só entram aqui se não houver cenários.
+// cada fonte já arredondada de 10 em 10 (como aparece na tela), para a média bater com o que a pessoa lê
+function rainChance(A, d){ const f = [lastE?.dayN?.[d], wnDay(d)].filter(Boolean).map(([k, n]) => Math.round(k / n * 10) / 10);
+  if (f.length) return f.reduce((a, b) => a + b, 0) / f.length;
+  const ds = A.dayStats[d]; return ds?.n ? ds.wet / ds.n : null; }
+// a conta: quantos cenários de cada fonte preveem pelo menos 1 mm no dia
+// cada fonte arredondada de 10 em 10, como o número de cima, para a média conferir de cabeça
+function rainWhy(A, d){ const g = lastE?.dayN?.[d], w = wnDay(d), ds = A.dayStats[d], out = [];
+  if (g) out.push(`GFS ${pct(g[0] / g[1])} <small>(chuva em ${g[0]} de ${g[1]} cenários)</small>`); if (w) out.push(`Google ${pct(w[0] / w[1])} <small>(chuva em ${w[0]} de ${w[1]} cenários)</small>`);
+  if (!out.length && ds?.n) out.push(`${ds.wet} de ${ds.n} modelos`);
+  return out.join(" · "); }
 const pct = p => p == null ? "" : `${Math.round(p * 10) * 10}%`;
 // chuva em cada hora do dia: quantos modelos preveem chuva (0,2 mm ou mais) e quanto chove nos que preveem
 function dayRainAgree(d){ const A = lastA; return Array.from({ length:24 }, (_, h) => { const i = A.times.indexOf(`${d}T${String(h).padStart(2,"0")}:00`);
@@ -1785,12 +1814,14 @@ function renderToday(A){
     <div class="tbar-ends"><span><b style="color:var(--tmin)">${nf(ds.tmin)}°</b> mínima<small>${hh2(iMn)}</small></span><span><b style="color:var(--tmax)">${nf(ds.tmax)}°</b> máxima<small>${hh2(iMx)}</small></span></div>
     ${fT ? `<div class="tt-s">${fT.replace(/^ · /, "")}</div>` : ""}</div>`;
   // chuva: 24 colunas, uma por hora
-  const hr = dayHourly(today, "precipitation"), mx = Math.max(1, ...hr.filter(v => v != null)), tot = hr.reduce((a, v) => a + (v ?? 0), 0);
+  // total do dia: o mesmo da lista dos 10 dias e do dia aberto (o valor do meio entre os totais do dia dos 5 modelos),
+  // que não depende de os modelos acertarem a hora da chuva; as colunas continuam hora a hora
+  const hr = dayHourly(today, "precipitation"), mx = Math.max(1, ...hr.filter(v => v != null)), tot = ds.rain ?? hr.reduce((a, v) => a + (v ?? 0), 0);
   const ag = dayRainAgree(today), wet = ag.map((x, h) => x.k >= 2 ? h : -1).filter(h => h >= 0);
   const lvH = mm => mm >= CFG.thr.rain1[2] ? 3 : mm >= CFG.thr.rain1[1] ? 2 : mm >= CFG.thr.rain1[0] ? 1 : 0;
   const strip = ag.map((x, h) => `<i class="${h < nowH ? "past" : ""}${h === nowH ? " now" : ""}" data-lv="${x.k >= 2 ? lvH(x.mm) : ""}"${x.k >= 2 ? "" : ' data-off="1"'} title="${String(h).padStart(2, "0")}:00 · ${x.k >= 2 ? `chuva prevista por ${x.k} modelos (${nf(x.mm, 1)} mm)` : "sem chuva com acordo"}"></i>`).join("");
   const tRain = `<div class="tt"><div class="tt-k">chuva</div>
-    <div class="tt-big"><b>${nf(tot, tot < 10 ? 1 : 0)}</b><small>mm</small>${rainChance(A, today) != null ? `<em class="rchip" title="chance de chover pelo menos 1 mm hoje">${pct(rainChance(A, today))}</em>` : ""}</div>
+    <div class="tt-big"><b>${nf(tot, tot < 10 ? 1 : 0)}</b><small>mm</small>${rainChance(A, today) != null ? `<em class="rchip" title="${esc("chance de chover pelo menos 1 mm hoje · " + rainWhy(A, today).replace(/<[^>]+>/g, ""))}">${pct(rainChance(A, today))}</em>` : ""}</div>
     <div class="rstrip">${strip}</div><div class="rax"><span>06:00</span><span>12:00</span><span>18:00</span></div>
     <div class="tt-s">${!wet.length ? "nenhuma hora com chuva prevista por 2 ou mais modelos" : wet[wet.length - 1] - wet[0] + 1 === wet.length ? `chuva das ${String(Math.max(0, wet[0] - 1)).padStart(2, "0")}:00 às ${String(wet[wet.length - 1]).padStart(2, "0")}:00` : `chuva em ${wet.length} ${wet.length === 1 ? "hora" : "horas"} do dia`}</div></div>`;
   // vento: bússola com a seta para onde o vento vai
@@ -1804,7 +1835,7 @@ function renderToday(A){
     <div class="cw"><b data-lv="${lvG}">${nf(ds.gmax)}</b><small>km/h</small></div>
     <div class="tt-s">${(() => { const hs = A.tlAll.filter(h => h.t.startsWith(today) && h.v.gust != null), pk = hs.reduce((a, h) => !a || h.v.gust > a.v.gust ? h : a, null);
       return pk ? `rajada máxima às ${hourOf(pk.t)}${pk.v.dir != null ? `, vinda do ${dirWord(pk.v.dir)}` : ""}` : "rajada máxima"; })()}${c.dir != null ? ` · agora, vento de ${dirWord(c.dir)}` : ""}</div>
-    ${c.dir != null ? `<button class="btn wind-open" type="button"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 5l3 8h-6z" fill="currentColor"/></svg>De onde vem o vento</button>` : ""}</div>`;
+    ${c.dir != null ? `<button class="btn wind-open" type="button"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7l2.4 6h-4.8z" fill="currentColor"/><circle cx="12" cy="18" r="1" fill="currentColor"/></svg><span>De onde vem o vento<small>no celular, com a bússola</small></span></button>` : ""}</div>`;
   // sol: arco do nascer ao pôr
   const st = sunTimes(today, place.lat, place.lon);
   let tSun = "";
@@ -1851,7 +1882,7 @@ function renderTen(A){
   const nowH = +A.times[A.i0].slice(11, 13);
   const rows = list.map(x => {
     const ch = rainChance(A, x.d), k = wxKind({ cloud:x.cloud, rain:x.rain ?? 0, thunder:x.storm >= 2, day:true, daily:true });
-    const icon = `<span class="ic">${wxIcon(k, 30)}${ch != null && ch >= 0.1 ? `<em class="pp">${pct(ch)}</em>` : ""}</span>`;
+    const icon = `<span class="ic">${wxIcon(k, 30)}${ch != null && ch >= 0.1 ? `<em class="pp" title="${esc("chance de 1 mm ou mais no dia · " + rainWhy(A, x.d).replace(/<[^>]+>/g, ""))}">${pct(ch)}</em>` : ""}</span>`;
     // curva da temperatura ao longo do dia; altura e cor dizem a temperatura (mesma escala para os 10 dias)
     const tv = temps[x.d], Y = t => 92 - (t - gLo) / gs * 84, pts = tv.map((t, h) => t == null ? null : [h / 23 * 100, Y(t)]).filter(Boolean);
     const line = pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(" ");
@@ -1874,7 +1905,9 @@ function renderTen(A){
     <linearGradient id="t-area" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">${tStops.replace(/"\/>/g, '" stop-opacity=".75"/>')}</linearGradient></defs></svg>`;
   $("#ten").innerHTML = defs + head + rows;
   $("#ten-foot").innerHTML = `<div class="tscale"><span>cor = temperatura</span><span class="tsb"><i style="background:${tempGrad(0, 35)}"></i><span class="ts-n"><b>0°</b><b>7°</b><b>14°</b><b>21°</b><b>28°</b><b>35°</b></span></span><span class="ts-k"><b class="mn"></b> mínima <b class="mx"></b> máxima${A.cur.temp != null ? ' <b class="now"></b> agora' : ""}</span></div>
-    <p class="ten-key"><b class="pp">azul embaixo do ícone</b> = chance de chover pelo menos 1 mm no dia${lastE?.dayP && Object.keys(lastE.dayP).length ? " (5 modelos e 31 cenários do GFS)" : " (5 modelos)"} · <b class="fmm">mm</b> = chuva prevista no dia · <span class="rtag demo" style="--c:var(--lv2)"><i></i><b>etiqueta</b></span> = risco previsto por 2 ou mais modelos naquele dia, com o horário (<span class="akey fen"><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span><span><i style="background:#b18cff"></i>trovoada</span><span><i style="background:#a9c6d8"></i>nevoeiro</span></span>); tracejada = depois de 3 dias, vale como tendência · <span class="fsun"></span> faixa amarela na curva = janela de sol ${termBtn("janelasol")}</p>`;
+    <p class="ten-key"><b class="pp">azul embaixo do ícone</b> = chance de chover pelo menos 1 mm no dia${(() => { const g = lastE?.dayN && Object.keys(lastE.dayN).length, w = WN.key === `${place.lat},${place.lon}` && WN.dayN && Object.keys(WN.dayN).length;
+      const gn = g ? Object.values(lastE.dayN)[0][1] : 0, wn = w ? Object.values(WN.dayN)[0][1] : 0;
+      return g && w ? `, mede a confiança: média de duas fontes com o mesmo peso, o GFS (${gn} cenários) e o WeatherNext 2, do Google (${wn} cenários). Cenário é a mesma previsão rodada de novo com pequenas diferenças no ponto de partida; a fonte com mais cenários não pesa mais. Abra o dia para ver cada fonte. Quando e quanto chove fica no hora a hora dos 5 modelos` : g ? ` (${gn} cenários do GFS)` : w ? ` (${wn} cenários do WeatherNext 2, do Google)` : " (5 modelos)"; })()} · <b class="fmm">mm</b> = chuva prevista no dia · <span class="rtag demo" style="--c:var(--lv2)"><i></i><b>etiqueta</b></span> = risco previsto por 2 ou mais modelos naquele dia, com o horário (<span class="akey fen"><span><i style="background:var(--lv1)"></i>atenção</span><span><i style="background:var(--lv2)"></i>alerta</span><span><i style="background:var(--lv3)"></i>severo</span><span><i style="background:#b18cff"></i>trovoada</span><span><i style="background:#a9c6d8"></i>nevoeiro</span></span>); tracejada = depois de 3 dias, vale como tendência · <span class="fsun"></span> faixa amarela na curva = janela de sol ${termBtn("janelasol")}</p>`;
   // cursor da hora: passar o dedo ou o mouse sobre as curvas mostra a mesma hora em todos os dias, com a temperatura de cada um
   { const ten = $("#ten"), curves = [...ten.querySelectorAll(".trow[data-d] .tcurve")], chip = ten.querySelector(".tchip"), Yp = t => 92 - (t - gLo) / gs * 84;
     const hide = () => { chip.hidden = true; curves.forEach(c => c.querySelector(".tcur").hidden = true); };
@@ -2278,6 +2311,8 @@ function renderDay(A){
     facts = fact(`quando${more > 0 ? " · primeiro período" : ""}`, `${when}${more > 0 ? ` <i style="--c:#8ea4b6">+ ${more}</i>` : ""}`) + fact(`duração${more > 0 ? " · total" : ""}`, M.a >= 0 ? `${more > 0 ? tot : M.b - M.a + 1} h` : "—")
       + fact("modelos", `<i style="--c:${flagCol(key, Math.max(1, DL[key] || 0))}">${M.agreeN}</i>/${ok.length} ${termBtn("consenso")}`) + fact(extra[0], extra[1]);
   }
+  // a conta da chance de chuva, em uma linha (abas Temperatura e Chuva)
+  if ((key === "temp" || key === "rain") && rainChance(A, d) != null && rainWhy(A, d)) facts += `<p class="b-why"><i style="--c:#4fa8ff">${pct(rainChance(A, d))} de chance de chuva</i> (1 mm ou mais no dia) · ${rainWhy(A, d)}</p>`;
   $("#band-facts").innerHTML = facts;
   // matriz (ou faixas de temperatura); reserva a maior altura entre as abas para a página não pular
   const srcHTML = k => k === "temp" ? tempModels(A, d) : `${bandMatrix(A, k, tl).html}<p class="b-th" id="band-th" hidden></p>`;
@@ -3443,7 +3478,7 @@ async function load(){
     lastA = A; lastE = ens ? analyzeEnsemble(ens, A) : null; V.sel = null;
     renderAll();
     setTimeout(() => loadHistory().catch(() => {}), 50);
-    setTimeout(() => loadAI(), 80); setTimeout(() => loadAQ(), 60);
+    setTimeout(() => loadAI(), 80); setTimeout(() => loadAQ(), 60); setTimeout(() => loadWN(), 120);
     loadOfficial().catch(() => {});   // avisos oficiais do INMET para o ponto   // histórico vem depois, sem atrasar o painel
     $("#updated").textContent = `Dados buscados ${whenLong(nowKey() + ":00")}. Próxima busca automática em ${CFG.refreshMin} minutos.`;
   } catch (e){
