@@ -528,6 +528,7 @@ header{display:grid;gap:12px}
 .sp-note{margin:0;text-align:center;font-size:.74rem;color:#8ba3b5;max-width:760px;justify-self:center}
 .sp-load{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:14px;color:#9fe9dc;font:600 .85rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;pointer-events:none}
 .sp-load[hidden]{display:none}
+.sp-load .err{max-width:420px;padding:0 20px;text-align:center;text-transform:none;letter-spacing:0;line-height:1.5;color:#e6eef4;font-family:var(--f-body)}.sp-load .btn{pointer-events:auto}
 .sp-load i{width:56px;height:56px;border-radius:50%;border:2px solid #36d6c326;border-top-color:#36d6c3;animation:arspin 1s linear infinite}
 @media (max-width:640px){.sp-modes button{padding:7px 10px;font-size:.78rem}.sp-day{top:78px;bottom:auto;left:12px;right:12px;width:auto;padding:10px 12px}.sp-day .big strong{font-size:1.6rem}.sp-note{font-size:.68rem}.sp-labels span.mo{display:none}}
 /* vento com o celular */
@@ -1893,16 +1894,42 @@ function renderTen(A){
 /* ====================== neste dia, desde 1940 (o que aconteceu: reanálise ERA5) ====================== */
 // ERA5 = reconstrução do tempo passado feita com observações (estações, satélites, balões, navios) + modelo. Não é previsão.
 const HIST = { key:null, data:null, busy:false, raw:null, rawKey:null };
+// Histórico diário desde 1940 (ERA5). É um pedido pesado: pela conta do Open-Meteo vale uns 1.300 pedidos comuns, e o limite
+// gratuito é de 600 por minuto e 10 mil por dia. Por isso ele é baixado uma vez e guardado compactado no navegador por 7 dias;
+// a seção "Neste dia" e a Espiral do clima usam essa mesma cópia. Um único pedido por vez (os dois esperam o mesmo).
+const HVARS = ["temperature_2m_max","temperature_2m_min","precipitation_sum","sunshine_duration","daylight_duration","wind_gusts_10m_max"];
+const HRAW = "sentinela.histraw1", HRAW_DAYS = 7, hKey = p => `${p.lat.toFixed(2)},${p.lon.toFixed(2)}`;
+// compacta: datas viram "início + quantidade"; valores viram inteiros (décimos; sol e duração do dia em minutos)
+const H_SCALE = { sunshine_duration:1 / 60, daylight_duration:1 / 60 };
+function packHist(d){ const v = {}; HVARS.forEach(k => { const sc = H_SCALE[k] ?? 10; v[k] = (d[k] || []).map(x => x == null ? "" : Math.round(x * sc)).join(","); }); return { start:d.time[0], n:d.time.length, v }; }
+function unpackHist(o){ const d = { time:[] }, t0 = Date.parse(o.start + "T00:00:00Z");
+  for (let i = 0; i < o.n; i++) d.time.push(new Date(t0 + i * 864e5).toISOString().slice(0, 10));
+  HVARS.forEach(k => { const sc = H_SCALE[k] ?? 10, a = (o.v[k] || "").split(","); d[k] = Array.from({ length:o.n }, (_, i) => a[i] === "" || a[i] == null ? null : +a[i] / sc); }); return d; }
 async function fetchHistory(p){
   const end = new Date(Date.now() - 6 * 864e5).toISOString().slice(0, 10);
-  const vars = ["temperature_2m_max","temperature_2m_min","precipitation_sum","sunshine_duration","daylight_duration","wind_gusts_10m_max"];
-  const tries = [{ models:"era5" }, {}];
-  for (const extra of tries){
-    const u = new URL("https://archive-api.open-meteo.com/v1/archive");
-    u.search = new URLSearchParams({ latitude:p.lat, longitude:p.lon, start_date:"1940-01-01", end_date:end, daily:vars.join(","), timezone:TZ, ...extra });
-    try { const r = await fetch(u); if (r.ok){ const j = await r.json(); if (j.daily?.time?.length) return j.daily; } } catch {}
+  for (const extra of [{ models:"era5" }, {}]){
+    const u = new URL("https://archive-api.open-meteo.com/v1/archive"), ac = new AbortController(), to = setTimeout(() => ac.abort(), 60000);
+    u.search = new URLSearchParams({ latitude:p.lat, longitude:p.lon, start_date:"1940-01-01", end_date:end, daily:HVARS.join(","), timezone:TZ, ...extra });
+    try { const r = await fetch(u, { signal:ac.signal }); clearTimeout(to);
+      if (r.status === 429) return { error:"limite" };
+      if (r.ok){ const j = await r.json(); if (j.daily?.time?.length) return j.daily; } }
+    catch (e){ clearTimeout(to); if (e.name === "AbortError") return { error:"demora" }; }
   }
-  return null;
+  return { error:"falha" };
+}
+const HIST_ERR = { limite:"O Open-Meteo recusou agora: o limite gratuito de consultas foi atingido. Tente de novo em alguns minutos.",
+  demora:"O Open-Meteo demorou demais para responder. Tente de novo em alguns minutos.", falha:"Não consegui carregar o histórico agora." };
+let histPending = null;
+async function getHistoryRaw(p){
+  const k = hKey(p);
+  if (HIST.raw && HIST.rawKey === k) return HIST.raw;
+  try { const o = JSON.parse(localStorage.getItem(HRAW) || "null"); if (o?.k === k && Date.now() - o.at < HRAW_DAYS * 864e5){ HIST.raw = unpackHist(o); HIST.rawKey = k; return HIST.raw; } } catch {}
+  if (histPending?.k === k) return histPending.pr;
+  const pr = fetchHistory(p).then(d => { histPending = null; if (d.error) return d;
+    HIST.raw = d; HIST.rawKey = k;
+    try { localStorage.removeItem(HRAW); localStorage.setItem(HRAW, JSON.stringify({ k, at:Date.now(), ...packHist(d) })); } catch {}
+    return d; });
+  histPending = { k, pr }; return pr;
 }
 // resume um dia do ano: tipo de dia numa janela de ±3 dias (mais amostras) e recordes na data exata
 function histStats(d, mmdd){
@@ -1933,9 +1960,9 @@ async function loadHistory(){
   if (HIST.key === key && HIST.data) return renderHistory();
   const cached = store.get("sentinela.hist3"); if (cached?.key === key) { HIST.key = key; HIST.data = cached.data; return renderHistory(); }
   if (HIST.busy) return; HIST.busy = true; $("#hist").innerHTML = `<p class="status">Buscando ${new Date().getFullYear() - 1940} anos de registros…</p>`;
-  const d = await fetchHistory(p); HIST.busy = false;
-  if (!d){ $("#hist").innerHTML = `<p class="status">Não consegui carregar o histórico agora. O resto do painel não depende dele.</p>`; return; }
-  HIST.key = key; HIST.data = histStats(d, mmdd); HIST.raw = d; HIST.rawKey = `${p.lat.toFixed(2)},${p.lon.toFixed(2)}`; store.set("sentinela.hist3", { key, data:HIST.data }); renderHistory();
+  const d = await getHistoryRaw(p); HIST.busy = false; if (p !== place) return;
+  if (d.error){ $("#hist").innerHTML = `<p class="status">${HIST_ERR[d.error]} O resto do painel não depende dele.</p>`; return; }
+  HIST.key = key; HIST.data = histStats(d, mmdd); store.set("sentinela.hist3", { key, data:HIST.data }); renderHistory();
 }
 function renderHistory(){
   const H = HIST.data, A = lastA; $("#spbtn").hidden = !THREE || !H; if (!H){ $("#hist").innerHTML = `<p class="status">Sem dados históricos para este ponto.</p>`; return; }
@@ -3045,8 +3072,10 @@ async function openSpiral(){
   const md = $("#spmodal"), stage = $("#spstage"), load = $("#spload"); md.hidden = false; document.body.style.overflow = "hidden"; load.hidden = false;
   $("#spday").hidden = true; $("#spfact").innerHTML = ""; $("#splegend").innerHTML = ""; $("#sp-sub").textContent = place.name;
   const key = `${place.lat.toFixed(2)},${place.lon.toFixed(2)}`;
-  if (!HIST.raw || HIST.rawKey !== key){ const d = await fetchHistory(place); if (md.hidden) return;
-    if (!d){ load.innerHTML = `<span>Não consegui carregar o histórico agora.</span>`; return; } HIST.raw = d; HIST.rawKey = key; }
+  if (!HIST.raw || HIST.rawKey !== key){ load.innerHTML = `<i></i><span>Carregando ${new Date().getFullYear() - 1940} anos de registros…</span>`;
+    const d = await getHistoryRaw(place); if (md.hidden) return;
+    if (d.error){ load.innerHTML = `<span class="err">${HIST_ERR[d.error]}</span><button class="btn" type="button" id="spretry">Tentar de novo</button>`;
+      $("#spretry").onclick = () => { load.innerHTML = `<i></i><span>Montando os anos…</span>`; openSpiral().catch(e => console.warn(e)); }; return; } }
   const { OrbitControls } = await import("three/addons/controls/OrbitControls.js"); if (md.hidden) return;
   const D = spData(HIST.raw), N = D.n, years = D.y1 - D.y0 + 1;
   $("#sp-sub").textContent = `${place.name} · ${D.y0} a ${D.y1} · ${N.toLocaleString("pt-BR")} dias`;
